@@ -1,0 +1,345 @@
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+@import "./element-ui.scss";
+@import "./sidebar.scss";
+@import "./btn.scss";
+@import "./contractOrderDialog.scss";
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+body .el-table th.gutter {
+  display: table-cell !important;
+}
+
+body .el-table colgroup.gutter {
+  display: table-cell !important;
+}
+
+label {
+  font-weight: 400;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.no-padding {
+  padding: 0px !important;
+}
+
+.padding-content {
+  padding: 4px 0;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.fr {
+  float: right;
+}
+
+.fl {
+  float: left;
+}
+
+.pr-5 {
+  padding-right: 5px;
+}
+
+.pl-5 {
+  padding-left: 5px;
+}
+
+.block {
+  display: block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.inlineBlock {
+  display: block;
+}
+/*字体蓝颜色*/
+.text_color {
+  color: #46b6ee;
+}
+/*鼠标点击样式*/
+.cp {
+  cursor: pointer;
+}
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+code {
+  background: #eef1f6;
+  padding: 15px 16px;
+  margin-bottom: 20px;
+  display: block;
+  line-height: 36px;
+  font-size: 15px;
+  font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  a {
+    color: #337ab7;
+    cursor: pointer;
+    &:hover {
+      color: rgb(32, 160, 255);
+    }
+  }
+}
+
+.warn-content {
+  background: rgba(66, 185, 131, 0.1);
+  border-radius: 2px;
+  padding: 16px;
+  padding: 1rem;
+  line-height: 1.6rem;
+  word-spacing: 0.05rem;
+  a {
+    color: #42b983;
+    font-weight: 600;
+  }
+}
+
+//main-container全局样式
+.app-container {
+  padding: 20px 20px 0;
+  position: relative; //高级搜索父级定位
+  overflow: hidden;
+}
+
+.components-container {
+  margin: 30px 50px;
+  position: relative;
+}
+
+.pagination-container {
+  margin-top: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.sub-navbar {
+  height: 50px;
+  line-height: 50px;
+  position: relative;
+  width: 100%;
+  text-align: right;
+  padding-right: 20px;
+  transition: 600ms ease position;
+  background: linear-gradient(
+    90deg,
+    rgba(32, 182, 249, 1) 0%,
+    rgba(32, 182, 249, 1) 0%,
+    rgba(33, 120, 241, 1) 100%,
+    rgba(33, 120, 241, 1) 100%
+  );
+  .subtitle {
+    font-size: 20px;
+    color: #fff;
+  }
+  &.draft {
+    background: #d0d0d0;
+  }
+  &.deleted {
+    background: #d0d0d0;
+  }
+}
+
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+  &:hover {
+    color: rgb(32, 160, 255);
+  }
+}
+
+.filter-container {
+  padding-bottom: 10px;
+  .filter-item {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+  }
+}
+
+//refine vue-multiselect plugin
+.multiselect {
+  line-height: 16px;
+}
+
+.multiselect--active {
+  z-index: 1000 !important;
+}
+
+/*按钮样式*/
+.el-button--mini {
+  border-radius: 5px;
+}
+.el-button--warning {
+  background: #f6b243;
+  border-color: #f6b243;
+  color: #fff;
+}
+.el-button--primary {
+  background: #46b6ee;
+  border-color: #46b6ee;
+  color: #fff;
+  border-radius: 5px;
+}
+.el-button--primary:focus,
+.el-button--primary:hover {
+  background: #56c0f5;
+  border-color: #56c0f5;
+}
+.el-button--primary.is-active,
+.el-button--primary:active {
+  background: #2ea8e6;
+  border-color: #2ea8e6;
+}
+/*滚动条*/
+// ::-webkit-scrollbar {
+//   background: transparent !important;
+//   border-radius: 4px;
+//   width: 8px;
+//   height: 8px;
+// }
+// ::-webkit-scrollbar-thumb {
+//   background: rgba(70, 182, 238, 0.5);
+//   border-radius: 4px;
+// }
+// ::-webkit-scrollbar-button {
+//   height: 0;
+//   width: 0;
+// }
+/*分页*/
+.el-select-dropdown__item.selected {
+  color: #46b6ee;
+}
+/*下拉*/
+.el-dropdown-menu__item:focus {
+  color: #46b6ee !important;
+  background: rgba(70, 182, 238, 0.1);
+}
+.el-dropdown-menu__item:not(.is-disabled):hover {
+  color: #46b6ee !important;
+  background: rgba(70, 182, 238, 0.1);
+}
+.el-dropdown-menu--medium .el-dropdown-menu__item {
+  line-height: 32px;
+  padding: 0 20px;
+  color: #666;
+}
+
+/* tabs*/
+.is-scrollable .el-tabs__nav-scroll {
+  padding-left: 0;
+}
+
+/* 清除自带样式*/
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h3 {
+  margin: 0;
+  font-weight: normal;
+  color: #666;
+  font-size: 16px;
+}
+
+p {
+  margin: 0;
+}
+/*form表单标题图标样式*/
+.form_txt {
+  width: 8px;
+  height: 11px;
+  background-color: #46b6ee;
+  border-radius: 3px;
+
+  display: inline-block;
+}
+
+/* 时间选择器样式*/
+.el-month-table td .cell:hover {
+  background: rgba(70, 182, 238, 0.1);
+  border-radius: 5px;
+}
+.el-month-table td.current:not(.disabled) .cell {
+  background: #409eff;
+  color: #fff;
+  border-radius: 5px;
+}
+.el-month-table td.disabled .cell {
+  border-radius: 5px;
+}
+
+.el-date-table td.start-date div {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.el-date-table td.end-date div {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+//添加单独三级菜单顶部菜单样式
+.page_title_text {
+  font-weight: 500;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(238, 238, 238, 1);
+  // margin: 20px 0;
+  margin-bottom: 20px;
+  color: #333;
+  // padding-left: 20px;
+}

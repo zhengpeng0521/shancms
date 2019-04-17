@@ -1,0 +1,231 @@
+.contractOrderDialog_container_shy {
+  .disabled .el-upload--picture-card {
+    display: none;
+  }
+  .el-dialog {
+    width: 700px;
+  }
+  .input_span_text {
+    color: rgba(0, 0, 0, 0.43);
+    font-size: 12px;
+  }
+  .quickSelect_text {
+    font-size: 12px;
+    display: inline-block;
+    span {
+      font-size: 12px;
+      margin-right: 5px;
+      padding: 5px 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+  .shop_box_top {
+    .el-form-item--mini.el-form-item,
+    .el-form-item--small.el-form-item {
+      margin-bottom: 0;
+    }
+  }
+  .shop_table_margin {
+    margin-left: 15px;
+  }
+  .shop_all_table {
+    margin-bottom: 10px;
+    border-top: 1px solid #f0f2f5;
+    border-bottom: 1px solid #f0f2f5;
+    padding: 10px 0;
+    box-sizing: border-box;
+    div {
+      height: 28px;
+      line-height: 28px;
+    }
+    .red_price_color {
+      color: #e64340;
+      font-size: 20px;
+      font-weight: 800;
+    }
+  }
+  .shop_table_head {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    border-top: 1px solid #f0f2f5;
+    background: rgba(240, 242, 245, 0.6);
+    li {
+      width: 90px;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    li:first-child {
+      width: 120px;
+      border-left: 1px solid #f0f2f5;
+    }
+    li:nth-child(3) {
+      width: 80px;
+    }
+    li:nth-child(5) {
+      width: 110px;
+    }
+    li:nth-child(6) {
+      width: 100px;
+    }
+    :last-child {
+      width: 60px;
+      border-right: 1px solid #f0f2f5;
+    }
+  }
+  .shop_table_row {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    border-left: 1px solid #f0f2f5;
+    // border-bottom: 1px solid #ddd;
+    li {
+      width: 90px;
+      text-align: center;
+      padding: 6px;
+      margin: 0;
+      height: 44px;
+      line-height: 33px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    li:first-child {
+      width: 120px;
+    }
+    li /deep/ {
+      .el-form-item__content {
+        margin-left: 0 !important;
+        position: relative;
+        .right_yuan {
+          position: absolute;
+          right: 0px;
+          top: 0;
+          background-color: #ddd;
+          width: 30px;
+        }
+      }
+    }
+    li:nth-child(3) {
+      width: 80px;
+    }
+    li:nth-child(5) {
+      width: 110px;
+    }
+    li:nth-child(6) {
+      width: 100px;
+    }
+    li:last-child {
+      width: 60px;
+      border-right: 1px solid #f0f2f5;
+      color: #46b6ee;
+    }
+  }
+  .shop_table_row:last-child {
+    border-bottom: 1px solid #f0f2f5;
+  }
+  .shop_table_row:nth-child(2n) {
+    background: rgba(240, 242, 245, 0.2);
+  }
+  .class_time_add {
+    // margin-left: 11%;
+    line-height: 30px;
+    color: #46b6ee;
+    cursor: pointer;
+    display: flex;
+    margin: 10px 15px;
+    .add_text {
+      line-height: 16px;
+      margin-left: 4px;
+    }
+  }
+  .shop_all_table {
+    border-bottom: 1px solid #f0f2f5;
+    li {
+      width: 120px;
+    }
+    li:nth-child(1) {
+      width: 240px;
+    }
+    li:nth-child(3) {
+      width: 170px;
+    }
+    li:last-child {
+      width: 120px;
+    }
+  }
+  .sell_table_head {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: 90%;
+    li {
+      width: 140px;
+      text-align: left;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .sell_table_row {
+    list-style: none;
+    display: flex;
+    padding: 0;
+    margin-left: 11%;
+    li {
+      width: 120px;
+      text-align: center;
+      margin: 0;
+      height: 44px;
+      line-height: 33px;
+      margin-right: 10px;
+    }
+    li /deep/ {
+      .el-form-item__content {
+        // margin-left: 0 !important;
+      }
+    }
+    .baifenbi {
+      position: relative;
+      span {
+        position: absolute;
+        top: 0;
+        right: 0;
+      }
+    }
+  }
+  .link_table_sell {
+    .el-form-item--mini.el-form-item,
+    .el-form-item--small.el-form-item {
+      margin-bottom: 0;
+    }
+    .line_row_first {
+      margin-bottom: 10px;
+      .el-form-item__label {
+        width: 40px !important;
+      }
+      .el-form-item__content {
+        margin-left: 40px !important;
+      }
+      .baifenbi {
+        position: relative;
+        margin-left: 20px;
+      }
+      .span_baifenbi_icon {
+        position: absolute;
+        right: 30px;
+        top: 0;
+      }
+    }
+  }
+}

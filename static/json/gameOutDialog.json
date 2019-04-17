@@ -1,0 +1,24 @@
+{
+  "errorCode": 9000,
+  "errorMessage": "成功",
+  "data": null,
+  "gameList": [{
+      "gameId": "201801118705581111",
+      "icon": "https://img.ishanshan.com/gimg/img/8744233306904ae6b09785ae62310ef1",
+      "gameTitle": "万圣节编辑器游戏",
+      "defsort": 11915
+    },
+    {
+      "gameId": "201801118705580023",
+      "icon": "https://img.ishanshan.com/gimg/img/5f417af4f3ae55b5e5d6b028fce1d892",
+      "gameTitle": "一起拼来约惠",
+      "defsort": 1199
+    },
+    {
+      "gameId": "201801118705580029",
+      "icon": "https://img.ishanshan.com/gimg/n/20181206/0587ffd4a84eefe25e785c8f5408764d",
+      "gameTitle": "编辑器限时抢购游戏",
+      "defsort": 1190
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin scrollBar {
+  &::-webkit-scrollbar-track-piece {
+    background: #d3dce6;
+  }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #99a9bf;
+    border-radius: 20px;
+  }
+}
+
+@mixin relative {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+@mixin pct($pct) {
+  width: #{$pct};
+  position: relative;
+  margin: 0 auto;
+}
+
+@mixin triangle($width, $height, $color, $direction) {
+  $width: $width/2;
+  $color-border-style: $height solid $color;
+  $transparent-border-style: $width solid transparent;
+  height: 0;
+  width: 0;
+  @if $direction==up {
+    border-bottom: $color-border-style;
+    border-left: $transparent-border-style;
+    border-right: $transparent-border-style;
+  } @else if $direction==right {
+    border-left: $color-border-style;
+    border-top: $transparent-border-style;
+    border-bottom: $transparent-border-style;
+  } @else if $direction==down {
+    border-top: $color-border-style;
+    border-left: $transparent-border-style;
+    border-right: $transparent-border-style;
+  } @else if $direction==left {
+    border-right: $color-border-style;
+    border-top: $transparent-border-style;
+    border-bottom: $transparent-border-style;
+  }
+}
+
+/*flex兼容性*/
+@mixin flex() {
+  display: -webkit-box; /* Chrome 4+, Safari 3.1, iOS Safari 3.2+ */
+  display: -moz-box; /* Firefox 17- */
+  display: -webkit-flex; /* Chrome 21+, Safari 6.1+, iOS Safari 7+, Opera 15/16 */
+  display: -moz-flex; /* Firefox 18+ */
+  display: -ms-flexbox; /* IE 10 */
+  display: flex; /* Chrome 29+, Firefox 22+, IE 11+, Opera 12.1/17/18, Android 4.4+ */
+}
+
+/*父元素-横向换行 */
+@mixin flexWrap() {
+  -webkit-flex-wrap: wrap;
+  -moz-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  -o-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+/*垂直*/
+@mixin boxCol() {
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+/*flex1*/
+@mixin flexWidth() {
+  -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: 1; /* OLD - Firefox 19- */
+  -webkit-flex: 1; /* Chrome */
+  -ms-flex: 1; /* IE 10 */
+  flex: 1; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+/*flex设置width*/
+@mixin flexChild($width) {
+  -webkit-box-flex: $width; /* OLD - iOS 6-, Safari 3.1-6 */
+  -moz-box-flex: $width; /* OLD - Firefox 19- */
+  -webkit-flex: $width; /* Chrome */
+  -ms-flex: $width; /* IE 10 */
+  flex: $width; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+/*主轴*/
+@mixin flexCenter($pack) {
+  -webkit-box-pack: $pack;
+  -moz-justify-content: $pack;
+  -webkit-justify-content: $pack;
+  justify-content: $pack;
+}
+/*交叉轴*/
+@mixin itemCenter($items) {
+  -webkit-box-align: $items;
+  -moz-align-items: $items;
+  -webkit-align-items: $items;
+  align-items: $items;
+}
+
+/*超出隐藏*/
+@mixin textOver() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*2d转换*/
+@mixin transform($data) {
+  -webkit-transform: $data;
+  -moz-transform: $data;
+  -ms-transform: $data;
+  -o-transform: $data;
+  transform: $data;
+}
+
+/*过渡动画*/
+@mixin transition($data) {
+  -webkit-transition: $data;
+  -moz-transition: $data;
+  -ms-transition: $data;
+  -o-transition: $data;
+  transition: $data;
+}

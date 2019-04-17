@@ -1,0 +1,16 @@
+{
+  "errorCode": 9000,
+  "errorMessage": "成功",
+  "data": null,
+  "list": [{
+    "key": "1",
+    "value": "校区"
+  }, {
+    "key": "2",
+    "value": "学校"
+  }, {
+    "key": "3",
+    "value": "商圈"
+  }],
+  "orgIdValueMap": null
+}

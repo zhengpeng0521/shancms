@@ -1,0 +1,536 @@
+{
+  "errorCode": 9000,
+  "errorMessage": "成功",
+  "data": {
+    "pageSize": 20,
+    "start": 0,
+    "resultCount": 35,
+    "pageIndex": 0,
+    "pageCount": 2,
+    "newCount": 0
+  },
+  "results": [{
+    "status": null,
+    "gameId": "201801118705581112",
+    "gameCode": "distribution",
+    "gameTitle": "分销游戏",
+    "gameIntro": "分销游戏",
+    "icon": "https://img.ishanshan.com/gimg/n/20181127/e0278887d88bf3e331776742ca267259",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057204340427292672/092571574/h5_0_halloweenBargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 290,
+    "isGameEdit": "false",
+    "labels": [],
+    "showImg": " ",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705581113",
+    "gameCode": "newVote",
+    "gameTitle": "新投票游戏 ",
+    "gameIntro": "新投票游戏 ",
+    "icon": "https://img.ishanshan.com/gimg/n/20181228/590e98333674750237737f4a5bd42309",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057204340427292672/092571574/h5_0_halloweenBargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 89,
+    "isGameEdit": "false",
+    "labels": [],
+    "showImg": " https://img.ishanshan.com/gimg/n/20181228/339b4cd3d02ee1def2d19b5b7dbf60ec",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2027-01-17 13:57:46",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705581114",
+    "gameCode": "distribution2",
+    "gameTitle": "恭贺新春（分销版）",
+    "gameIntro": "恭贺新春（分销版）",
+    "icon": "https://img.ishanshan.com/gimg/n/20190116/e8a4dcec601a9f23ef2c97826cee671a",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057204340427292672/092571574/h5_0_halloweenBargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 29,
+    "isGameEdit": "false",
+    "labels": [],
+    "showImg": " https://img.ishanshan.com/gimg/n/20190116/0898e2b7d3802ada98e1458810116f78",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2027-01-17 13:57:46",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801019149191234",
+    "gameCode": "ballonEd",
+    "gameTitle": "双十一吹气球",
+    "gameIntro": "双十一吹气球",
+    "icon": "https://img.ishanshan.com/gimg/img/8744233306904ae6b09785ae62310ef1",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057203983328444416/092571574/h5_0_ballonEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-10-19 12:00:00",
+    "allUsers": 61,
+    "isGameEdit": "true",
+    "labels": [],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181031/c90d23800fe06b28f11d745321369c9a?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705581111",
+    "gameCode": "halloweenBargainEd",
+    "gameTitle": "万圣节编辑器游戏",
+    "gameIntro": "万圣节编辑器游戏",
+    "icon": "https://img.ishanshan.com/gimg/img/8744233306904ae6b09785ae62310ef1",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057204340427292672/092571574/h5_0_halloweenBargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 33,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "砍价"
+    }, {
+      "label_name": "促销"
+    }, {
+      "label_name": "换肤"
+    }, {
+      "label_name": "支付"
+    }, {
+      "label_name": "万圣节"
+    }, {
+      "label_name": "抢糖果"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/aaed61fe5da1f404fad55b85121ae8af?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580446",
+    "gameCode": "IkidBabyRun",
+    "gameTitle": "安防定制游戏",
+    "gameIntro": "安防定制游戏",
+    "icon": "https://img.ishanshan.com/gimg/img/d36ebcb920d4fe5f92b510f053e9a737",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "https://wx.ishanshan.com/thinknode/game/IkidBabyRun/m/36053/3605300001/1057204642372444160/94419819/h5_0",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 0,
+    "isGameEdit": "",
+    "labels": [{
+      "label_name": "积分排名"
+    }, {
+      "label_name": "安防"
+    }, {
+      "label_name": "推广"
+    }, {
+      "label_name": "互动"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181031/0a2402bc21734d8c30b164546265e83f?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580444",
+    "gameCode": "babyRun",
+    "gameTitle": "小小国旗手",
+    "gameIntro": "招生名额急速狂收。游戏按照每人的积分分数进行排行。参与者为了获取更高的积分，会邀请好友，好友可以自己参与，可以帮对方玩游戏，帮助积分叠加在分享人身上。转发促销，有趣的游戏让用户参与感更强。",
+    "icon": "https://img.ishanshan.com/gimg/img/d36ebcb920d4fe5f92b510f053e9a737",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "https://wx.ishanshan.com/thinknode/game/babyRun/m/36053/3605300001/1057204890067066880/94477994/h5_0",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 0,
+    "isGameEdit": "",
+    "labels": [{
+      "label_name": "积分排名"
+    }, {
+      "label_name": "互动"
+    }, {
+      "label_name": "推广"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/16bca4993f0862fe064cf827d310dbfd?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201612271405583422",
+    "gameCode": "marineromance",
+    "gameTitle": "海洋奇缘",
+    "gameIntro": "上万学员都在玩的暑期大冒险。",
+    "icon": "https://img.ishanshan.com/gimg/img/ba1d8c8c9d6b5dcad34470c4feb0c0c3",
+    "provider": "https://wx.ishanshan.com/pickfood/game/marine/transpond",
+    "demoUrl": "http://www.ishanshan.com/pickfood/game/marine/scanWx/27/242/201612271405583422/marineromance/20170523125349387613",
+    "price": 899.0,
+    "unit": 4,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2017-05-23 00:22:40",
+    "allUsers": 34908,
+    "isGameEdit": null,
+    "labels": [{
+      "label_name": "积分排名"
+    }, {
+      "label_name": "海洋冒险"
+    }, {
+      "label_name": "互动"
+    }, {
+      "label_name": "推广"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/ea368d01cae290fbe1dd1ac384c4ebba?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580023",
+    "gameCode": "pintEd",
+    "gameTitle": "一起拼来约惠",
+    "gameIntro": "编辑器拼团",
+    "icon": "https://img.ishanshan.com/gimg/img/5f417af4f3ae55b5e5d6b028fce1d892",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057205242949238784/092571574/h5_0_pintEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 38,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "拼团"
+    }, {
+      "label_name": "支付"
+    }, {
+      "label_name": "换肤"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/b176b1270caf60cbd29928ea5a2fdd7e?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580015",
+    "gameCode": "buyLimitEd2",
+    "gameTitle": "双11限时抢购游戏",
+    "gameIntro": "双11限时抢购游戏",
+    "icon": "https://img.ishanshan.com/gimg/n/20181025/e008f84a4f73fe79846a22cefefcf6d9",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057205736144863232/092571574/h5_0_buyLimitEd2",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-06-25 15:35:26",
+    "allUsers": 46,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "秒杀"
+    }, {
+      "label_name": "抢购"
+    }, {
+      "label_name": "支付"
+    }, {
+      "label_name": "双十一"
+    }, {
+      "label_name": "促销"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/df2af51b617e32a8140ebb40b88254a0?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580029",
+    "gameCode": "buyLimitEd",
+    "gameTitle": "编辑器限时抢购游戏",
+    "gameIntro": "编辑器限时抢购游戏",
+    "icon": "https://img.ishanshan.com/gimg/n/20181206/0587ffd4a84eefe25e785c8f5408764d",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057206045588029440/092571574/h5_0_buyLimitEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-06-25 15:35:26",
+    "allUsers": 673,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "秒杀"
+    }, {
+      "label_name": "促销"
+    }, {
+      "label_name": "支付"
+    }, {
+      "label_name": "抢购"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181206/69deed3fb9ad9a20e4ce340ee41d876a?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580028",
+    "gameCode": "collectCardEd",
+    "gameTitle": "编辑器集卡",
+    "gameIntro": "编辑器集卡游戏",
+    "icon": "https://img.ishanshan.com/gimg/n/20181206/b0c514c3085cd96a7f7e42be523f9b74",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057206248365850624/092571574/h5_0_collectCardEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-06-25 15:35:26",
+    "allUsers": 1159,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "集卡"
+    }, {
+      "label_name": "收集"
+    }, {
+      "label_name": "推广"
+    }, {
+      "label_name": "互动"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181206/fb3fbc3746a12dcaba7070df4e540d01?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580021",
+    "gameCode": "bargainEd",
+    "gameTitle": "编辑器砍价",
+    "gameIntro": "编辑器砍价",
+    "icon": "https://img.ishanshan.com/gimg/img/8744233306904ae6b09785ae62310ef1",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057206452154499072/092571574/h5_0_bargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 497,
+    "isGameEdit": "true",
+    "labels": [{
+      "label_name": "砍价"
+    }, {
+      "label_name": "促销"
+    }, {
+      "label_name": "换肤"
+    }, {
+      "label_name": "支付"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/6227b20262f5d42a33857bdb1ca9b65e?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580026",
+    "gameCode": "fqtBargainEd",
+    "gameTitle": "番茄田换肤编辑器砍价",
+    "gameIntro": "番茄田换肤编辑器砍价",
+    "icon": "https://img.ishanshan.com/gimg/img/8744233306904ae6b09785ae62310ef1",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057206630643105792/092571574/h5_0_fqtBargainEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 10,
+    "isGameEdit": "true",
+    "labels": [],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181031/c4803657c2f1623f280802b75bffa15b?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580024",
+    "gameCode": "groupEd",
+    "gameTitle": "编辑器番茄田定制拼团",
+    "gameIntro": "编辑器番茄田定制拼团",
+    "icon": "https://img.ishanshan.com/gimg/img/70dd028dccb9a1a87e15ab6a5dac5505",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057206759949303808/092571574/h5_0_groupEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 10543,
+    "isGameEdit": "true",
+    "labels": [],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181031/ee66c32257193b800a095ad75c085657?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580025",
+    "gameCode": "publicGroupEd",
+    "gameTitle": "public编辑器番茄田定制拼团",
+    "gameIntro": "public",
+    "icon": "https://img.ishanshan.com/gimg/img/70dd028dccb9a1a87e15ab6a5dac5505",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "http://wx.ishanshan.com/thinknode/game/template/m/36053/3605300001/1057458835522473984/092571574/h5_0_publicGroupEd",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 1729,
+    "isGameEdit": "true",
+    "labels": [],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/09c6312b6ddf73a1bc86bd1f60869660?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580027",
+    "gameCode": "kirschtomate",
+    "gameTitle": "番茄去哪儿",
+    "gameIntro": "番茄换肤游戏",
+    "icon": "https://img.ishanshan.com/gimg/img/ffea378ceb630f7ec363e87a1f32c9cc",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "https://wx.ishanshan.com/thinknode/game/kirschtomate/m/36053/3605300001/1057459020333375488/55091565/h5_0",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-06-22 19:59:17",
+    "allUsers": 2,
+    "isGameEdit": null,
+    "labels": [],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181031/dfb13aaa9ec1569ece2f147331ffdc89?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201801118705580022",
+    "gameCode": "crazyCar",
+    "gameTitle": "疯狂跑车",
+    "gameIntro": "疯狂跑车",
+    "icon": "https://img.ishanshan.com/gimg/img/ffea378ceb630f7ec363e87a1f32c9cc",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "https://wx.ishanshan.com/thinknode/game/crazyCar/m/36053/3605300001/1057459241670991872/55144539/h5_0",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-01-05 15:35:26",
+    "allUsers": 64,
+    "isGameEdit": "",
+    "labels": [{
+      "label_name": "积分排名"
+    }, {
+      "label_name": "飞车竞赛"
+    }, {
+      "label_name": "互动"
+    }, {
+      "label_name": "推广"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/4a5d3404642c3ff92ef80b1fb11fc0ce?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }, {
+    "status": null,
+    "gameId": "201701191705580022",
+    "gameCode": "raffle2",
+    "gameTitle": "扭蛋抽奖",
+    "gameIntro": "扭蛋抽奖",
+    "icon": "https://img.ishanshan.com/gimg/img/e345797943fc3fd3881c9f41ec40dd7f",
+    "provider": "https://wx.ishanshan.com/thinknode/game/transpond",
+    "demoUrl": "https://wx.ishanshan.com/thinknode/game/raffle2/m/36053/3605300001/1057201475333185536/93692167/0",
+    "price": 100.0,
+    "unit": 1,
+    "period": 1,
+    "pmType": 1,
+    "createTime": "2018-04-08 15:35:26",
+    "allUsers": 176,
+    "isGameEdit": "",
+    "labels": [{
+      "label_name": "抽奖"
+    }, {
+      "label_name": "推广"
+    }],
+    "showImg": "https://img.ishanshan.com/gimg/n/20181025/b173a223f32f232d3e3279288ff585ae?p=image/format,jpg/quality,q_80",
+    "tenantId": 36053,
+    "orgId": 3605300001,
+    "expireTime": "2099-01-01 00:00:00",
+    "btnType": "ON",
+    "privilege": null
+  }]
+}

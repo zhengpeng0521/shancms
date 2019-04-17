@@ -1,0 +1,31 @@
+{
+  "errorCode": 9000,
+  "errorMessage": "成功",
+  "data": null,
+  "results": [{
+    "userId": 3605300001,
+    "userName": "管理员",
+    "mobile": ""
+  }, {
+    "userId": 3605300002,
+    "userName": "姬龙",
+    "mobile": "17376504323"
+  }, {
+    "userId": 3605300018,
+    "userName": "吴星星",
+    "mobile": "15596581993"
+  }, {
+    "userId": 3605300019,
+    "userName": "吴志淼",
+    "mobile": "15598561994"
+  }, {
+    "userId": 3605300021,
+    "userName": "张甜甜",
+    "mobile": "15596581994"
+  }, {
+    "userId": 3605300022,
+    "userName": "糖心",
+    "mobile": "15598765432"
+  }],
+  "userId": null
+}
