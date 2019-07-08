@@ -14,6 +14,7 @@
                 v-model="mtids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"
@@ -28,6 +29,7 @@
                 v-model="atids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"
@@ -134,6 +136,7 @@
                   <el-rate
                     v-model="item.scoreNum"
                     :disabled="((item.sign_type!='1') && (parseInt(item.score)>=0)) ? true: false"
+                    :class="((item.sign_type!='1') && (parseInt(item.score)>=0)) ? 'disabled_rate' : ''"
                     @change="stuScoreChange"
                   />
                 </el-form-item>
@@ -203,6 +206,7 @@
                   <el-rate
                     v-model="item.scoreNum"
                     :disabled="((item.sign_type!='1') && (parseInt(item.score)>=0)) ? true: false"
+                    :class="((item.sign_type!='1') && (parseInt(item.score)>=0)) ? 'disabled_rate' : ''"
                     @change="tryScoreChange"
                   />
                 </el-form-item>
@@ -264,7 +268,8 @@
               </div>
               <i
                 slot="reference"
-                class="el-icon-question"
+                class="iconfont icon_ym_ts"
+                style="color:#666"
               />
             </el-popover>
           </el-form-item>
@@ -315,6 +320,7 @@ export default {
       scoreVisible: false
     }
   },
+
   methods: {
     /* 上课状态改变 */
     courseTypeChange(val) {
@@ -722,6 +728,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.disabled_rate /deep/ {
+  .el-rate__icon {
+    cursor: not-allowed;
+  }
+}
+
 .teacher_area {
   display: flex;
   flex-wrap: nowrap;

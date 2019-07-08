@@ -8,7 +8,7 @@
     >
       <div
         ref="erweimaDialog"
-        :style="{'width':list.length === 2 ?'368px':list.length === 1 ? '200px':'550px'}"
+        :style="{'width':list.length === 2 ?'368px':list.length === 1 ? '':'550px'}"
         class="erweimaContainer"
       >
         <div
@@ -24,14 +24,14 @@
           />
           <el-button
             v-if="hasBtn('204000005')"
+            :class="list.length > 1 ? 'uploadBtn' : 'no_uploadBtn'"
             plain
-            class="uploadBtn"
             @click="upload(item,index)"
           >下载二维码</el-button>
         </div>
       </div>
       <span
-        v-show="list.length>1"
+        v-if="list.length>1"
         slot="footer"
         class="dialog-footer"
       >
@@ -101,7 +101,6 @@ export default {
       // }
     },
     upload(val, index) {
-      // console.log(val, index)
       var oQrcode = document.getElementsByClassName('erweima')[index]
       var imgSrc = oQrcode.toDataURL('image/png')
       var a = document.createElement('a')
@@ -114,7 +113,6 @@ export default {
       a.dispatchEvent(event)
     },
     packUpload(val) {
-      // console.log(this.id, '-----id')
       const path = '/ss-mic-provider/mic/market/img/zip'
       const params = { activityId: this.id }
       exportFile(path, params)
@@ -124,9 +122,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .erweimaContainer {
-  // max-width: 600px;
-  max-height: 450px;
-  overflow: auto;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -134,8 +129,12 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 180px;
     .uploadBtn {
       margin-top: 10px !important;
+    }
+    .no_uploadBtn {
+      margin-bottom: 20px !important;
     }
     .uploadBtn:hover {
       color: #46b6ee !important;

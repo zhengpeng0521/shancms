@@ -108,6 +108,7 @@
             v-model="formData.rollbackTimeType"
             class="cancel_times select_times"
             placeholder="请选择"
+            filterable
           >
             <el-option
               v-for="item in options"
@@ -249,9 +250,9 @@ export default {
 <style lang="scss">
 .book_course {
   .save_btn {
-    position: absolute;
-    right: 30px;
-    top: 0;
+    position: fixed;
+    bottom: 20px;
+    left: 190px;
   }
 
   .decs_input {

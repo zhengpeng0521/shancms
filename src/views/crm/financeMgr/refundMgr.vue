@@ -4,15 +4,17 @@
     <div class="search">
       <div>
         <CommonSearch
+          ref="commonSearch"
           :is-inline="true"
           :params="formInline"
           :forms="formInline"
           @toParent="resetFieldHanle"
         />
-        <advanced-search v-bind="superSearch" />
+        <advanced-search ref="superSearch" v-bind="superSearch" />
       </div>
       <div>
         <el-button
+          v-log="{compName:'财务管理',eventName:'web-【学员CRM】-财务管理-退款管理-新建退款单'}"
           type="primary"
           size="mini"
           @click="addRefundDialog"
@@ -30,7 +32,10 @@
       table-key="crm_finance_refunded"
     />
     <!-- 新建退款单弹框 -->
-    <AddRefundDialog ref="addRefundDialog" @refeshRefun="getRefeshList"/>
+    <AddRefundDialog
+      ref="addRefundDialog"
+      @refeshRefun="getRefeshList"
+    />
     <!-- 打印退课时弹框 -->
     <RefundPrintDialog ref="refundPrintDialog" />
     <!-- 审核退款弹框 -->
@@ -84,7 +89,7 @@ export default {
           label: '退款类型',
           prop: 'refundType',
           isShowTooltip: true,
-          width: '160px;',
+          width: '140px;',
           formatter: (row, column, cellValue) => {
             if (row.refundType == '3') {//eslint-disable-line
               return `<div style="text-overflow:ellipsis;overflow:hidden">
@@ -129,6 +134,18 @@ export default {
           }
         },
         {
+          label: '退款金额',
+          prop: 'money',
+          width: '90px',
+          isShowTooltip: true
+        },
+        {
+          label: '退款手续费',
+          prop: 'fee',
+          width: '100px',
+          isShowTooltip: true
+        },
+        {
           label: '退款日期',
           prop: 'createTime',
           isShowTooltip: true
@@ -140,7 +157,7 @@ export default {
         },
         {
           label: '退款备注',
-          prop: 'reason',
+          prop: 'remark',
           isShowTooltip: true
         }
         // {
@@ -150,10 +167,11 @@ export default {
         // }
       ],
       options: {
+        noMount: true,
         apiService: refundOrderList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 227px)',
       operates: {
         width: '140',
         fixed: 'right',
@@ -162,7 +180,13 @@ export default {
             label: '打印',
             type: 'normal',
             method: (row) => {
-              this.refundPrintDialog(row)
+              if (row.status === '1') {
+                this.$message.error('待退款状态，需要先进行审核')
+              } else if (row.status === '2') {
+                this.refundPrintDialog(row)
+              } else if (row.status === '3') {
+                this.$message.error('退款已驳回')
+              }
             }
           },
           {
@@ -170,7 +194,13 @@ export default {
             type: 'normal',
             btnId: '407000005',
             method: (row) => {
-              this.checkRefundDialog(row)
+              if (row.status === '1') { // 待审核状态
+                this.checkRefundDialog(row)
+              } else if (row.status === '2') {
+                this.$message.error('已审核通过，请直接打印')
+              } else if (row.status === '3') {
+                this.$message.error('退款已驳回')
+              }
             }
           }
         ]
@@ -230,12 +260,40 @@ export default {
             type: 'input',
             key: 'orderNum',
             label: '合同号'
+          }, {
+            type: 'select',
+            key: 'status',
+            label: '状态',
+            options: [
+              {
+                label: '已退款',
+                value: '2'
+              }, {
+                label: '待退款',
+                value: '1'
+              }, {
+                label: '已驳回',
+                value: '3'
+              }
+            ]
           }
         ]
       },
       superValue: {},
       formValue: {}
     }
+  },
+  mounted() {
+    const route = this.$router.history.current.params
+    let params = {}
+    if (route.activeTab === 'refundMgr') {
+      if (route.action === 'waitCheck') {
+        params = { status: '1' }
+        this.$refs.superSearch.ruleForm.status = '1'
+      }
+    }
+    this.onSearch(params)
+    // this.$refs.tableCommon.getList(params)
   },
   methods: {
     /* 子组件调用父组件 刷新列表 */
@@ -251,7 +309,7 @@ export default {
     },
     /* 退课时打印弹框 */
     refundPrintDialog(row) {
-      this.$refs.refundPrintDialog.showDialog()
+      this.$refs.refundPrintDialog.showDialog(row)
     },
     /* 审核退款弹框 */
     checkRefundDialog(row) {

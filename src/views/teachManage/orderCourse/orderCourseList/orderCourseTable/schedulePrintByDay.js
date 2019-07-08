@@ -8,7 +8,7 @@ export default {
   data() {
     return {
       type: '1', // 教室/老师
-      list: '', // 下拉为教室/老师
+      list: [], // 下拉为教室/老师
       placeholder: '请选择老师',
       teachList: [], // 老师列表
       roomList: [], // 教室列表
@@ -24,16 +24,25 @@ export default {
       realRemainderArr: []
     }
   },
+
+  computed: {
+    selectList() {
+      const selects = this.type === '2' ? this.roomList : this.teachList
+      return selects
+    }
+  },
+
   watch: {
     type(val) {
       // eslint-disable-next-line
-      if (val == '1') {
+      if (val == "1") {
         this.placeholder = '请选择老师'
         // eslint-disable-next-line
-      } else if (val == '2') {
+      } else if (val == "2") {
         this.placeholder = '请选择教室'
       }
-      this.list = ''
+      this.list = []
+      this.printList = []
     }
   },
   mounted() {
@@ -101,11 +110,12 @@ export default {
         }
       })
     },
+
     /* 选择老师或教室 */
     selectChange(arr) {
       const info = []
       // eslint-disable-next-line
-      if (this.type == '1') {
+      if (this.type == "1") {
         for (const i in arr) {
           const index = arr[i].indexOf('-')
           const obj = {
@@ -131,7 +141,7 @@ export default {
         }
         this.printList = info
         // eslint-disable-next-line
-      } else if (this.type == '2') {
+      } else if (this.type == "2") {
         for (const i in arr) {
           const index = arr[i].indexOf('-')
           const obj = {

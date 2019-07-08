@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     handelSubmit() {
-      console.log(this.$parent.actObj, 'actObj')
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',

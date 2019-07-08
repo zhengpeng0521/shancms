@@ -30,6 +30,7 @@
               v-model="ruleForm.groupId"
               placeholder="请选择活动区域"
               size="mini"
+              filterable
             >
               <el-option
                 label="区域一"
@@ -175,7 +176,6 @@ export default {
           alert('submit!')
           this.newdialogVisible = false
         } else {
-          console.log('error submit!!')
           return false
         }
       })

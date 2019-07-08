@@ -7,7 +7,7 @@
       width="1025px"
       @close="cancel"
     >
-      <div>
+      <div style="min-width: 1000px">
         <div class="batch_order_tips">
           <p>第一步 : 请选择【开始】与【结束】时间</p>
           <p>第二步 : 列表数据中选择具体课程</p>
@@ -96,7 +96,7 @@
                 <span style="margin-left:4px">通用：{{ (cardInfo.periodTime) || 0.00 }}</span>
                 <span style="margin-left:8px">专用：{{ (cardInfo.periodCourseTime) || 0.00 }}</span>
               </p>
-              <p>使用课时：<span>{{ (cardInfo.periodExpend) || 0.00 }}</span></p>
+              <p>使用课时：<span>{{ courseCost || 0.00 }}</span></p>
               <p>预计剩余：
                 <span style="margin-left:4px">通用：{{ common || 0.00 }}</span>
                 <span style="margin-left:8px">专用：{{ special || 0.00 }}</span>
@@ -117,6 +117,7 @@
                     v-model="ruleForm.grade"
                     placeholder="请选择班级名称"
                     style="width:160px"
+                    filterable
                     @change="gradeChange"
                   >
                     <el-option
@@ -177,6 +178,7 @@
           @click="cancel"
         >取消</el-button>
         <el-button
+          :loading="submitLoading"
           type="primary"
           @click="submit"
         >确定</el-button>
@@ -331,6 +333,7 @@ export default {
         // apiService: getStuChooseList
       },
       options: {
+        noMount: true,
         mutiSelect: true
       },
       newStuList: [], // 学员列表
@@ -340,7 +343,13 @@ export default {
       special: 0, // 专用
       common: 0, // 通用
       gradeStuList: [], // 班级学员列表
-      checkList: [] // 勾选的项
+      checkList: [], // 勾选的项
+      submitLoading: false // 保存loading
+    }
+  },
+  computed: {
+    courseCost() {
+      return this.detailList.cost * this.checkList.length
     }
   },
   watch: {
@@ -369,6 +378,9 @@ export default {
           pageSize: 99999,
           pageIndex: 0
         }
+        this.$nextTick(() => {
+          this.$refs.tableCommon.getList(this.options.params)
+        })
         this.getGradeList()
         this.getStuList()
       }
@@ -413,9 +425,13 @@ export default {
     /* 表格勾选 */
     selectionChange(val) {
       this.checkList = val
+      this.costCompute()
     },
     /* 获取选中的会员 */
     getCheckData(val) {
+      if (!val) {
+        return
+      }
       this.memberName = val
       const params = {
         stuId: val,
@@ -425,23 +441,7 @@ export default {
         const data = res.data
         if (data.errorCode === 0) {
           this.cardInfo = data.data
-          const table = this.$refs.tableCommon.tableData
-          const cutType = table && table[0].cutType
-          this.common = this.cardInfo && this.cardInfo.periodTime && this.cardInfo.periodTime || 0
-          this.special = this.cardInfo && this.cardInfo.periodCourseTime && this.cardInfo.periodCourseTime || 0
-          if (cutType == '1') { //eslint-disable-line
-            this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.cardInfo.periodExpend) || 0
-          } else {
-            if (this.special > 0) {
-              this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.cardInfo.periodExpend) || 0
-              if (this.special < 0) {
-                this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime + this.special) || 0
-                this.special = 0
-              }
-            } else if (this.special <= 0) {
-              this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime - this.cardInfo.periodExpend) || 0
-            }
-          }
+          this.costCompute()
         } else {
           this.$message.error(data.errorMessage || '课时信息失败')
         }
@@ -478,6 +478,9 @@ export default {
     },
     /* 学员查询 */
     stuIdChange(val) {
+      if (!val) {
+        return
+      }
       const params = {
         stuId: val,
         courseId: this.detailList.courseId
@@ -486,23 +489,7 @@ export default {
         const data = res.data
         if (data.errorCode === 0) {
           this.cardInfo = data.data
-          const table = this.$refs.tableCommon.tableData
-          const cutType = table && table[0].cutType
-          this.common = this.cardInfo && this.cardInfo.periodTime && this.cardInfo.periodTime || 0
-          this.special = this.cardInfo && this.cardInfo.periodCourseTime && this.cardInfo.periodCourseTime || 0
-          if (cutType == '1') { //eslint-disable-line
-            this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.cardInfo.periodExpend) || 0
-          } else {
-            if (this.special > 0) {
-              this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.cardInfo.periodExpend) || 0
-              if (this.special < 0) {
-                this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime + this.special) || 0
-                this.special = 0
-              }
-            } else if (this.special <= 0) {
-              this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime - this.cardInfo.periodExpend) || 0
-            }
-          }
+          this.costCompute()
         } else {
           this.$message.error(data.errorMessage || '课时信息失败')
         }
@@ -527,7 +514,7 @@ export default {
     /* 学员列表 */
     getStuList() {
       this.newStuList = []
-      stuSummaryQuery({ type: '2' }).then(res => {
+      stuSummaryQuery({ type: '2', pageSize: 99999 }).then(res => {
         const data = res.data
         if (data.errorCode === 0) {
           const stuList = data.results
@@ -551,7 +538,8 @@ export default {
     /* 班级列表 */
     getGradeList() {
       const params = {
-        courseId: this.detailList.courseId
+        courseId: this.detailList.courseId,
+        pageSize: 99999
       }
       classGradeSummary(params).then(res => {
         const data = res.data
@@ -565,17 +553,18 @@ export default {
     /* 学员批量约课 */
     getStuCreate() {
       let cpdIds = ''
+      const checkArr = []
       this.checkList.map(item => {
-        const checkArr = []
         checkArr.push(item.cpdId)
-        cpdIds = checkArr && checkArr.join(',')
       })
+      cpdIds = checkArr && checkArr.join(',')
       const params = {
         cpmId: this.detailList.cpmId,
         cpdIds: cpdIds,
         stuId: this.memberName,
         fix: this.fix
       }
+      this.submitLoading = true
       stuCreate(params).then(res => {
         const data = res.data
         if (data.errorCode === 0) {
@@ -590,7 +579,28 @@ export default {
         } else {
           this.$message.error(data.errorMessage || '批量约课失败')
         }
+        this.submitLoading = false
       })
+    },
+    /** 预计剩余课时计算 */
+    costCompute() {
+      const table = this.$refs.tableCommon.tableData
+      const cutType = table && table[0].cutType
+      this.common = this.cardInfo && this.cardInfo.periodTime && this.cardInfo.periodTime || 0
+      this.special = this.cardInfo && this.cardInfo.periodCourseTime && this.cardInfo.periodCourseTime || 0
+      if (cutType == '1') { //eslint-disable-line
+        this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.courseCost) || 0
+      } else {
+        if (this.special > 0) {
+          this.special = this.cardInfo && this.cardInfo.periodCourseTime && (this.cardInfo.periodCourseTime - this.courseCost) || 0
+          if (this.special < 0) {
+            this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime + this.special) || 0
+            this.special = 0
+          }
+        } else if (this.special <= 0) {
+          this.common = this.cardInfo && this.cardInfo.periodTime && (this.cardInfo.periodTime - this.courseCost) || 0
+        }
+      }
     },
     /* 继续约课 */
     getContinueOrder() {
@@ -606,13 +616,16 @@ export default {
               cpmId: this.detailList.cpmId,
               stuId: this.memberName
             }
+            this.submitLoading = true
             stuCheckBirthday(payload).then(res => {
               const data = res.data
               if (data.errorCode === 0) {
                 this.getStuCreate()
               } else if (data.errorCode > 0) {
+                this.submitLoading = false
                 this.$refs.orderCourseContinue.show(data.errorMessage)
               } else {
+                this.submitLoading = false
                 this.$message.error(data.errorMessage || '学员年龄校验失败')
               }
             })
@@ -627,17 +640,18 @@ export default {
           if (valid) {
             if (this.checkList && this.checkList.length > 0) {
               let cpdIds = ''
+              const checkArr = []
               this.checkList.map(item => {
-                const checkArr = []
                 checkArr.push(item.cpdId)
-                cpdIds = checkArr && checkArr.join(',')
               })
+              cpdIds = checkArr && checkArr.join(',')
               const params = {
                 cpmId: this.detailList.cpmId,
                 cpdIds: cpdIds,
                 fix: this.fix,
                 clsId: this.ruleForm.grade
               }
+              this.submitLoading = true
               gradeBatchCreate(params).then(res => {
                 const data = res.data
                 if (data.errorCode === 0) {
@@ -650,8 +664,22 @@ export default {
                     this.$message.success(data.errorMessage)
                   }
                 } else {
-                  this.$message.error(data.errorMessage || '班级批量约课失败')
+                  if (data.errorMap) {
+                    // 其他在errorMap中的错误处理
+                    const retMsg = {}
+                    for (const i in data.errorMap) {
+                      this.$refs.tableCommon.tableData.forEach(item => {
+                        if (item.cpdId === i) {
+                          retMsg[item.studyDate + ' ' + item.startTime + '-' + item.endTime + '(' + item.courseName + ')'] = [data.errorMap[i]]
+                        }
+                      })
+                    }
+                    this.$refs.orderError.show(retMsg, data.cutType, this.detailList)
+                  } else {
+                    this.$message.error(data.errorMessage && data.errorMessage !== '成功' ? data.errorMessage : '班级批量约课失败')
+                  }
                 }
+                this.submitLoading = false
               })
             } else {
               this.$message.error('未选中课程')

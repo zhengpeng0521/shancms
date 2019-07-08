@@ -23,6 +23,7 @@
           <el-select
             v-model="returnSchoolData.outStuId"
             clearable
+            filterable
             placeholder="请选择转出学员"
             style="width: 80%"
           >
@@ -45,6 +46,7 @@
           <el-select
             v-model="returnSchoolData.outPurNum"
             clearable
+            filterable
             placeholder="请选择转出合同"
             style="width: 100%"
             @change="returnContractChange"
@@ -99,12 +101,14 @@
           <el-select
             v-model="returnSchoolData.orgIdName"
             clearable
+            filterable
             placeholder="请选择转入校区"
             style="width: 100%"
             @change="importSchoolChange"
           >
             <el-option
               v-for="item in allImportSchool"
+              :disabled="item.orgId === $store.getters.orgId"
               :key="item.orgId"
               :label="item.orgName"
               :value="item.orgId"
@@ -130,6 +134,7 @@
                     v-model="scope.row.inCourseId"
                     size="small"
                     clearable
+                    filterable
                     placeholder="请选择课程"
                   >
                     <el-option
@@ -352,16 +357,17 @@ export default {
       let outNumAll = 0
       getTranSchCourseInfoByPurId(params).then(res => {
         if (res.data.errorCode === 0) {
+          const classList = []
           this.allRrturnClassDataList = res.data.results
           res.data.results.map((item, index) => {
-            const allRrturnClassDataListRow = {
+            classList.push({
               outCourseId: item.courseId,
               outCourseNum: item.periodLeft
-            }
-            outNumAll += parseInt(item.periodLeft)
-            this.returnSchoolData.outNum = outNumAll
-            this.arrayAllReturnClass.push(allRrturnClassDataListRow)
+            })
+            outNumAll += parseFloat(item.periodLeft)
           })
+          this.returnSchoolData.outNum = outNumAll
+          this.arrayAllReturnClass = classList
           this.returnClassAllPrice = res.data.moneyAvailable + ''
           this.returnSchoolData.fee = parseFloat(this.returnClassAllPrice - this.returnSchoolData.inMoney) + ''
         } else {
@@ -411,7 +417,7 @@ export default {
     importClassNumChange(value) {
       let numAll = 0
       this.addRowTable.forEach((item, index) => {
-        numAll += parseInt(item.inCourseNum)
+        numAll += parseFloat(item.inCourseNum)
       })
       this.returnSchoolData.inNum = numAll
     },
@@ -470,12 +476,10 @@ export default {
         inMoney: this.returnSchoolData.inMoney || '0', // 转入课时总金额
         fee: this.returnSchoolData.fee // 手续费
       }
-      console.info('params---->', params)
       this.$refs[formName].validate(valid => {
         if (valid) {
           createTransfer(params).then(res => {
             if (res.data.errorCode === 0) {
-              console.log('res.value00000000', res)
               this.returnSchoolDialogShow = false
               this.$message.success(res.data.errorMessage)
               this.$emit('toClose')

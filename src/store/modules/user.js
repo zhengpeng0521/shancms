@@ -22,6 +22,7 @@ const user = {
     roles: [],
     buttonAuth: [],
     orgName: '',
+    language: '',
     setting: {
       articlePlatform: []
     }
@@ -66,6 +67,9 @@ const user = {
     },
     SET_BUTTON_AUTH: (state, buttonAuth) => {
       state.buttonAuth = buttonAuth
+    },
+    SET_LANGUAGE: (state, language) => {
+      state.language = language
     }
   },
 
@@ -123,6 +127,8 @@ const user = {
                 commit('SET_ID', data.session.uid)
                 commit('SET_AVATAR', data.avatar)
                 commit('SET_INTRODUCTION', data.introduction)
+                const language = data.session.language || 'default'
+                commit('SET_LANGUAGE', language)
                 resolve(response)
               } else {
                 reject('您没有操作权限,不能登录')

@@ -3,7 +3,7 @@
     :visible.sync="dialogVisible"
     :append-to-body="true"
     custom-class="erweimaBox"
-    center
+    width="400px"
   >
     <!-- <ELTreeSelect
       ref="treeSelect"
@@ -17,7 +17,7 @@
       <qrcode
         v-if="message!==''"
         ref="qr"
-        :options="{ width: 300,height:300,padding:0,margin:0 }"
+        :options="{ width: 360,height:360,padding:0,margin:0 }"
         :value="message"
         class="erweima"
       />
@@ -25,7 +25,11 @@
     <p>请使用微信扫一扫</p>
     <div class="erweima-footer">
       <div class="ipt">
-        <el-input ref="url" v-model="message" :readonly="true"/>
+        <el-input
+          ref="url"
+          v-model="message"
+          :readonly="true"
+        />
       </div>
       <el-button
         v-clipboard:copy="message"
@@ -195,25 +199,24 @@ export default {
 </script>
 <style lang="scss" >
 .erweimaBox {
-  width: 335px;
-  // height: 470px;
-  .el-dialog__header {
-    border-bottom: 0;
+  .el-dialog__header .el-dialog__title {
+    height: 21px;
+    display: block;
   }
   .el-dialog__body {
-    padding: 10px 0 0 17px !important;
+    padding: 20px !important;
+    text-align: center;
     p {
-      margin-top: 14px;
-      margin-bottom: 20px;
-      font-size: 15px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
       text-align: center;
     }
     .erweima-footer {
       display: flex;
       justify-content: space-around;
-      margin-bottom: 20px;
       .ipt {
-        width: 220px;
+        width: 262px;
         border-radius: 4px;
         transition: all 0.3s;
         line-height: 28px;

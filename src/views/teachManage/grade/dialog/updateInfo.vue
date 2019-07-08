@@ -30,6 +30,7 @@
             <el-select
               v-model="ruleForm.mtids"
               multiple
+              filterable
               placeholder="请选择主教"
               style="width:150px"
             >
@@ -49,6 +50,7 @@
               v-model="ruleForm.roomId"
               placeholder="请选择教室"
               style="width:150px"
+              filterable
             >
               <el-option
                 v-for="item in roomList"
@@ -116,6 +118,7 @@
             <el-select
               v-model="ruleForm.atids"
               multiple
+              filterable
               placeholder="请选择助教"
               style="width:150px"
             >
@@ -284,7 +287,6 @@ export default {
     submit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.info(this.ruleForm)
           const mtids = this.ruleForm.mtids ? this.ruleForm.mtids.join(',') : ''
           const atids = this.ruleForm.atids ? this.ruleForm.atids.join(',') : ''
           for (const i in this.ruleForm.mtids) {

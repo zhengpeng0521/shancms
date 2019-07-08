@@ -11,6 +11,7 @@
         <el-select
           v-model="reason"
           placeholder="请选择"
+          filterable
         >
           <el-option
             v-for="item in options"

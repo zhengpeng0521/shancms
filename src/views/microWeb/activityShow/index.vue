@@ -37,10 +37,10 @@
       :visible.sync="dialogVisible"
       :append-to-body="true"
       custom-class="erweimaBox"
-      width="335px"
+      width="400px"
     >
       <qrcode
-        :options="{ width: 300,height:300,padding:0,margin:0 }"
+        :options="{ width: 360,height:360,padding:0,margin:0 }"
         :value="message"
         class="erweima"
       />
@@ -71,13 +71,13 @@
       ref="addActivityDialog"
       :edit-obj="editObj"
       :visible.sync="addActivityShow"
+      @closeCreateDialog="closeCreateDialog"
     />
   </div>
 </template>
 <script>
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import CommonTable from '@/components/CommonTable/CommonTable'
-// import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
 import addActivity from './components/addActivity'
 import { getActivityList, updateStatus, getActivityAddress, getActivityMsg } from '@/api/microWeb/activityShow'
 // 二维码装换插件
@@ -94,13 +94,8 @@ export default {
   components: {
     CommonSearch,
     CommonTable,
-    // AdvancedSearch,
     enroll,
     addActivity
-    // addRotation
-    // detail,
-    // creatMarketActivity,
-    // erweimaDialog
   },
   data() {
     return {
@@ -163,7 +158,6 @@ export default {
                 'white-space': 'normal', display: '-webkit-box', '-webkit-line-clamp': '2', width: '120px',
                 'line-height': '15px', 'font-size': '14px', '-webkit-box-orient': 'vertical'
               }, on: { click: () => {
-                // window.open(params.row.activityUrl)
                 this.addActivityDialogShow(params.row)
               } }
               }, [h('el-tooltip', {
@@ -181,10 +175,9 @@ export default {
           prop: 'address',
           isShowSet: true,
           formatter: (row) => {
-            return `<img src="https://img.ishanshan.com/gimg/n/20190326/bc5f6357fa2726cb764b85d533dadf46"/>`
+            return `<i class="iconfont icon_ym_ewm"/>`
           },
           methods: (row) => {
-            // console.log(row)
             this.showDialog(row)
           }
         },
@@ -285,9 +278,7 @@ export default {
               const loading = this.$loading({
                 lock: true,
                 text: '拼命加载中',
-                // spinner: 'el-icon-loading',
                 fullscreen: false,
-                // background: 'rgba(0, 0, 0, 0.7)',
                 target: document.querySelector('.activityShow-container')
               })
               const params = {
@@ -333,9 +324,7 @@ export default {
               const loading = this.$loading({
                 lock: true,
                 text: '拼命加载中',
-                // spinner: 'el-icon-loading',
                 fullscreen: false,
-                // background: 'rgba(0, 0, 0, 0.7)',
                 target: document.querySelector('.activityShow-container')
               })
               updateStatus(params).then(res => {
@@ -363,6 +352,9 @@ export default {
     }
   },
   methods: {
+    closeCreateDialog() {
+      this.editObj = {}
+    },
     /* 搜索 */
     searchHandle(formValue) {
       this.formValue = formValue
@@ -383,17 +375,13 @@ export default {
     },
     //  二维码弹框方法
     showDialog(row) {
-      // console.info("row value--->", row)
-      console.log(row.id)
       const params = {
         actId: row.id
       }
       const loading = this.$loading({
         lock: true,
-        text: '拼命加载中。。。',
-        spinner: 'el-icon-loading',
+        text: '拼命加载中',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.activityShow-container')
       })
       getActivityAddress(params).then((res) => {
@@ -419,7 +407,6 @@ export default {
         message: '复制成功',
         type: 'success'
       })
-      // console.log(this.$refs.url)
       this.$refs.url.style.background = 'rgba(51,141,233,1)'
       this.$refs.url.style.color = '#fff'
     },
@@ -440,9 +427,7 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.activityShow-container')
       })
       getActivityMsg({ id: val.id }).then(res => {
@@ -454,29 +439,40 @@ export default {
           const arr = []
           const arr1 = []
           const arr2 = []
-          res.data.actBanner.split(',').map((val) => {
-            arr1.push({ url: val })
-          })
-          res.data.shareCover.split(',').map((val) => {
-            arr2.push({ url: val })
-          })
-          res.data.activityCover.split(',').map((val) => {
-            arr.push({ url: val })
-          })
+          if (res.data.actBanner && res.data.actBanner.length > 0) {
+            res.data.actBanner.split(',').map((val) => {
+              arr1.push({ url: val })
+            })
+          }
+          if (res.data.shareCover && res.data.shareCover.length > 0) {
+            res.data.shareCover.split(',').map((val) => {
+              arr2.push({ url: val })
+            })
+          }
+          if (res.data.activityCover && res.data.activityCover.length > 0) {
+            res.data.activityCover.split(',').map((val) => {
+              arr.push({ url: val })
+            })
+          }
           this.$refs.addActivityDialog.lessonForm = params
           this.$refs.addActivityDialog.lessonForm.name = params.name
           this.$refs.addActivityDialog.iptCont = params.actHtml
           this.$refs.addActivityDialog.lessonForm.participate = String(params.participate)
           this.$refs.addActivityDialog.lessonForm.waiting = String(params.waiting)
-          this.$refs.addActivityDialog.lessonForm.sort = String(params.sort)
+          this.$refs.addActivityDialog.lessonForm.sort = params.sort
+          const actBanner = []
+          if (params.actBanner) {
+            params.actBanner.split(',').map((item, index) => {
+              actBanner.push({ url: item, uid: index })
+            })
+          }
+          this.$refs.addActivityDialog.lessonForm.actBanner = actBanner
+          this.$refs.addActivityDialog.lessonForm.activityCover = arr
+          this.$refs.addActivityDialog.lessonForm.shareCover = arr2
           this.$refs.addActivityDialog.Banner = arr1
           this.$refs.addActivityDialog.shareCoverArr = arr2
           this.$refs.addActivityDialog.activityCoverArr = arr
           this.$refs.addActivityDialog.lessonForm = params
-          // console.log(this.$refs.addActivityDialog.iptCont, '-----', this.$refs.addActivityDialog.shareCoverArr)
-          // this.$refs.addActivityDialog.LessonForm.name = params.name
-          // this.$refs.addActivityDialog.LessonForm.activityCover = params.activityCover
-          // this.$refs.addActivityDialog.LessonForm.name = params.name
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -492,13 +488,11 @@ export default {
 .activityShow-container {
   width: calc(100%);
   padding: 0 20px;
-  // border: 1px solid #f00;
   .activityShow-top {
     width: 100%;
     padding: 20px 0;
-    border-bottom: 1px solid rgb(204, 204, 204);
-    font-size: 16px;
-    // background: pink;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
   }
   .search {
     display: flex;
@@ -508,23 +502,24 @@ export default {
   }
 }
 .erweimaBox {
-  width: 335px;
-  // height: 435px;
-
+  // .el-dialog__header .el-dialog__title {
+  //   height: 21px;
+  //   display: block;
+  // }
   .el-dialog__body {
-    padding: 10px 0 0 17px !important;
+    padding: 20px !important;
+    text-align: center;
     p {
-      margin-top: 14px;
-      margin-bottom: 20px;
-      font-size: 15px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 16px;
       text-align: center;
     }
     .erweima-footer {
       display: flex;
       justify-content: space-around;
-      margin-bottom: 20px;
       .ipt {
-        width: 220px;
+        width: 262px;
         border-radius: 4px;
         transition: all 0.3s;
         line-height: 28px;
@@ -542,24 +537,21 @@ export default {
 }
 </style>
 <style lang="scss">
-.erweimaBox .el-dialog__header {
-  border: 0;
+.erweimaBox {
+  .el-dialog__header .el-dialog__title {
+    height: 21px;
+    display: block;
+  }
 }
 .activityShow-container {
   .borderTable {
     .el-table--fit {
       border-left: none;
     }
-    .el-table__body tbody tr td:first-child {
-      border-left: 1px solid #ebeef5;
-    }
   }
   .el-table__row {
     height: 70px;
   }
-  // .el-table .cell {
-  //   height: 70px !important;
-  // }
 }
 </style>
 

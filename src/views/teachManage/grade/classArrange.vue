@@ -39,6 +39,7 @@
                 style="width:300px"
                 placeholder="请选择班级"
                 clearable
+                filterable
                 @change="gradeChange"
               >
                 <el-option
@@ -77,6 +78,7 @@
                 v-model="ruleForm.defaultOrgId"
                 placeholder="请选择所属校区"
                 disabled
+                filterable
                 style="width:300px"
               >
                 <el-option
@@ -94,6 +96,7 @@
                   v-model="ruleForm.courseId"
                   placeholder="请选择课程名称"
                   disabled
+                  filterable
                   style="width:300px"
                 >
                   <el-option
@@ -129,6 +132,7 @@
                 v-model="ruleForm.mainTeacherIds"
                 :class="mtidsStatus ? 'errorStyle' : ''"
                 multiple
+                filterable
                 placeholder="请选择主教"
                 style="width:300px"
                 @change="mtidsStatusChange"
@@ -149,6 +153,7 @@
                 v-model="ruleForm.assistanTeacherIds"
                 :class="atidStatus ? 'errorStyle' : ''"
                 multiple
+                filterable
                 placeholder="请选择助教"
                 style="width:300px"
                 @change="atidStatusChange"
@@ -172,6 +177,7 @@
                 placeholder="请选择教室"
                 style="width:300px"
                 clearable
+                filterable
                 @change="clsRoomStatusChange"
               >
                 <el-option
@@ -364,6 +370,7 @@
                       <el-select
                         v-model="child.week"
                         placeholder="请选择星期"
+                        filterable
                         @change="weekChange(index,child.week)"
                       >
                         <el-option
@@ -514,6 +521,7 @@
                   placeholder="请选择上课主题"
                   style="width:300px"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="(item, index) of schoolThemeList"
@@ -969,7 +977,8 @@ export default {
     /* 班级列表 */
     getGradeList() {
       const params = {
-        type: '1'
+        type: '1',
+        pageSize: 99999
       }
       queryClassGradeList(params).then(res => {
         const data = res.data
@@ -1156,7 +1165,7 @@ export default {
                 const data = res.data
                 if (data.errorCode === 0) {
                   let stuArr = []
-                  if (data.stuNames != '') { //eslint-disable-line
+                  if (data.stuNames && data.stuNames.length > 0) { //eslint-disable-line
                     stuArr = data.stuNames.split(',')
                   }
                   if (stuArr && stuArr.length > 0) {
@@ -1222,7 +1231,9 @@ export default {
                   const data = res.data
                   if (data.errorCode === 0) {
                     let stuArr = []
-                    stuArr = data.stuNames.split(',')
+                    if (data.stuNames && data.stuNames.length > 0) {
+                      stuArr = data.stuNames.split(',')
+                    }
                     if (stuArr && stuArr.length > 0) {
                       this.$refs.gradeStuPeriod.show(data.stuNames, mainTeacherIds, assistanTeacherIds, start, end, list, this.ruleForm.singleDate)
                     } else {

@@ -4,7 +4,7 @@
 
       <div class="attend_left">
 
-        <div style="margin-bottom:20px"><span class="form_txt" />
+        <div style="margin-bottom:20px;color:#333;"><span class="form_txt" />
           小票预览（示例）</div>
 
         <div class="attend_box">
@@ -46,7 +46,7 @@
         </div>
       </div>
       <div class="attend_right">
-        <div style="margin-bottom:20px"><span class="form_txt" />
+        <div style="margin-bottom:20px;color:#333;"><span class="form_txt" />
           请勾选需要打印的信息</div>
 
         <el-checkbox-group v-model="checkedItem">
@@ -63,7 +63,7 @@
           type="textarea"
         />
 
-        <div class="btn_group">
+        <!-- <div class="btn_group">
           <Confirm
             :is-button="true"
             :confirm="resetAttend"
@@ -77,7 +77,7 @@
           >
             保存
           </el-button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -276,6 +276,7 @@ export default {
         } else {
           this.$message.error(res.data.errorMessage)
         }
+        this.$parent.loading = false
       })
     }
   }
@@ -284,8 +285,8 @@ export default {
 <style lang="scss" >
 .attend {
   padding-bottom: 20px;
-  max-height: calc(100vh - 148px);
-  overflow: auto;
+  // max-height: calc(100vh - 148px);
+  // overflow: auto;
 
   .btn_group {
     display: flex;

@@ -16,6 +16,7 @@
           <el-select
             v-model="formInline.region"
             placeholder="活动区域"
+            filterable
           >
             <el-option
               label="区域一"
@@ -65,7 +66,6 @@
       :table-height="tableHeight"
       :pagination="pagination"
       :defaultcheck="defaultcheck"
-      @toChildData="getCheckCol"
     />
     <NewCourse ref="addNewCourse" />
   </div>
@@ -175,9 +175,6 @@ export default {
   methods: {
     onSubmit() {
       console.log('submit!')
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     getList() {
 

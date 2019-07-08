@@ -19,6 +19,7 @@
           <el-select
             v-model="classStu"
             multiple
+            filterable
             placeholder="选择在读学员"
           >
             <el-option
@@ -37,6 +38,7 @@
           <el-select
             v-model="gradeChoose"
             placeholder="选择班级"
+            filterable
           >
             <el-option
               v-for="item in gradeList"
@@ -54,6 +56,7 @@
             v-model="missLesson"
             multiple
             placeholder="选择在读学员"
+            filterable
           >
             <el-option
               v-for="item in newStuList"
@@ -80,6 +83,7 @@
           <el-select
             v-model="tryStuChoose"
             multiple
+            filterable
             placeholder="选择在读学员"
           >
             <el-option
@@ -98,6 +102,7 @@
           <el-select
             v-model="tryChooseList"
             multiple
+            filterable
             placeholder="选择潜在学员"
           >
             <el-option
@@ -113,6 +118,7 @@
           >精确查找</div>
         </el-form-item>
         <el-button
+          :loading="submitLoading"
           type="primary"
           @click="submit"
         >生成</el-button>
@@ -183,7 +189,8 @@ export default {
       isListShow: false, // 名单列表显示
       isRepeat: false,
       startDate: '',
-      endDate: ''
+      endDate: '',
+      submitLoading: false // 保存的loading事件
     }
   },
   mounted() {
@@ -225,7 +232,7 @@ export default {
     },
     /* 学员列表 */
     getStuList() {
-      stuSummaryQuery({ type: '2' }).then(res => {
+      stuSummaryQuery({ type: '2', pageSize: 99999 }).then(res => {
         const data = res.data
         if (data.errorCode === 0) {
           const stuList = data.results
@@ -290,15 +297,19 @@ export default {
         clueStuId: clueStuIds,
         clsId: this.gradeChoose
       }
+      this.submitLoading = true
       stuCreateOrMul(params).then(res => {
         const data = res.data
         if (data.errorCode === 0) {
           this.$refs.orderCourseSuccess.show()
-        } else if (data.errorCode === 1102410) {
-          this.$refs.bookingError.show(data.errorMessageMain, data.message && data.message.errorInfo)
         } else {
-          this.$message.error(data.errorMessage || '学员约课失败')
+          if (data.type === 1 || data.type === 2 || data.type === 3 || data.type === 4 || data.type === 5) {
+            this.$refs.bookingError.show(data)
+          } else {
+            this.$message.error(!data.errorMessageMain ? data.errorMessage : ((data.errorMessageMain && (data.errorMessageMain + ',')) + data.errorMessage) || '学员约课失败')
+          }
         }
+        this.submitLoading = false
       })
     },
     /* 精选查找 */

@@ -38,11 +38,6 @@
       :time="time"
       :create-time="createTime"
     />
-    <!-- <creatMarketActivity
-      ref="marketActivityDialog"
-      :actid="actid"
-      @subFlag="getData"
-    /> -->
     <creatMarketActivity ref="marketActivityDialog" />
     <div class="erweimaCont">
       <erweimaDialog ref="erweimaDialog" />
@@ -50,23 +45,19 @@
   </div>
 </template>
 <script>
-// import Confirm from '@/components/MiniCommon/Confirm'
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import CommonTable from '@/components/CommonTable/CommonTable'
-// import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
 import detail from './components/detail'
 import creatMarketActivity from './components/creatMarketActivity'
 import { queryList, queryDetail, updateStatus } from '@/api/marketing/marketAdmin.js'
 import { dictGetByKey, summaryQuery } from '@/api/marketing/marketAdmin.js'
 
-// 引入二维码
 import erweimaDialog from './components/erweimaDialog'
 export default {
 
   components: {
     CommonSearch,
     CommonTable,
-    // AdvancedSearch,
     detail,
     creatMarketActivity,
     erweimaDialog
@@ -78,8 +69,6 @@ export default {
       createTime: '',
       formValue: {},
       superValue: {},
-      // actid: '',
-      // 搜索参数
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -126,7 +115,6 @@ export default {
           label: '活动名称',
           prop: 'name',
           isShowSet: true,
-          // isShowTooltip: true,
           width: 150,
           render: (h, params) => {
             return h('span', {}, [
@@ -188,7 +176,6 @@ export default {
           formatter: (row) => {
             if (this.hasBtn('204000002')) {
               if (row.count === null) {
-              // console.log(row.count, typeof (row.count))
                 return `<div style="display:flex;flex-direction:column;">
                       <div style="line-height:12px;font-size:12px">有效用户：0</div>
                       <div style="margin-top:10px;color:rgba(70,182,238,1);font-size:12px;line-height:12px;">查看</div>
@@ -201,7 +188,6 @@ export default {
               }
             } else {
               if (row.count === null) {
-              // console.log(row.count, typeof (row.count))
                 return `<div style="display:flex;flex-direction:column;">
                       <div style="line-height:12px;font-size:12px">有效用户：0</div>
                     </div>`
@@ -217,7 +203,6 @@ export default {
               this.id = row.id
               this.time = { startDate: row.startDate, endDate: row.endDate }
               this.createTime = row.createTime
-              // console.log(this.time, 'time', row)
               this.detailDialogShow(row)
             }
           }
@@ -241,7 +226,7 @@ export default {
             if (params.row.remark !== '') {
               return h('div', { style: { overflow: 'hidden', 'text-overflow': 'ellipsis',
                 'white-space': 'normal', display: '-webkit-box', '-webkit-line-clamp': '2', width: '127px',
-                'line-height': '15px', 'font-size': '14px', '-webkit-box-orient': 'vertical', 'margin-top': '10px'
+                'line-height': '15px', 'font-size': '14px', '-webkit-box-orient': 'vertical'
               }}, params.row.remark)
             } else {
               return h('span', {}, '-')
@@ -262,7 +247,7 @@ export default {
         isSettingShow: true, // 是否出现设置
         apiService: queryList // 表格的数据请求接口
       },
-      tableHeight: 'calc(100vh - 243px)',
+      tableHeight: 'calc(100vh - 231px)',
       isBorder: true,
       operates: {
         fixed: 'right',
@@ -274,10 +259,6 @@ export default {
             btnId: '204000004',
             method: (row) => {
               this.editActivityDialogShow(row.id)
-              // this.marketActivityDialogShow()
-              // this.$refs.marketActivityDialog.marketActivityDialogtitle = '修改市场活动'
-              // this.$refs.marketActivityDialog.changeFlag = false
-              // this.queryDetail(row.id)
             }
           },
           {
@@ -303,7 +284,6 @@ export default {
                 } else {
                   this.$message.error(res.errorMessage)
                 }
-                // loading.close()
               })
             },
             popoverCon: [
@@ -406,7 +386,6 @@ export default {
     onSearch(superValue) {
       this.superValue = superValue
       const params = {
-        // sourceType: 1,
         ...this.formValue,
         place: superValue.pickingPlace,
         sourceType: 1,
@@ -430,21 +409,12 @@ export default {
       this.$refs.tableCommon.getList(params)
       this.superValue = {}
     },
-    // 表格方法
-    deleteHandle(row) {
-      console.log('删除', row, this)
-    },
     // detail是否显示
     detailDialogShow() {
-      // this.detailData.dialogVisible = true
       this.detailShow = true
     },
     /* 新增市场活动弹框显示 */
     marketActivityDialogShow() {
-      // this.$refs.marketActivityDialog.marketActivityDialogShow = true
-      // this.$refs.marketActivityDialog.changeFlag = true
-      // this.$refs.marketActivityDialog.marketActivityDialogtitle = '新增市场活动'
-      // this.getData()
       this.$refs.marketActivityDialog.showDialog('add')
     },
     editActivityDialogShow(val) {
@@ -454,9 +424,7 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.el-dialog')
       })
       queryDetail(params).then(res => {

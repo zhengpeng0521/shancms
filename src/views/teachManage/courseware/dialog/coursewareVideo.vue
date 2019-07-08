@@ -440,8 +440,6 @@ export default {
     },
     /* 下一张图片 */
     onURL() {
-    //    let url =  this.fp.toDataURL('image/png')
-    //    console.log("url=====>",url)
       const url = this.imgList[2].url
       this.loadImage(url)
     },

@@ -54,7 +54,7 @@
               >
             </div>
           </el-dialog>
-          <p class="tips">支持png、jpeg、gif格式的图片, 建议宽高 350*350px; 图片大小小于2M</p>
+          <p class="tips">支持png、jpeg、gif格式的图片, 建议宽高 750*400px; 图片大小应小于2M</p>
         </el-form-item>
         <el-form-item
           label="排序值:"
@@ -77,6 +77,7 @@
             v-model="productData.formExteralLink"
             placeholder="请选择外链方式"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -98,6 +99,7 @@
               v-model="productData.activity"
               placeholder="请选择活动"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -109,7 +111,7 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            v-if="productData.formExteralLink === '3'"
+            v-if="productData.formExteralLink === '1'"
             key="lesson"
             label="选择课程:"
             prop="lesson"
@@ -118,18 +120,19 @@
               v-model="productData.lesson"
               placeholder="请选择课程"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
                 v-for="item in lessons"
                 :key="item.value"
                 :label="item.label"
-                :value="item.label"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
           <el-form-item
-            v-if="productData.formExteralLink === '1'"
+            v-if="productData.formExteralLink === '3'"
             key="formExteralLinkAdress"
             label="外链地址:"
             prop="formExteralLinkAdress"
@@ -206,7 +209,7 @@ export default {
         activity: '',
         lesson: ''
       },
-      formExteralLinks: [{ value: '0', label: '无' }, { value: '1', label: '自定义' }, { value: '2', label: '活动' }, { value: '3', label: '课程' }],
+      formExteralLinks: [{ value: '0', label: '无' }, { value: '3', label: '自定义' }, { value: '2', label: '活动' }, { value: '1', label: '课程' }],
       activitys: [{
         value: 'yizhi',
         label: '一致'
@@ -247,7 +250,7 @@ export default {
     picUrlArr(prop) {
       this.$nextTick(() => {
         const uploadBox = document.querySelector('.activityCover .el-upload--picture-card')
-        console.log('upload去掉', uploadBox)
+        // console.log('upload去掉', uploadBox)
         if (this.picUrlArr && this.picUrlArr.length > 0) {
           uploadBox.style.display = 'none'
         } else {
@@ -339,7 +342,7 @@ export default {
         }
         this.marketActivityDialogShow = !this.marketActivityDialogShow
       } else {
-        console.log('rowlist----->', rowlist)
+        // console.log('rowlist----->', rowlist)
         this.$nextTick(() => {
           this.id = rowlist.id
           this.marketActivityDialogtitle = '编辑轮播图'
@@ -348,13 +351,13 @@ export default {
           this.picUrlArr = [{ url: rowlist.picUrl }]
           this.productData.picUrl = [{ url: rowlist.picUrl }]
           this.productData.formExteralLink = obj.type
-          if (obj.type === '1') {
+          if (obj.type === '3') {
             this.productData.formExteralLinkAdress = obj.uri
             // `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microCourseDetail&tenantId=${rowlist.tenantId}&orgId=${rowlist.orgId}&actId=${rowlist.id}`
           } else if (obj.type === '2') {
             this.productData.activity = obj.uri
             //  `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microActivityDetail&tenantId=${rowlist.tenantId}&orgId=${rowlist.orgId}&actId=${rowlist.id}`
-          } else if (obj.type === '3') {
+          } else if (obj.type === '1') {
             this.productData.lesson = obj.uri
           }
           this.productData.title = rowlist.title
@@ -367,7 +370,7 @@ export default {
     /* 关闭弹框 */
     /* 商品弹框关闭 */
     cancelDialog(formName) {
-      console.log(formName, 'formName')
+      // console.log(formName, 'formName')
       this.$refs[formName].resetFields()
       this.marketActivityDialogShow = false
       this.productData.picUrl = []
@@ -375,7 +378,7 @@ export default {
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
-      console.log(this.productData, '111')
+      // console.log(this.productData, '111')
       this.$refs[formName].validate(valid => {
         if (/^\+?[0-9]\d{0,3}(\.\d*)?$/.test(this.productData.sort) === false) {
           this.$message.error('排序值只能设置0~9999中某个数字，数字大的排在前面')
@@ -384,9 +387,9 @@ export default {
           var addUrl = ''
           if (this.productData.formExteralLink === '2') {
             addUrl = this.productData.activity
-          } else if (this.productData.formExteralLink === '3') {
-            addUrl = this.productData.lesson
           } else if (this.productData.formExteralLink === '1') {
+            addUrl = this.productData.lesson
+          } else if (this.productData.formExteralLink === '3') {
             addUrl = this.productData.formExteralLinkAdress
           }
           const uri = JSON.stringify({ 'type': this.productData.formExteralLink, 'uri': addUrl })
@@ -442,7 +445,7 @@ export default {
     },
     // 预览
     handlePreview(file) {
-      console.log(file, 'file')
+      // console.log(file, 'file')
       this.previewImg = file.url
       this.dialogVisible = true
     }

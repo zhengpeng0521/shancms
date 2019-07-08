@@ -213,7 +213,7 @@ export default {
           isShowTooltip: true
         }
       ],
-      tableHeight: 'calc(100vh - 289px)',
+      tableHeight: 'calc(100vh - 277px)',
       listQuery: {
         show: true,
         sizes: true,
@@ -388,6 +388,7 @@ export default {
         startDate: startDate,
         endDate: endDate,
         pageSize,
+        pageIndex: 0,
         ...this.formValue,
         ...this.superValue
       }
@@ -597,6 +598,7 @@ export default {
       delete params.modifyTime
       this.$refs.tableCommon.getList(params)
       this.$refs.search.formValue.modifyTime = [this.start, this.end]
+      this.formValue.modifyTime = this.$refs.search.formValue.modifyTime
     },
     /* 天数radio切换*/
     tabChange(val) {
@@ -630,6 +632,7 @@ export default {
         }
         this.$refs.tableCommon.getList(params)
       }
+      this.formValue.modifyTime = this.$refs.search.formValue.modifyTime
       this.isBackWeek = false
       this.isBackDay = false
     },
@@ -676,8 +679,6 @@ export default {
       this.rowInfo = row
       this.$router.push({ name: 'copyCourseArrange', params: { rowInfo: row }})
     },
-    /* 获取表格列 */
-    getCheckCol() {},
     selectionChange(val) {
       if (val) {
         this.checkList = val

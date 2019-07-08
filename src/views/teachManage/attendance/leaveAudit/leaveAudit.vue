@@ -22,7 +22,6 @@
       :pagination="listQuery"
       :options="options"
       :table-key="'teachManage_attendance_leaveAudit_leaveAudit'"
-      @toChildData="getCheckCol"
       @handleSelectionChange="selectionChange"
     />
     <ReviewContract

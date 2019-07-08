@@ -35,56 +35,6 @@
               :disabled="$parent.obj.isHq===1"
               :btn-type="'primary'"
             />
-            <!-- <el-popover
-              v-model="visible3"
-              placement="bottom-end"
-              popper-class="tanchukuang"
-              width="160"
-            >
-              <p><span>图标</span>确定要保存吗？</p>
-              <div style="text-align: right; margin: 0;">
-                <el-button
-                  size="mini"
-                  class="edit_btn"
-                  plain
-                  @click="visible3 = false"
-                >取消</el-button>
-                <el-button
-                  type="primary"
-                  class="edit_btn"
-                  @click="save"
-                >确定</el-button>
-              </div>
-              <el-button
-                slot="reference"
-                type="primary"
-              >保存</el-button>
-            </el-popover>
-            <el-popover
-              v-model="visible2"
-              placement="bottom-end"
-              width="160"
-              popper-class="tanchukuang"
-            >
-              <p><span>图标</span>确定要关闭窗口吗？</p>
-              <div style="text-align: right; margin: 0;">
-                <el-button
-                  size="mini"
-                  class="edit_btn"
-                  plain
-                  @click="visible2 = false"
-                >取消</el-button>
-                <el-button
-                  type="primary"
-                  class="edit_btn"
-                  @click="close"
-                >确定</el-button>
-              </div>
-              <el-button
-                slot="reference"
-                plain
-              >关闭</el-button>
-            </el-popover> -->
           </div>
         </div>
         <div :class="topShow===true? 'contBox':'contBox1'">
@@ -99,7 +49,6 @@
   </transition>
 </template>
 <script>
-// import { micActivityRequest, sysHostRequest } from '@/api/marketing/microAct.js'
 import Confirm from '@/components/MiniCommon/Confirm'
 import { mapState, mapActions } from 'vuex'
 export default {
@@ -108,10 +57,21 @@ export default {
     'visible': {
       type: Boolean,
       default: true
+    },
+    isEdit: {
+      type: Boolean,
+      required: true
+    },
+    editUrl: {
+      type: String,
+      required: true
+    },
+    resetEdit: {
+      type: Function,
+      required: true
     }
   },
   data() {
-    // const iframeUrl = 'http://192.168.1.65/activityhtml/?moduleId=199&moduleCode=132201712221552&moduleInstId=&orgId=3536&orgName=' + encodeURI(encodeURI('更丰富'))
     return {
       visible2: false,
       visible3: false,
@@ -128,7 +88,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -137,32 +96,41 @@ export default {
   mounted() {
     const side = this.$refs.sideModal
     document.body.appendChild(side)
-    this.url = `${this.$parent.obj.provider}/page?m=create&tenantId=${this.$parent.obj.tenantId}&orgId=${this.$parent.obj.orgId}&gameCode=${this.$parent.obj.gameCode}&gameId=${this.$parent.obj.gameId}&dataId=${this.$parent.obj.dataId}&uid=${this.$store.getters.id}&runAs=runAs&isHq=0`
+    this.url = this.isEdit ? this.editUrl : `${this.$parent.obj.provider}/page?m=create&tenantId=${this.$parent.obj.tenantId}&orgId=${this.$parent.obj.orgId}&gameCode=${this.$parent.obj.gameCode}&gameId=${this.$parent.obj.gameId}&dataId=${this.$parent.obj.dataId}&uid=${this.$store.getters.id}&runAs=runAs&isHq=0`
     if (this.$parent.obj.isGameEdit === 'false' || this.$parent.obj.isGameEdit === null || this.$parent.obj.isGameEdit === '') {
       this.topShow = true
     } else {
       this.topShow = false
     }
-    // console.log(this.$parent.obj, 'obj', this.topShow)
     const self = this
     window.addEventListener('message', function(e) {
       if (e.data === 'close') {
         self.close()
-      } else if (e.data === 'closeAndLink') {
-        self.close()
-        setTimeout(() => {
-          self.setBlankCard()
-        }, 10)
+      } else if (e.data === 'closeAndLink' || (e.data && e.data.messageType === 'preview')) {
+        self.reloadList()
+        if (typeof e.data === 'object' && e.data.messageType === 'preview') {
+          self.openPreviewDialog(e.data)
+          self.close()
+        } else {
+          self.close()
+          setTimeout(() => {
+            self.setBlankCard()
+          }, 10)
+        }
       }
     }, false)
-    // window.parent.postMessage('closeAndLink', '*') // 关闭并展示链接
-    // window.parent.postMessage('close', '*')
   },
   methods: {
+    reloadList() {
+      this.$emit('reloadList')
+    },
+    openPreviewDialog(data) {
+      this.$emit('openPreviewDialog', data)
+    },
     close() {
       this.isVisible = false
       this.visible2 = false
-      // this.$parent.resetFieldHanle()
+      this.resetEdit({ isEdit: false, editUrl: '' })
     },
     save() {
       const ifr = document.getElementById('ifr')
@@ -221,7 +189,6 @@ export default {
       display: inline-block;
       margin-right: 5px;
     }
-    // background: pink;
     .top-left {
       display: flex;
       font-size: 16px;

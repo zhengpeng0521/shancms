@@ -69,7 +69,7 @@ export default {
                   ? [
                     h('span', params.row.parents[0].name + ' '),
                     h('el-popover', {
-                      props: { placement: 'top', trigger: 'click' }
+                      props: { placement: 'top', trigger: 'hover' }
                     },
                     [
                       h('div',
@@ -97,7 +97,7 @@ export default {
               h(
                 'el-popover',
                 {
-                  props: { placement: 'top', trigger: 'click' }
+                  props: { placement: 'top', trigger: 'hover' }
                 },
                 [
                   h('div',
@@ -158,7 +158,7 @@ export default {
         apiService: queryIntegralFlow, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 239px)',
+      tableHeight: 'calc(100vh - 228px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)

@@ -3,28 +3,42 @@
     <!-- 搜索栏 -->
     <div class="search">
       <div>
+        <div class="subUserSelect">
+          <SubUserSelect
+            :options="userBranchOptions"
+            v-model="userBranchSelected"
+            width="120"
+          />
+        </div>
         <CommonSearch
+          ref="CommonSearch"
           :is-inline="true"
           :params="formInline"
           :forms="formInline"
           @toParent="resetFieldHanle"
         />
-        <advanced-search v-bind="superSearch" />
+        <advanced-search
+          ref="superSearch"
+          v-bind="superSearch"
+        />
       </div>
       <div>
         <el-button
+          v-log="{compName:'潜在学员',eventName:'web-【学员CRM】-学员信息-潜在学员-新建潜在学员'}"
           v-if="hasBtn('402000001')"
           type="primary"
           size="mini"
           @click="addLantentDialog()"
         >新建潜在学员</el-button>
         <el-button
+          v-log="{compName:'潜在学员',eventName:'web-【学员CRM】-学员信息-潜在学员-导入'}"
           v-if="hasBtn('402000004')"
           class="cancel_btn"
           size="mini"
           @click="nameImportDialog()"
         >导入</el-button>
         <el-button
+          v-log="{compName:'潜在学员',eventName:'web-【学员CRM】-学员信息-潜在学员-导出'}"
           v-if="hasBtn('402000005')"
           class="cancel_btn"
           size="mini"
@@ -48,6 +62,7 @@
         @click="distributeDialog()"
       >分配</el-button>
       <Confirm
+        v-log="{compName:'潜在学员',eventName:'web-【学员CRM】-学员信息-潜在学员-放入回收站'}"
         :text="'放入回收站'"
         :placement="'top'"
         :content="'确定要放入回收站吗'"
@@ -67,7 +82,6 @@
       :options="options"
       :operation="operates"
       table-key="crm_studentInfo_lantent"
-      @toChildData="getCheckCol"
       @handleSelectionChange="selectionChange"
     />
     <!-- 侧边详情 -->
@@ -97,7 +111,10 @@
       @toOfflinePage="getUpdateTable"
     />
     <!-- 报名弹框 -->
-    <ApplyDialog ref="applyDialog" />
+    <ApplyDialog
+      ref="applyDialog"
+      @toUpdateStuList="getTurnOtherUpdateTable"
+    />
     <!-- 添加潜在学员弹框 -->
     <AddLantentStuDialog
       ref="addLantentStuDialog"
@@ -133,7 +150,7 @@
 </template>
 
 <script>
-import { queryClueStuList, dictGetByKey, recycle } from '@/api/crm/studentInfo/lantentStu'
+import { queryClueStuList, dictGetByKey, recycle, querySubName } from '@/api/crm/studentInfo/lantentStu'
 import CommonTable from './../../../../components/CommonTable/CommonTable'
 import CommonSearch from './../../../../components/CommonSearch/CommonSearch'
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
@@ -150,6 +167,7 @@ import TurnOtherDialog from './components/turnOtherDialog.vue'
 import BackHighSeaDialog from './components/backHighSeaDialog.vue'
 import DeleteStuDialog from './components/deleteStuDialog.vue'
 import StuExcistDialog from './components/stuExcistDialog.vue'
+import SubUserSelect from './../../../../components/SubUserSelect/SubUserSelect.vue'
 
 import { exportFile } from '@/utils/exportFile'
 export default {
@@ -169,7 +187,8 @@ export default {
     TurnOtherDialog, // 转给他人弹框
     BackHighSeaDialog, // 退回公海弹框
     DeleteStuDialog, // 删除放入回收站弹框
-    StuExcistDialog // 存在重复学员的提示
+    StuExcistDialog, // 存在重复学员的提示
+    SubUserSelect // 用户下拉树
   },
   data() {
     return {
@@ -230,7 +249,6 @@ export default {
         {
           label: '家长姓名',
           prop: 'parentName',
-          width: 200,
           isShowTooltip: true,
           render: (h, params) => {
             return h('span', {}, [
@@ -345,6 +363,12 @@ export default {
           width: 120
         },
         {
+          label: '最后到访时间',
+          prop: 'lastVisitTime',
+          isShowTooltip: true,
+          width: 170
+        },
+        {
           label: '下次跟进时间',
           prop: 'nextFollowTime',
           isShowTooltip: true,
@@ -362,14 +386,20 @@ export default {
           width: 120
         },
         {
-          label: '一级来源',
+          label: this.$t('firstChannel.label'),
           prop: 'channelName',
           isShowTooltip: true,
           isColShow: false
         },
         {
-          label: '二级来源',
+          label: this.$t('secondChannel.label'),
           prop: 'secondChannelName',
+          isShowTooltip: true,
+          isColShow: false
+        },
+        {
+          label: this.$t('thirdChannel.label'),
+          prop: 'subSecondChannelStr',
           isShowTooltip: true,
           isColShow: false
         },
@@ -415,16 +445,18 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         mutiSelect: true, // 是否多选
         apiService: queryClueStuList, // 表格的数据请求接口
         params: {
-          commonalityLeads: '2'
+          commonalityLeads: '2',
+          operatorType: '0'
         },
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 327px)',
+      tableHeight: 'calc(100vh - 313px)',
       operates: {
-        width: '160',
+        width: '162',
         fixed: 'right',
         list: [
           {
@@ -456,22 +488,6 @@ export default {
         },
         forms: [
           {
-            itemType: 'select',
-            placeholder: '全部潜在学员',
-            modelValue: 'region',
-            isFilterable: true,
-            isClearable: true,
-            itemStyle: 'width:140px',
-            selectOption: [
-              {
-                label: '已开通',
-                value: '1'
-              }, {
-                label: '已停用',
-                value: '0'
-              }
-            ]
-          }, {
             itemType: 'input',
             placeholder: '学员姓名/电话号码',
             modelValue: 'nameOrMobile',
@@ -621,6 +637,7 @@ export default {
           { label: '年级', key: 'grade' },
           { label: '特长', key: 'speciality' },
           { label: '血型', key: 'bloodType' },
+          { label: '学校', key: 'schaddress' },
           { label: '社保号码', key: 'socialSecurityNum' },
           { label: '备注', key: 'remark' },
           { label: '联系地址', key: 'conaddress' },
@@ -647,13 +664,98 @@ export default {
       stuName: '',
       paramsObj: {},
       rowInfo: {},
-      formValue: {} // 搜索的数据
+      formValue: {}, // 搜索的数据
+      userBranchOptions: [],
+      userBranchSelected: '0',
+      operatorType: 0, // 操作类型, 0.全部,1.我的, 2.我的下属
+      operatorUser: '' // 查询用户
     }
   },
   mounted() {
-    this.getTableList()
+    this.querySubUser()
+    // 默认查询当天的跟进条数
+    this.getTodayCount()
+    // 根据路由默认查询
+    const route = this.$router.history.current.params
+    const routerDateType = route && route.routerDateType
+    if (route.activeTab === 'lantentStu') {
+      const action = route && route.action
+      // 打开新建窗口
+      if (action === 'addStu' && this.hasBtn('402000001')) {
+        this.addLantentDialog()
+      }
+      // 今日待跟进默认查询
+      if (action === 'touchGoal') {
+        this.$refs.commonDatePicker.todayClick()
+        this.$refs.commonDatePicker.checkedIndex = 'today'
+        return
+      }
+      //  跟进状态查询
+      if (action === 'followState') {
+        this.$refs.CommonSearch.formValue.studentFollowState = route.followState || ''
+        console.log('this.formValue', this.formValue)
+        this.searchHandle(this.formValue)
+        return
+      }
+      // 首页机构概况数据跳入，查看创建时间为今日、本周、本月的学员
+      if (routerDateType) {
+        if (routerDateType === 'today') {
+          this.$refs.superSearch.ruleForm.createTime = [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+        } else if (routerDateType === 'thisWeek') {
+          const weekOfday = this.$moment().format('d') // 计算今天是这周第几天
+          const monday = this.$moment()
+            .subtract(weekOfday - 1, 'days')
+            .format('YYYY-MM-DD')
+          const sunday = this.$moment()
+            .add(7 - weekOfday, 'days')
+            .format('YYYY-MM-DD') // 周日日期
+          this.$refs.superSearch.ruleForm.createTime = [monday, sunday]
+        } else if (routerDateType === 'thisMonth') {
+          // 返回本月
+          const start = this.$moment()
+            .month(this.$moment().month())
+            .startOf('month')
+            .format('YYYY-MM-DD')
+          const end = this.$moment()
+            .month(this.$moment().month())
+            .endOf('month')
+            .format('YYYY-MM-DD')
+          this.$refs.superSearch.ruleForm.createTime = [start, end]
+        }
+        this.$refs.superSearch.submitForm()
+        return
+      }
+    }
+    this.searchHandle(this.formValue)
+    // this.$refs.commonDatePicker.todayClick()
+    // this.$refs.commonDatePicker.checkedIndex = 'today'
   },
   methods: {
+    /** 查询下属 */
+    querySubUser() {
+      const userBranchOptions = [{ id: '0', type: 0, name: '全部', children: [] }, { id: '1', type: 1, name: '我的', children: [] }]
+      const children = []
+      const self = this
+      querySubName().then(res => {
+        if (res.data.errorCode === 0) {
+          const results = res.data.data
+          if (results && results.length > 0) {
+            results.map((item) => {
+              children.push({
+                pid: '2',
+                id: item.id,
+                name: item.name,
+                type: 2
+              })
+            })
+            userBranchOptions.push({ id: '2', type: 2, name: '我的下属', children: children })
+            self.userBranchOptions = userBranchOptions
+          }
+        }
+      })
+      this.userBranchSelected = '0'
+      this.userBranchOptions = userBranchOptions
+    },
     /* 侧边详情弹框 */
     openSideDetail(row) {
       this.rowInfo = row
@@ -702,6 +804,7 @@ export default {
             grade: this.detail.grade,
             speciality: this.detail.speciality,
             bloodType: this.detail.bloodType,
+            schaddress: this.detail.schaddress,
             socialSecurityNum: this.detail.socialSecurityNum,
             remark: this.detail.remark,
             conaddress: this.detail.conaddress,
@@ -714,14 +817,15 @@ export default {
         }
       })
     },
-    /* 获取表格当天的数据条数 */
-    getTableList() {
+    /* 获取当天的跟进记录条数 （仅仅显示今日跟进条数）*/
+    getTodayCount() {
       const params = {
         pageIndex: 0,
         pageSize: 20,
         startNextFollowTime: this.$moment().format('YYYY-MM-DD'),
         endNextFollowTime: this.$moment().format('YYYY-MM-DD'),
-        commonalityLeads: '2'
+        commonalityLeads: '2',
+        operatorType: '0'
       }
       queryClueStuList(params).then(res => {
         const data = res.data
@@ -784,23 +888,36 @@ export default {
     },
     /* 更新表格和侧边栏数据 */
     getUpdateSideAndTable(row) {
-      this.getUpdateTable()
+      // 跟进记录更新后要保留搜索参数
+      // const params = {
+      //   ...this.formValue,
+      //   ...this.superValue,
+      //   pageIndex: this.$refs.tableCommon.pageIndex - 1
+      // }
+      // this.$refs.tableCommon.getList(params)
+      const params = {
+        ...this.formValue,
+        pageIndex: this.$refs.tableCommon.pageIndex - 1
+      }
+      this.searchHandle(params)
       this.openSideDetail(row)
     },
     /* 更新表格数据 */
     getUpdateTable() {
       const params = {
+        ...this.formValue,
         pageIndex: 0
       }
-      this.$refs.tableCommon.getList(params)
+      this.searchHandle(params)
     },
     /* 转给他人更新 */
     getTurnOtherUpdateTable() {
       this.$refs.crmDetailModal.visible = false
       const params = {
+        ...this.formValue,
         pageIndex: 0
       }
-      this.$refs.tableCommon.getList(params)
+      this.searchHandle(params)
     },
     /* 打开存在学员的提示 */
     openStuExcist() {
@@ -836,9 +953,6 @@ export default {
     /* 添加潜在学员成功，打开报名新建 */
     getOpenApply(row) {
       this.$refs.applyDialog.showDialog('add', row, '0')
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     /* 新建潜在学员弹框 */
     addLantentDialog() {
@@ -897,11 +1011,22 @@ export default {
     },
     /* 搜索 */
     searchHandle(formValue) {
+      // 用户权限选择
+      const userBranchParams = {}
+      if (this.userBranchSelected === '0' || this.userBranchSelected === '1') { // 全部、我的
+        userBranchParams.operatorType = this.userBranchSelected
+      } else if (parseFloat(this.userBranchSelected) > 1) { // 我的下属
+        userBranchParams.operatorType = '2'
+        if (this.userBranchSelected !== '2') { // 选择的下属
+          userBranchParams.uids = this.userBranchSelected
+        }
+      }
       // 搜索的入参
       this.formValue = formValue
       const params = {
         ...formValue,
-        ...this.superValue
+        ...this.superValue,
+        ...userBranchParams
       }
       if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
         params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
@@ -917,22 +1042,36 @@ export default {
     },
     /* 搜索重置 */
     resetFieldHanle(formName) {
-      // 重置的入参
-      const params = {
-        pageIndex: 0,
-        ...this.superValue
-      }
-      this.formValue = {}
-      this.getTimeSearch(params)
-      this.commonDateReset()
+      // // 重置的入参
+      // const params = {
+      //   pageIndex: 0,
+      //   ...this.superValue
+      // }
+      // this.formValue = {}
+      // this.getTimeSearch(params)
+      // this.commonDateReset()
       // this.$refs.tableCommon.getList(params)
+      this.userBranchSelected = '0'
+      this.$refs.commonDatePicker.commonDateReset()
+      this.searchHandle({})
     },
     /** 高级搜索 */
     onSearch(superValue) {
+      // 用户权限选择
+      const userBranchParams = {}
+      if (this.userBranchSelected === '0' || this.userBranchSelected === '1') { // 全部、我的
+        userBranchParams.operatorType = this.userBranchSelected
+      } else if (parseFloat(this.userBranchSelected) > 1) { // 我的下属
+        userBranchParams.operatorType = '2'
+        if (this.userBranchSelected !== '2') { // 选择的下属
+          userBranchParams.uids = this.userBranchSelected
+        }
+      }
       this.superValue = superValue
       const params = {
         ...this.formValue,
-        ...this.superValue
+        ...this.superValue,
+        ...userBranchParams
       }
       if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
         params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
@@ -948,43 +1087,56 @@ export default {
     },
     /** 高级清除 */
     onClear() {
-      const params = {
-        pageIndex: 0,
-        ...this.formValue
-      }
-      this.superValue = {}
-      if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
-        params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
-        params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
-      }
-      this.getTimeSearch(params)
-      this.$refs.tableCommon.getList(params)
+      // const params = {
+      //   pageIndex: 0,
+      //   ...this.formValue
+      // }
+      // this.superValue = {}
+      // if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
+      //   params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
+      //   params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
+      // }
+      // this.getTimeSearch(params)
+      // this.$refs.tableCommon.getList(params)
+      this.onSearch({})
     },
 
     /** 导入后刷新列表 */
     refresh() {
-      const params = {
-        ...this.superValue,
-        ...this.formValue
-      }
-      if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
-        params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
-        params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
-      }
-      for (const i in params) {
-        if (!params[i]) {
-          delete params[i]
-        }
-      }
-      this.getTimeSearch(params)
-      this.$refs.tableCommon.getList(params)
+      // const params = {
+      //   ...this.superValue,
+      //   ...this.formValue
+      // }
+      // if (this.commonDateOptions.pickerDateArr && this.commonDateOptions.pickerDateArr.length > 0) {
+      //   params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
+      //   params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
+      // }
+      // for (const i in params) {
+      //   if (!params[i]) {
+      //     delete params[i]
+      //   }
+      // }
+      // this.getTimeSearch(params)
+      // this.$refs.tableCommon.getList(params)
+      this.searchHandle(this.formValue)
     },
 
     /* 导出 */
     exportContent() {
+      // 用户权限选择
+      const userBranchParams = {}
+      if (this.userBranchSelected === '0' || this.userBranchSelected === '1') { // 全部、我的
+        userBranchParams.operatorType = this.userBranchSelected
+      } else if (parseFloat(this.userBranchSelected) > 1) { // 我的下属
+        userBranchParams.operatorType = '2'
+        if (this.userBranchSelected !== '2') { // 选择的下属
+          userBranchParams.uids = this.userBranchSelected
+        }
+      }
       const params = {
         ...this.superValue,
-        ...this.formValue
+        ...this.formValue,
+        ...userBranchParams
       }
       const dateArr = this.commonDateOptions.pickerDateArr || []
       if (dateArr && dateArr.length > 0) {
@@ -1034,9 +1186,15 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }
+  }
+  .subUserSelect {
+    vertical-align: top;
+    float: left;
+    margin-right: 10px;
   }
 }
 </style>

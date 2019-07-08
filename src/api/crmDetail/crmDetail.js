@@ -43,14 +43,14 @@ export function deleteClueParent(data) {
   })
 }
 
-// // 根据ID删除学员家长信息
-// export function deleteParents(data) {
-//   return request({
-//     url: `${window.SS_CRM}/crm/stuInfo/parent/deleteParents`,
-//     method: 'post',
-//     data
-//   })
-// }
+// 根据ID删除学员家长信息
+export function deleteParents(data) {
+  return request({
+    url: `${window.SS_CRM}/crm/stuInfo/parent/deleteParents`,
+    method: 'post',
+    data
+  })
+}
 
 // 查询跟进记录
 export function getLeadsRecord(data) {

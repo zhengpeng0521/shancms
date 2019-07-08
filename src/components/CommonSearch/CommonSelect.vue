@@ -60,6 +60,11 @@ export default {
       list: []
     }
   },
+  watch: {
+    'form.selectOption'(newVal) {
+      this.list = newVal
+    }
+  },
   mounted() {
     const { defaultFirst, modelValue, valueKey } = this.form
     if (this.form.apiService) {

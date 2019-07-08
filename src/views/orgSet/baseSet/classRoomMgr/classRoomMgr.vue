@@ -116,10 +116,7 @@ export default {
         {
           label: '教室名称',
           prop: 'name',
-
-          formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.name}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '大致方位',
@@ -168,18 +165,18 @@ export default {
         fixed: 'right',
         list: [
 
-          {
-            label: '删除',
-            type: 'normal',
-            method: (row) => {
-              this.deleteClassRoom(row)
-            },
-            popoverCon: [
-              {
-                contentText: '确定要删除吗？'
-              }
-            ]
-          },
+          // {
+          //   label: '删除',
+          //   type: 'normal',
+          //   method: (row) => {
+          //     this.deleteClassRoom(row)
+          //   },
+          //   popoverCon: [
+          //     {
+          //       contentText: '确定要删除吗？'
+          //     }
+          //   ]
+          // },
           {
             label: '编辑',
             type: 'normal',
@@ -191,7 +188,7 @@ export default {
         ]
       },
 
-      tableHeight: 'calc(100vh - 234px)',
+      tableHeight: 'calc(100vh - 231px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -323,7 +320,6 @@ export default {
             })
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })

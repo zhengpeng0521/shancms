@@ -156,7 +156,7 @@ export default {
             return h('div', { 'class': 'sale-work-header', style: { lineHeight: '23px' }}, [
               h('span', '试听转为学员数'),
               h('el-tooltip', { props: { effect: 'dark', content: '排序值越大排在越前面', placement: 'top' }}, [
-                h('i', { 'class': 'el-icon-question', style: { marginLeft: '5px', cursor: 'pointer', color: '#1D9DF2', fontSize: '16px', verticalAlign: 'middle' }})
+                h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', cursor: 'pointer', color: '#666', fontSize: '16px', verticalAlign: 'middle' }})
               ])
             ])
           },

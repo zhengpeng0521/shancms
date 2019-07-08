@@ -53,8 +53,7 @@
             v-for="(item, index) in headerInfo"
             :key="'detailInfo_'+index"
           >
-            <span class="header-info-left">{{ item.label }} : </span>
-            <span>{{ headerData[item.key] || '--' }}</span>
+            <span class="header-info-left">{{ item.label }} : {{ headerData[item.key] || '--' }}</span>
           </p>
         </div>
       </div>
@@ -437,7 +436,8 @@ export default {
       const params = {
         ...payload,
         source: this.params.source,
-        stuId: this.params.stuId
+        stuId: this.params.stuId,
+        queryType: 'stu'
       }
       this.loading = true
       const { data } = await getLeadsRecord(params)
@@ -460,8 +460,8 @@ export default {
       this.loading = false
     },
     /* 更新跟进的表格数据 */
-    getUpdateLeadsTable() {
-      this.$emit('toUpdateLeadsTable', this.params)
+    getUpdateLeadsTable(keep) {
+      this.$emit('toUpdateLeadsTable', this.params, keep)
     },
 
     /** 获取到访记录 */
@@ -470,7 +470,8 @@ export default {
       params = {
         ...payload,
         source: this.params.source,
-        stuId: this.params.stuId
+        stuId: this.params.stuId,
+        queryType: 'stu'
       }
       this.loading = true
       const { data } = await getVisiteList(params)
@@ -508,7 +509,8 @@ export default {
       const params = {
         ...payload,
         source: this.params.source,
-        stuId: this.params.stuId
+        stuId: this.params.stuId,
+        queryType: 'stu'
       }
       this.loading = true
       const { data } = await getListenList(params)
@@ -577,6 +579,7 @@ export default {
 }
 .detail-header-info {
   margin-top: 20px;
+  padding-left: 62px;
   @include flex();
   @include flexWrap();
 
@@ -589,7 +592,7 @@ export default {
       width: 49%;
     }
     .header-info-left {
-      text-align: right;
+      text-align: left;
     }
   }
 }

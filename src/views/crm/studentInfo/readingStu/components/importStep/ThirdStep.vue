@@ -43,11 +43,21 @@ export default {
     columns() {
       const newCols = []
       this.cols.forEach(item => {
-        newCols.push({
-          label: item.value,
-          prop: item.key,
-          isShowTooltip: true
-        })
+        if (item.key == 'payMoney') { //eslint-disable-line
+          newCols.push({
+            label: item.value,
+            prop: item.key,
+            isShowTooltip: true,
+            width: '230'
+          })
+        } else {
+          newCols.push({
+            label: item.value,
+            prop: item.key,
+            isShowTooltip: true,
+            width: '100'
+          })
+        }
       })
       return newCols
     }

@@ -51,7 +51,6 @@ export default {
       }
       parentBindQrCode(params).then(res => {
         if (res.data.errorCode === 0) {
-          console.log('res--二维码->', res)
           this.parentBindDialogShow = !this.parentBindDialogShow
           this.cordUrlImg = res.data.data.codeUrl
         } else {

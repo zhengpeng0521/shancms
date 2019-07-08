@@ -19,6 +19,7 @@
             v-model="addSubData.stuId"
             placeholder="请选择所属学员"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -47,12 +48,13 @@
             v-model="addSubData.paId"
             placeholder="请选择收款方式"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
               v-for="item in allOrderTypeData"
               :key="item.id"
-              :label="item.paymentKeyName"
+              :label="item.paymentKey === 'xianjin' ? item.paymentKeyName : (item.paymentKeyName + '-' + item.name + '-' + item.acctNo)"
               :value="item.id"
             />
           </el-select>
@@ -117,7 +119,8 @@ export default {
           { required: true, message: '请输入所属学员', trigger: 'change' }
         ],
         money: [
-          { required: true, message: '请输入订金金额', trigger: 'change' }
+          { required: true, message: '请输入订金金额', trigger: 'change' },
+          { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: '正数，可精确到小数点后2位', trigger: 'change' }
         ],
         paId: [
           { required: true, message: '请输入收款方式', trigger: 'change' }

@@ -34,6 +34,7 @@
               v-model="addLantentData.studentFollowState"
               placeholder="请选择跟进状态"
               clearable
+              filterable
             >
               <el-option
                 v-for="item in followStatusList"
@@ -44,25 +45,19 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            label=""
-            prop="addType"
-            style="width: 58%"
-          >
-            <el-radio-group v-model="addLantentData.addType">
-              <el-radio
-                v-if="type == 'addSea'"
-                label="1"
-              >放入公海</el-radio>
-              <el-radio
-                v-if="type == 'add' || type=='edit'"
-                label="2"
-              >分配销售</el-radio>
-            </el-radio-group>
+            v-if="type==='add'||type==='edit'"
+            :rules="[
+              {required: true, message: '请选择分配销售', trigger: 'change' },
+            ]"
+            label="分配销售"
+            prop="sellerId"
+            style="width: 58%">
             <el-select
               v-if="type == 'add' || type=='edit'"
               v-model="addLantentData.sellerId"
               placeholder=""
               clearable
+              filterable
               style="width: 89px;"
             >
               <el-option
@@ -72,6 +67,18 @@
                 :value="item.id"
               />
             </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="type == 'addSea'"
+            label=""
+            prop="addType"
+            style="width: 58%"
+          >
+            <el-radio-group v-model="addLantentData.addType">
+              <el-radio
+                label="1"
+              >放入公海</el-radio>
+            </el-radio-group>
           </el-form-item>
         </div>
         <el-form-item
@@ -84,6 +91,7 @@
             v-model="addLantentData.sellerNameId"
             placeholder="请选择跟进状态"
             clearable
+            filterable
             @change="sellerChange"
           >
             <el-option
@@ -103,6 +111,7 @@
               v-model="addLantentData.importance"
               placeholder="请输入重要程度"
               clearable
+              filterable
               style="width: 100%"
             >
               <el-option
@@ -174,6 +183,7 @@
               v-model="addLantentData.constellation"
               placeholder="生日选择后自动带出"
               disabled
+              filterable
               style="width:202px"
             >
               <el-option value="白羊座">白羊座</el-option>
@@ -227,6 +237,7 @@
                 v-model="addLantentData.bloodType"
                 placeholder="请输入血型"
                 style="width:202px"
+                filterable
               >
                 <el-option value="A">A</el-option>
                 <el-option value="B">B</el-option>
@@ -357,6 +368,7 @@
                 v-model="child.relation"
                 placeholder="请输入家长关系"
                 clearable
+                filterable
                 style="width: 100%"
               >
                 <el-option
@@ -388,6 +400,14 @@
               />
             </el-form-item>
           </div>
+          <div class="from_item_row">
+            <el-form-item label="固定电话">
+              <el-input
+                v-model="child.tel"
+                placeholder="请输入固定电话"
+              />
+            </el-form-item>
+          </div>
           <div
             v-show="isEditShowItem && addLantentData.list.length > 1"
             class="from_delete_text"
@@ -412,46 +432,7 @@
           <span class="form_txt" />
           <span class="block_title">来源</span>
         </div>
-        <div class="from_item_row from_row_second">
-          <el-form-item
-            label="一级来源:"
-            prop="channel"
-          >
-            <el-select
-              v-model="addLantentData.channel"
-              :disabled="isFirstChannelDisable"
-              placeholder="请输入一级来源"
-              clearable
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in firstChannelList"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item
-            label="二级来源:"
-            prop="secondChannel"
-          >
-            <el-select
-              :disabled="isSecondChannelDisable"
-              v-model="addLantentData.secondChannel"
-              placeholder="请输入二级来源"
-              clearable
-              style="width: 100%"
-            >
-              <el-option
-                v-for="item in secondChannelList"
-                :key="item.key"
-                :label="item.value"
-                :value="item.key"
-              />
-            </el-select>
-          </el-form-item>
-        </div>
+
         <div class="from_item_row">
           <el-form-item
             label="推荐人:"
@@ -461,6 +442,7 @@
               v-model="addLantentData.recommender"
               placeholder="请选择推荐人（家长）"
               clearable
+              filterable
               style="width: 100%"
             >
               <el-option
@@ -479,6 +461,7 @@
               v-model="addLantentData.collecterId"
               placeholder="请输入收集人"
               clearable
+              filterable
               style="width: 100%"
             >
               <el-option
@@ -490,6 +473,78 @@
             </el-select>
           </el-form-item>
         </div>
+
+        <div class="from_item_row from_row_second">
+          <el-form-item
+            v-if="$t('firstChannel.isShow') === 'true'"
+            :label="$t('firstChannel.label')"
+            prop="channel"
+          >
+            <el-select
+              v-model="addLantentData.channel"
+              :disabled="isFirstChannelDisable"
+              placeholder="请输入一级来源"
+              clearable
+              filterable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in firstChannelList"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            v-if="$t('secondChannel.isShow') === 'true'"
+            :label="$t('secondChannel.label')"
+            prop="secondChannel"
+          >
+            <el-select
+              :disabled="isSecondChannelDisable"
+              v-model="addLantentData.secondChannel"
+              value-key=""
+              placeholder="请输入二级来源"
+              clearable
+              filterable
+              style="width: 100%"
+              @change="secondChannelListChange(addLantentData.secondChannel)"
+            >
+              <el-option
+                v-for="item in secondChannelList"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </div>
+
+        <div class="from_item_row">
+          <el-form-item
+            v-if="$t('thirdChannel.isShow') === 'true'"
+            :label="$t('thirdChannel.label')"
+            prop="subSecondChannel"
+          >
+            <el-select
+              :disabled="isSecondChannelDisable"
+              v-model="addLantentData.subSecondChannel"
+              placeholder="请输入三级来源"
+              clearable
+              filterable
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in thirdChannelList"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+        </div>
+
       </el-form>
       <span
         slot="footer"
@@ -541,7 +596,8 @@ import {
   tenantUserSummaryQuery,
   addClueStu,
   excistForName,
-  parentDupCheck
+  parentDupCheck,
+  subSecondChannelQuery // 东书房二级来源
 } from '@/api/crm/studentInfo/highSeas'
 import {
   confChannelEditResult
@@ -592,16 +648,20 @@ export default {
         remark: '', // 备注
         channel: '', // 一级来源
         secondChannel: '', // 二级来源
+        secondChannelID: '',
+        subSecondChannel: '', // 三级来源
         recommender: '', // 推荐人
         collecterId: '', // 收集人
         list: [
           {
             parentName: '', // 家长姓名
             parentMobile: '', // 家长手机号
+            parentId: '',
             relation: '', // 家长关系
             qqNumber: '', // QQ
             trade: '', // 行业
             email: '', // 邮箱
+            tel: '', // 固定电话
             mobileAllow: true
           }
         ]
@@ -620,6 +680,7 @@ export default {
       followStatusList: [], // 跟进状态列表
       firstChannelList: [], // 一级来源
       secondChannelList: [], // 二级来源
+      thirdChannelList: [], // 三级来源
       importantList: [], // 重要程度
       relationList: [], // 家长关系
       parentList: [], // 家长列表
@@ -686,6 +747,7 @@ export default {
     getEditParent(currentRow, index) {
       if (this.addLantentData.list && this.addLantentData.list.length > 0) {
         this.addLantentData.list[index].parentName = currentRow.parentName
+        this.addLantentData.list[index].parentId = currentRow.parentId
         this.addLantentData.list[index].mobileAllow = true
       }
     },
@@ -723,6 +785,8 @@ export default {
         qqNumber: '', // QQ
         trade: '', // 行业
         email: '', // 邮箱
+        tel: '', // 固定电话
+        parentId: '',
         mobileAllow: true
       }
       this.addLantentData.list.push(tempData)
@@ -797,7 +861,9 @@ export default {
         relation: '', // 家长关系
         qqNumber: '', // QQ
         trade: '', // 行业
+        tel: '', // 固定电话
         email: '', // 邮箱
+        parentId: '',
         mobileAllow: true
       }
       this.addLantentData.list.push(tempData)
@@ -805,6 +871,7 @@ export default {
       this.getRecommender()
       this.getFirstChannel()
       this.getSecondChannel()
+      this.getThirdChannel()
       this.getUserList()
       this.getImportant()
       this.getParentRelationship()
@@ -887,6 +954,26 @@ export default {
         }
       })
     },
+
+    // 二级来源选中的时候,三级来源的显示
+    secondChannelListChange(key) {
+      this.getThirdChannel(key)
+    },
+
+    // 东书房二级来源
+    getThirdChannel(key) {
+      const params = {
+        itemKey: key
+      }
+      subSecondChannelQuery(params).then(res => {
+        const data = res.data
+        if (data.errorCode === 0) {
+          this.thirdChannelList = data.results
+        } else {
+          this.$message.error(data.errorMessage)
+        }
+      })
+    },
     /* 重要程度 */
     getImportant() {
       const params = {
@@ -958,7 +1045,9 @@ export default {
               relation: '',
               qqNumber: '',
               trade: '',
+              tel: '', // 固定电话
               email: '',
+              parentId: '',
               mobileAllow: true
             }
             this.detailContent.list.push(obj)
@@ -1002,7 +1091,9 @@ export default {
               relation: '',
               qqNumber: '',
               trade: '',
+              tel: '', // 固定电话
               email: '',
+              parentId: '',
               mobileAllow: true
             }
             this.detailContent.list.push(obj)
@@ -1024,6 +1115,45 @@ export default {
     /* 关闭弹框 */
     cancelDialog(formName) {
       this.addLantentDialogShow = false
+      this.addLantentData = { // 关闭弹窗，数据进行清空
+        studentFollowState: '', // 跟进状态
+        sellerNameId: '', // 负责销售
+        addType: '1',
+        sellerId: '', // 销售id
+        name: '', // 孩子姓名
+        sex: '', // 性别
+        birthday: '', // 生日
+        constellation: '', // 星座
+        importance: '', // 重要程度
+        nickName: '', // 昵称
+        nation: '', // 名族
+        bloodType: '', // 血型
+        hobby: '', // 爱好
+        grade: '', // 年级
+        speciality: '', // 特长
+        schaddress: '', // 学校地址
+        socialSecurityNum: '', // 社保号码
+        conaddress: '', // 联系地址
+        remark: '', // 备注
+        channel: '', // 一级来源
+        secondChannel: '', // 二级来源
+        subSecondChannel: '', // 三级来源
+        recommender: '', // 推荐人
+        collecterId: '', // 收集人
+        list: [
+          {
+            parentName: '', // 家长姓名
+            parentMobile: '', // 家长手机号
+            parentId: '',
+            relation: '', // 家长关系
+            qqNumber: '', // QQ
+            trade: '', // 行业
+            tel: '', // 固定电话
+            email: '', // 邮箱
+            mobileAllow: true
+          }
+        ]
+      }
       // this.$refs[formName].resetFields()
       for (const i in this.addLantentData) {
         if (i !== 'addType' || i !== 'list') {
@@ -1036,6 +1166,12 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.addLantentDialogShow = false
+        } else {
+          setTimeout(() => {
+            var isError = document.getElementsByClassName('is-error')
+            isError[0].querySelector('input').focus()
+          }, 1)
+          return false
         }
       })
     },
@@ -1079,6 +1215,7 @@ export default {
           delete params.target
           delete params.sellerName
           delete params.orgName
+          console.log(params, '1111111111')
           if (this.type == 'add') { //eslint-disable-line
             if (this.addLantentData.sellerId) {
               this.addOrEdit(params, type)
@@ -1092,6 +1229,12 @@ export default {
           } else if(this.type == 'edit') { //eslint-disable-line
             this.addOrEdit(params)
           }
+        } else {
+          setTimeout(() => {
+            var isError = document.getElementsByClassName('is-error')
+            isError[0].querySelector('input').focus()
+          }, 1)
+          return false
         }
       })
     },

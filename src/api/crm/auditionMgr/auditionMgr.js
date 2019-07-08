@@ -9,6 +9,15 @@ export async function qureyList(params) {
   })
 }
 
+// 查询下属
+export async function querySubName(params) {
+  return request({
+    url: `${window.SYS_URL}/sysBase/tenantUser/summaryQueryByIds`,
+    method: 'post',
+    data: params
+  })
+}
+
 // 修改试听状态
 export async function updateStatus(params) {
   return request({

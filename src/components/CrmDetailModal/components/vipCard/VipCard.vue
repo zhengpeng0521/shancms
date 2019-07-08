@@ -31,7 +31,7 @@
         width="120"
       />
       <el-table-column
-        prop="periodPackage"
+        prop="periodLeft"
         label="可用课时"
         width="120"
       />

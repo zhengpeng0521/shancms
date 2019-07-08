@@ -111,6 +111,7 @@
           <el-select
             v-model="ruleForm.region"
             placeholder="请选择活动区域"
+            filterable
           >
             <el-option
               label="区域一"
@@ -275,6 +276,7 @@
     <el-select
       v-model="value2"
       size="mini"
+      filterable
       placeholder="请选择"
     >
       <el-option
@@ -339,6 +341,7 @@
         >
           <el-select
             v-model="ruleForm.region"
+            filterable
             placeholder="请选择活动区域"
           >
             <el-option

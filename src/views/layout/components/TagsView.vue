@@ -86,6 +86,12 @@ export default {
       return route.path === this.$route.path
     },
     addViewTags() {
+      // 保留7个tab
+      const tabs = this.$store.state.tagsView.visitedViews
+      if (tabs.length >= 7) {
+        this.closeSelectedTag(tabs[0])
+      }
+
       const { name } = this.$route
       if (name) {
         this.$store.dispatch('addView', this.$route)

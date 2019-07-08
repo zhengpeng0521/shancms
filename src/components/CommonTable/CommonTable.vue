@@ -1,9 +1,12 @@
+/* eslint-disable vue/no-confusing-v-for-v-if */
 /*
 * prop:
 *   tableKey           表格名称定义          String
 *   isfullscreen       loading加载全屏显示   Boolean
 *   isHighLight        行高亮               Boolean
 *   tableHeight        表格高度             Str
+*   isMaxHeight        是否把tableHeight设置为MaxHeight       Boolean    默认为true
+*   offsetTop          距离窗口上边框的距离   Number
 *   isBorder           表格边框             Boolean    默认是false
 *   tableLoading       当使用外部数据时加载状态 Boolean
 *   dataSource         外部获取数据         Array       必须和tableLoading配合使用
@@ -18,7 +21,7 @@
 *       list           操作按钮数组         Array
 *        [
 *          label       操作按钮名称         Str
-*          type        操作按钮的类型       Str          当操作按钮二次确认时用,例如删除 退款 ，类型是normal ，normal1
+*          type        操作按钮的类型       Str          当操作按钮二次确认时用,例如删除 退款 ，类型是normal ，normal1, general: 文本按钮,无确认框
 *          minLength   按钮不显示的最小长度  Num
 *          method      操作的触发           Function
 *          prop        状态参数             Str
@@ -60,8 +63,9 @@
       ref="multipleTable"
       :default-sort="defaultSort"
       :v-loading-fullscreen="isfullscreen"
-      :height="tableHeight"
       :highlight-current-row="isHighLight"
+      :height="getHeight()"
+      :max-height="getMaxHeight()"
       :fit="true"
       :data="dataSource ? dataSource : tableData"
       :data-all="tableAllData"
@@ -76,7 +80,10 @@
       @row-click="handleRowSelect"
     >
       <!-- 空数据显示 -->
-      <div slot="empty">
+      <div
+        slot="empty"
+        class="empty_data"
+      >
         <img
           src="https://img.ishanshan.com/gimg/user/n///1550211410.png"
           alt="无数据"
@@ -119,6 +126,7 @@
             <template v-if="column.formatter">
               <template v-if="column.methods">
                 <span
+                  class="text_btn"
                   @click.prevent="()=>{column.methods(scope.row)}"
                   v-html="column.formatter(scope.row, column)"
                 />
@@ -128,7 +136,7 @@
               </template>
             </template>
             <template v-else>
-              <span>{{ scope.row[column.prop] }}</span>
+              <span :class="column.methods ? 'text_btn' : ''">{{ scope.row[column.prop] }}</span>
             </template>
           </template>
           <template v-else>
@@ -213,6 +221,13 @@
                       slot="reference"
                     >{{ btn.label_2 }}</a>
                   </Popover>
+                  <span
+                    v-if="btn.type == 'general'"
+                    :class="btn.method ? 'text_btn' : ''"
+                    @click="btn.method(scope.row, key)"
+                  >{{ (scope.row[ btn.prop ||'status'] == btn.popoverCon[0].status) ? btn.popoverCon[0].contentText :
+                  (scope.row[ btn.prop ||'status'] == btn.popoverCon[1].status) ? btn.popoverCon[1].contentText : ''
+                  }}</span>
                 </div>
                 <a
                   v-else
@@ -252,7 +267,7 @@
                         placement="top"
                         popper-class="myPopover"
                         trigger="click"
-                        @method="btn.method(scope.row)"
+                        @method="item.method(scope.row)"
                       >
                         <div>
                           <i class="el-icon-warning confirm-icon" />
@@ -261,7 +276,7 @@
                         <a slot="reference">{{ item.label }}</a>
                       </Popover>
                       <Popover
-                        v-if="btn.type=='normal1'"
+                        v-if="item.type=='normal1'"
                         placement="top"
                         popper-class="myPopover"
                         trigger="click"
@@ -269,7 +284,7 @@
                       >
                         <div>
                           <i class="el-icon-warning confirm-icon" />
-                          <div style="display:inline-block;color:#666;font-size:12px;margin:4px 4px 16px;text-align:left;">{{ btn.popoverCon[0].contentText }}</div>
+                          <div style="display:inline-block;color:#666;font-size:12px;margin:4px 4px 16px;text-align:left;">{{ item.popoverCon[0].contentText }}</div>
                         </div>
                         <a slot="reference">{{ item.label }}</a>
                       </Popover>
@@ -278,31 +293,39 @@
                         placement="top"
                         trigger="click"
                         popper-class="myPopover"
-                        @method="btn.method(scope.row)"
+                        @method="item.method(scope.row)"
                       >
                         <div>
                           <i class="el-icon-warning confirm-icon" />
                           <div
-                            v-if="scope.row[ btn.prop ||'status'] == item.popoverCon[0].status"
+                            v-if="scope.row[ item.prop ||'status'] == item.popoverCon[0].status"
                             style="display:inline-block;color:#666;font-size:12px;margin:4px 4px 16px;text-align:left;"
                           >{{ item.popoverCon[0].contentText }}</div>
                           <div
-                            v-if="scope.row[ btn.prop ||'status'] == item.popoverCon[1].status"
+                            v-if="scope.row[ item.prop ||'status'] == item.popoverCon[1].status"
                             style="display:inline-block;color:#666;font-size:12px;margin:4px 4px 16px;text-align:left;"
                           >{{ item.popoverCon[1].contentText }}</div>
                         </div>
                         <a
-                          v-if="scope.row[ btn.prop ||'status'] == item.popoverCon[1].status"
+                          v-if="scope.row[ item.prop ||'status'] == item.popoverCon[1].status"
                           slot="reference"
                         >{{ item.label_1 }}</a>
                         <a
-                          v-if="scope.row[ btn.prop ||'status'] == item.popoverCon[0].status"
+                          v-if="scope.row[ item.prop ||'status'] == item.popoverCon[0].status"
                           slot="reference"
                         >{{ item.label_2 }}</a>
                       </Popover>
+                      <span
+                        v-if="item.type == 'general'"
+                        :class="item.method ? 'text_btn' : ''"
+                        @click="item.method(scope.row, key)"
+                      >{{ (scope.row[ item.prop ||'status'] == item.popoverCon[0].status) ? item.popoverCon[0].contentText :
+                      (scope.row[ item.prop ||'status'] == item.popoverCon[1].status) ? item.popoverCon[1].contentText : ''
+                      }}</span>
                     </div>
                     <span
                       v-else
+                      :class="item.methods ? 'text_btn' : ''"
                       @click="item.method(scope.row, key)"
                     >{{ item.label }}</span>
                   </template>
@@ -415,12 +438,21 @@
                       slot="reference"
                     >{{ btn.label_2 }}</a>
                   </Popover>
+                  <span
+                    v-if="btn.type == 'general'"
+                    :key="'gbtn_'+key"
+                    :class="btn.method ? 'text_btn' : ''"
+                    @click="btn.method(scope.row, key)"
+                  >{{ (scope.row[ btn.prop ||'status'] == btn.popoverCon[0].status) ? btn.popoverCon[0].contentText :
+                  (scope.row[ btn.prop ||'status'] == btn.popoverCon[1].status) ? btn.popoverCon[1].contentText : ''
+                  }}</span>
                 </div>
                 <a
                   v-else-if="!(btn.minLength && btn.minLength === totalCount)"
                   slot="reference"
                   :key="key"
-                  @click="btn.method(scope.row, key)"
+                  :class="scope.row[btn.prop] == btn.text ? '' : btn.class"
+                  @click="scope.row[btn.prop] == btn.text ? btn.method(scope.row, key) : ''"
                 >{{ btn.label }}</a>
               </template>
             </template>
@@ -463,7 +495,15 @@
         slot="reference"
         class="setting"
       >
-        <div class="setting_img" />
+        <div class="setting_img">
+          <el-tooltip
+            content="显示表格字段"
+            placement="bottom"
+            effect="dark"
+          >
+            <i class="iconfont icon_gb_jgsz" />
+          </el-tooltip>
+        </div>
       </div>
     </el-popover>
 
@@ -496,6 +536,12 @@ export default {
     columns: {
       type: Array,
       default: () => []
+    },
+    isMaxHeight: {
+      type: Boolean,
+      default() {
+        return true
+      }
     },
     /* 是否全屏*/
     isfullscreen: {
@@ -560,6 +606,14 @@ export default {
     tableKey: {
       type: String,
       default: 'default'
+    },
+    offsetTop: {
+      type: Number,
+      default: 0
+    },
+    offsetBottom: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -579,7 +633,8 @@ export default {
       isloading: false, // 是否loading加载
       tipVisibles: [],
       searchValue: {}, // 搜索内容
-      flag: false // 是否覆盖初始值
+      flag: false, // 是否覆盖初始值
+      maxHeight: undefined
     }
   },
   watch: {
@@ -620,12 +675,34 @@ export default {
     if (this.tableKey && this.tableKey !== 'default') {
       this.showTableColumnFun()
     }
+    this.$refs.multipleTable.$refs.bodyWrapper.style['max-height'] = this.tableHeight
   },
   methods: {
     ...mapMutations('commonTable', [
       'SHOW_LOADING',
       'HIDE_LOADING'
     ]),
+    getHeight() {
+      if (!this.isMaxHeight) {
+        return this.tableHeight
+      }
+    },
+    getMaxHeight() {
+      let retHeight = 0
+      if (this.isMaxHeight) {
+        if (this.tableHeight && this.tableHeight.indexOf('calc') >= 0) {
+          const height = this.tableHeight.replace('calc', '').replace('100vh', '').replace('(', '').replace(')', '').replace('px', '').replace('-', '')
+          retHeight = (document.body.offsetHeight - parseInt(height))
+        } else if (this.offsetTop) {
+          retHeight = (document.body.offsetHeight - parseInt(this.offsetTop))
+        }
+      }
+      // 判断最大高度
+      if (retHeight < 250) {
+        retHeight = 250
+      }
+      return retHeight
+    },
 
     getList(val) {
       this.isloading = true
@@ -642,15 +719,6 @@ export default {
         } else {
           this.pageIndex = 1
         }
-        if (this.options && this.options.params) {
-          for (const i in val) {
-            for (const j in this.options.params) {
-              if (i == j) { //eslint-disable-line
-                this.flag = true
-              }
-            }
-          }
-        }
       } else {
         params = {
           ...this.searchValue,
@@ -658,16 +726,23 @@ export default {
           pageIndex: this.pageIndex - 1
         }
       }
-      if (!this.flag) {
-        this.options && this.options.params && Object.assign(params, this.options.params)
+      // 带上初始参数，可以覆盖
+      if (this.options && this.options.params) {
+        params = {
+          ...this.options.params,
+          ...params
+        }
       }
-      console.info('params--->', params)
+      if (params.pageIndex) {
+        this.pageIndex = params.pageIndex + 1
+      }
+      // console.info('params--->', params)
       if (this.options && this.options.apiService) {
         const func = this.options.apiService
         func(params).then(res => {
           const data = res.data
           if (data.errorCode === 0) {
-            console.info('Table-----data---->', data)
+            // console.info('Table-----data---->', data)
             this.tableData = data.results
             this.tableAllData = data
             if (data.data && data.data.resultCount >= 0) {
@@ -738,7 +813,6 @@ export default {
     },
     // 保存选中的列
     saveTableColumnFun() {
-      this.$emit('toChildData', this.checkboxVal)
       const params = {
         tableKey: this.tableKey,
         columnSet: JSON.stringify(this.checkboxVal)
@@ -785,6 +859,15 @@ export default {
 //   width: 0;
 // }
 // }
+// 解决空数据不居中问题
+.common_table /deep/ {
+  .el-table__empty-block {
+    width: 100% !important;
+  }
+}
+.empty_data {
+  margin: 60px 0;
+}
 .setting {
   position: absolute;
   top: 1px;
@@ -797,17 +880,13 @@ export default {
   cursor: pointer;
   z-index: 11;
   .setting_img {
-    background-image: url("https://img.ishanshan.com/gimg/img/927fe7934a2ce4c294c1a643742015ea");
-    background-size: cover;
-    width: 16px;
-    height: 16px;
     display: inline-block;
     position: relative;
-    top: 2px;
+    top: 0px;
     content: "";
   }
   &:hover .setting_img {
-    background-image: url("https://img.ishanshan.com/gimg/n/20190413/77f5e8162f1887fc4238ee7d14a30cb7");
+    color: #46b6ee;
   }
 }
 .operate-group {
@@ -838,6 +917,14 @@ a {
   margin-right: 20px;
 }
 a:hover {
+  color: #56c0f5;
+}
+.text_btn {
+  color: #1d9df2;
+  font-size: 14px;
+  cursor: pointer;
+}
+.text_btn:hover {
   color: #56c0f5;
 }
 /* 筛选框 */
@@ -958,11 +1045,9 @@ a:hover {
 }
 .common_table >>> .el-table__row.hover-row td {
   background: #ecf7fd;
-  cursor: pointer;
 }
 .common_table >>> .el-table--enable-row-hover .el-table__body tr:hover > td {
   background: #ecf7fd;
-  cursor: pointer;
 }
 .common_table >>> tr.el-table__row.el-table__row--striped:hover {
   background: #ecf7fd !important;

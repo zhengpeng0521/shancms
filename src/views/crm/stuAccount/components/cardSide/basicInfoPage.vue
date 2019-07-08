@@ -8,8 +8,10 @@
       <table border="1">
         <tr style="background: #f5f6f8">
           <th>课时类型</th>
-          <th>剩余课时</th>
+          <th>剩余常规课时</th>
+          <th>剩余赠送课时</th>
           <th>已冻结课时</th>
+          <th>赠送课时</th>
           <th>可用课时</th>
         </tr>
         <tr
@@ -17,8 +19,10 @@
           :key="index + '_basicInfo'"
         >
           <td>{{ item.courseName }}</td>
-          <td>{{ item.periodPackage+item.periodExt }}</td>
+          <td>{{ item.periodPackage }}</td>
+          <td>{{ item.periodExt }}</td>
           <td>{{ item.periodFreeze }}</td>
+          <td>{{ item.periodExtAll }}</td>
           <td>{{ item.periodLeft }}</td>
         </tr>
       </table>
@@ -78,7 +82,7 @@ export default {
       border: 1px solid #ddd;
     }
     table {
-      width: 400px;
+      width: 700px;
     }
     th {
       height: 32px;

@@ -54,6 +54,7 @@
           <el-select
             v-model="accountData.goodsId"
             clearable
+            filterable
             placeholder="请选择兑换的商品"
             style="width: 100%"
             @change="changeShopValue"

@@ -67,14 +67,14 @@ export default {
     return {
       flag: true,
       navList: [],
+      labelIds: '',
       list: [],
       // 弹出框参数
       outerVisible: false,
       innerVisible: false,
       // loadmore组件参数
-      pageSize: 20,
+      pageSize: 50,
       pageIndex: 0,
-      // pageArr: [],
       pageCount: 0,
       textInfo: false,
       paramsArr: [],
@@ -91,23 +91,18 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microGame-container')
       })
 
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId
+        'pageIndex': this.pageIndex,
+        'pageSize': this.pageSize
       }
       queryGameInfosWithTenant(params).then(res => {
-        // console.log('res', res)
         if (res.data.errorCode === 0) {
           this.list = res.data.results
-          // this.pageArr = res.data.results
           this.pageCount = res.data.data.pageCount
-          console.log(this.list, '初始数据')
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -121,13 +116,10 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microGame-container')
       })
       queryAllLabel(params).then(res => {
-        // console.log('res', res)
         if (res.data.errorCode === 0) {
           this.navList = res.data.results
         } else {
@@ -138,35 +130,31 @@ export default {
     },
     // 导航栏控制函数
     showCont(item, index) {
-      // item.switch = !item.switch
-      console.log(item, item.value)
       this.navList[index].value.forEach(v => {
         if (v.edit) { v.edit = false; item.switch = !item.switch }
-        console.log(item.group)
       })
       if (this.group.indexOf(item.group) > -1) {
         this.paramsArr.splice(this.group.indexOf(item.group), 1)
         this.group.splice(this.group.indexOf(item.group), 1)
       }
       const labelIds = this.paramsArr.join(',')
+      this.labelIds = labelIds
       const params = {
-        'tenantId': this.GLOBAL.tenantId,
-        'orgId': this.GLOBAL.orgId,
-        'labelIds': labelIds
+        'labelIds': this.labelIds,
+        pageIndex: 0,
+        pageSize: this.pageSize
       }
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
-        target: document.querySelector('.microActivity-nav')
+        target: document.querySelector('.microGame-container')
       })
       queryGameInfosWithTenant(params).then(res => {
-        console.log('res', res)
-        // this.list = res.data.results
         if (res.data.errorCode === 0) {
           this.list = res.data.results
+          this.pageCount = res.data.data.pageCount
+          this.pageIndex = 0
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -175,17 +163,13 @@ export default {
     },
 
     showContList(item, itm, index) {
-      // console.log(item, '数据11111')
       item.switch = true // 当前块添加开关edit: 给当前块添加属性edit
       // 如果存在开关开着就关闭
-      // console.log(item, '222222222')
       item.value.forEach(v => {
         if (v.edit) { delete v['edit'] }
-        // console.log(v, '箭头')
       })
       const tmpe = Object.assign({}, itm)
       const ii = item.value.indexOf(itm)
-      // console.log('当前点击数据', ii, tmpe, itm)
       tmpe.edit = true
       this.navList[index].value.splice(ii, 1, tmpe)
       if (this.group.indexOf(item.group) === -1) {
@@ -195,24 +179,23 @@ export default {
         this.paramsArr.splice(this.group.indexOf(item.group), 1, itm.id)
       }
       const labelIds = this.paramsArr.join(',')
+      this.labelIds = labelIds
       const params = {
-        'tenantId': this.GLOBAL.tenantId,
-        'orgId': this.GLOBAL.orgId,
-        'labelIds': labelIds
+        'labelIds': this.labelIds,
+        pageIndex: 0,
+        pageSize: this.pageSize
       }
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
-        target: document.querySelector('.microActivity-nav')
+        target: document.querySelector('.microGame-container')
       })
       queryGameInfosWithTenant(params).then(res => {
-        console.log('res', res)
-        // this.list = res.data.results
         if (res.data.errorCode === 0) {
           this.list = res.data.results
+          this.pageCount = res.data.data.pageCount
+          this.pageIndex = 0
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -223,13 +206,10 @@ export default {
       this.textInfo = false
       this.pageIndex++
       const params = {
-        'tenantId': this.GLOBAL.tenantId,
-        'orgId': this.GLOBAL.orgId,
-        'labelIds': '',
+        'labelIds': this.labelIds,
         'pageIndex': this.pageIndex,
-        'pageSize': 30
+        'pageSize': this.pageSize
       }
-
       if (this.pageIndex < this.pageCount) {
         this.loading = true
         queryGameInfosWithTenant(params).then(res => {
@@ -265,6 +245,7 @@ export default {
   .microGame-top .cont {
     width: 100%;
     position: relative;
+    padding-bottom: 13px;
     .jieri {
       display: flex;
       padding-top: 10px;
@@ -283,21 +264,16 @@ export default {
         box-shadow: none;
       }
       button:hover {
-        // padding: 2px 10px;
-        // margin: 10px 3px;
-        background: rgba(255, 255, 255, 1);
-        border-radius: 5px;
-        border: 1px solid rgba(70, 182, 238, 1);
+        color: #46b6ee;
       }
       .tit {
-        // width: 42px;
         height: 20px;
         font-size: 14px;
         font-weight: 400;
         color: rgba(51, 51, 51, 1);
         line-height: 20px;
         min-width: 42px;
-        margin: 11px 5px 10px 20px;
+        margin: 0px 5px 10px 20px;
       }
       div {
         flex-wrap: wrap;
@@ -308,22 +284,17 @@ export default {
           border: 0;
         }
         .listCont {
-          margin: 5px 14px 5px 0px;
+          margin: 0px 14px 5px 0px;
         }
       }
     }
-  }
-  .microGame-cont {
-    height: 100%;
-    // height: 300px;
-    // min-height: calc(100vh - 200px);
-    // background: rgba(240, 242, 245, 0.8);
   }
   .leads-bottom-text {
     text-align: center;
     color: #999;
     width: 100%;
-    height: 20px;
+    height: 30px;
+    background: rgba(240, 242, 245, 0.8);
   }
 }
 </style>

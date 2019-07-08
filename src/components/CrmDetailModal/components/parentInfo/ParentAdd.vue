@@ -31,6 +31,7 @@
             v-model="parentAddForm.parentInfo"
             placeholder="请选择家长信息"
             style="width:100%"
+            filterable
             @change="parentInfoChange(parentAddForm.parentInfo)"
           >
             <el-option
@@ -53,6 +54,7 @@
             v-model="parentAddForm.parentName"
             placeholder="请选择家长关系"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -104,6 +106,7 @@
             v-model="parentAddForm.relation"
             placeholder="请选择家长关系"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option

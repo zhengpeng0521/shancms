@@ -85,6 +85,25 @@
         >确定</el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      :visible.sync="continueVisible"
+      title="继续约课"
+      width="400px"
+      @close="continueVisible = false"
+    >
+      <div :style="{ marginBottom: '14px' }">{{ continueMessage }}</div>
+      <span slot="footer">
+        <el-button
+          :loading="continueLoading"
+          @click="continueVisible = false"
+        >否</el-button>
+        <el-button
+          :loading="continueLoading"
+          type="primary"
+          @click="continueOrder"
+        >是</el-button>
+      </span>
+    </el-dialog>
     <SingleSelectStu
       v-if="isSingleSelect"
       ref="selectStu"
@@ -133,7 +152,12 @@ export default {
       list: [],
       detailList: {}, // 详细信息
       isSingleSelect: false,
-      isSingleList: false
+      isSingleList: false,
+
+      continueVisible: false, // 继续约课
+      continueLoading: false,
+      continueMessage: '',
+      continuePayload: {}
     }
   },
   methods: {
@@ -204,22 +228,22 @@ export default {
               }
               getAvailableStatus(params).then(res => {
                 const data = res.data
+                const startDate = this.detailList.studyDate + ' ' + this.detailList.startTime
+                const endDate = this.detailList.studyDate + ' ' + this.detailList.endTime
+                const payload = {
+                  stuId: this.ruleForm.stuId,
+                  auditionTime: startDate,
+                  auditionEndTime: endDate,
+                  courseName: this.detailList.courseName,
+                  source: '1',
+                  cpmId: this.detailList.cpmId,
+                  cpdId: this.detailList.cpdId,
+                  subscribeCreateType: '1'
+                }
                 if (data.errorCode === 0) {
                   if (data.availableTryNumStatus) {
                     this.$refs.continueTry.show(this.detailList, this.ruleForm.stuId, '1')
                   } else {
-                    const startDate = this.detailList.studyDate + ' ' + this.detailList.startTime
-                    const endDate = this.detailList.studyDate + ' ' + this.detailList.endTime
-                    const payload = {
-                      stuId: this.ruleForm.stuId,
-                      auditionTime: startDate,
-                      auditionEndTime: endDate,
-                      courseName: this.detailList.courseName,
-                      source: '1',
-                      cpmId: this.detailList.cpmId,
-                      cpdId: this.detailList.cpdId,
-                      subscribeCreateType: '1'
-                    }
                     tryCreate(payload).then(res => {
                       const data = res.data
                       if (data.errorCode === 0) {
@@ -231,6 +255,10 @@ export default {
                       }
                     })
                   }
+                } else if (data.errorCode !== 0 && data.availableTryNumStatus) {
+                  this.continueVisible = true
+                  this.continueMessage = data.message
+                  this.continuePayload = payload
                 } else {
                   this.$message.error(data.errorMessage)
                 }
@@ -246,22 +274,22 @@ export default {
               }
               getAvailableStatus(params).then(res => {
                 const data = res.data
+                const startDate = this.detailList.studyDate + ' ' + this.detailList.startTime
+                const endDate = this.detailList.studyDate + ' ' + this.detailList.endTime
+                const payload = {
+                  stuId: this.ruleForm.list,
+                  auditionTime: startDate,
+                  auditionEndTime: endDate,
+                  courseName: this.detailList.courseName,
+                  source: '2',
+                  cpmId: this.detailList.cpmId,
+                  cpdId: this.detailList.cpdId,
+                  subscribeCreateType: '1'
+                }
                 if (data.errorCode === 0) {
                   if (data.availableTryNumStatus) {
                     this.$refs.continueTry.show(this.detailList, this.ruleForm.list, '2')
                   } else {
-                    const startDate = this.detailList.studyDate + ' ' + this.detailList.startTime
-                    const endDate = this.detailList.studyDate + ' ' + this.detailList.endTime
-                    const payload = {
-                      stuId: this.ruleForm.list,
-                      auditionTime: startDate,
-                      auditionEndTime: endDate,
-                      courseName: this.detailList.courseName,
-                      source: '2',
-                      cpmId: this.detailList.cpmId,
-                      cpdId: this.detailList.cpdId,
-                      subscribeCreateType: '1'
-                    }
                     tryCreate(payload).then(res => {
                       const data = res.data
                       if (data.errorCode === 0) {
@@ -273,6 +301,10 @@ export default {
                       }
                     })
                   }
+                } else if (data.errorCode !== 0 && data.availableTryNumStatus) {
+                  this.continueVisible = true
+                  this.continueMessage = data.message
+                  this.continuePayload = payload
                 } else {
                   this.$message.error(data.errorMessage)
                 }
@@ -286,6 +318,24 @@ export default {
         }
       })
     },
+
+    /** 继续预约 */
+    continueOrder() {
+      this.continueLoading = true
+      tryCreate(this.continuePayload).then(res => {
+        const data = res.data
+        if (data.errorCode === 0) {
+          this.continueVisible = false
+          this.dialogVisible = false
+          this.$message.success(data.errorMessage)
+          this.$emit('toUpdateOnceOrder', this.detailList)
+        } else {
+          this.$message.error(data.errorMessage || '预约试听失败')
+        }
+        this.continueLoading = false
+      })
+    },
+
     toCloseStu() {
       this.isSingleSelect = false
     },
@@ -368,12 +418,10 @@ export default {
     },
     /* 获取精确查找的数据 */
     getCheckList(val) {
-      console.info('val stuId', val)
       this.ruleForm.stuId = val
     },
     /* 获取名单精确 */
     getSelectList(val) {
-      console.info(val, 'val')
       this.ruleForm.list = val
     },
     getUpdateOnceOrder(detail) {

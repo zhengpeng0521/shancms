@@ -8,7 +8,7 @@
 
       <div class="signIn_left">
 
-        <div style="margin-bottom:14px"><span class="form_txt" />
+        <div style="margin-bottom:14px;color:#333;"><span class="form_txt" />
           小票预览（示例）</div>
 
         <div class="signIn_box">
@@ -49,7 +49,7 @@
           :model="signForm"
           label-width="20px"
         >
-          <div style="margin-bottom:14px"><span class="form_txt" />
+          <div style="margin-bottom:14px;color:#333;"><span class="form_txt" />
             打印类型</div>
           <el-form-item style="margin-bottom:20px;">
             <el-radio-group v-model="signForm.mingtie">
@@ -59,7 +59,7 @@
             </el-radio-group>
 
           </el-form-item>
-          <div style="margin-bottom:14px"><span class="form_txt" />
+          <div style="margin-bottom:14px;color:#333;"><span class="form_txt" />
             请勾选需要打印的消息</div>
           <el-form-item prop="baseInfo">
             <el-checkbox-group v-model="signForm.baseInfo">
@@ -91,7 +91,7 @@
 
           </el-form-item>
 
-          <el-form-item>
+          <!-- <el-form-item>
             <div class="btn_group">
               <Confirm
                 :is-button="true"
@@ -102,12 +102,12 @@
               />
               <el-button
                 type="primary"
-                @click="saveSign('signForm')"
+                @click="saveSign()"
               >
                 保存
               </el-button>
             </div>
-          </el-form-item>
+          </el-form-item> -->
 
         </el-form>
 
@@ -242,23 +242,25 @@ export default {
     },
 
     // 还原默认设置
-    resetSign() {
+    resetSign(resetAttend) {
       const newForm = this.defaultForm.map(item => item)
       const params = {
         configArray: JSON.stringify(newForm)
       }
       saveSignInPrintInfo(params).then(res => {
         if (res.data.errorCode === 0) {
-          this.$message.success('保存成功！')
+          // this.$message.success('保存成功！')
           this.getSignInInfo()
+          // 还原考勤打印，避免massage连续出现
+          resetAttend && resetAttend()
         } else {
           this.$message.error(res.data.errorMessage)
         }
       })
     },
     // 确认提交
-    saveSign(formName) {
-      this.$refs[formName].validate((valid) => {
+    saveSign(saveAttend) {
+      this.$refs.signForm.validate((valid) => {
         if (valid) {
           const arr = []
           for (const i in this.signForm) {
@@ -279,8 +281,10 @@ export default {
 
           saveSignInPrintInfo(newData).then(res => {
             if (res.data.errorCode === 0) {
-              this.$message.success('保存成功！')
+              // this.$message.success('保存成功！')
               this.getSignInInfo()
+              // 保存考勤打印，避免massage连续出现
+              saveAttend && saveAttend()
             } else {
               this.$message.error(res.data.errorMessage)
             }

@@ -13,6 +13,7 @@
       </div>
       <div>
         <el-button
+          v-log="{compName:'财务管理',eventName:'web-【学员CRM】-财务管理-订金管理-新建订金'}"
           class="green_btn"
           @click="addSubDialog"
         >新建订金</el-button>
@@ -156,7 +157,7 @@ export default {
         apiService: purchaseDepositQuery, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 227px)',
       operates: {
         width: '160',
         fixed: 'right',

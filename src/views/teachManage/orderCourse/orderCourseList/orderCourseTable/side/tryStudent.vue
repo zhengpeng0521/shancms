@@ -55,7 +55,9 @@ export default {
           prop: 'yearAge'
         }, {
           label: '备注',
-          prop: 'remark'
+          prop: 'remark',
+          width: 140,
+          isShowTooltip: true
         }, {
           label: '负责销售',
           prop: 'sellerName'

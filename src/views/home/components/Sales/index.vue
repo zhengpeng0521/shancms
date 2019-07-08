@@ -18,6 +18,7 @@
             v-for="(item, index) in saleFunnel"
             :key="'funnel' + index"
             class="sale-funnel-flex"
+            @click="funnelClick(item)"
           >
             <div class="sale-funnel-one">{{ item.rate || '0%' }}</div>
             <div class="sale-funnel-line" />
@@ -38,6 +39,7 @@
         <el-select
           v-model="reqType"
           placeholder="请选择"
+          filterable
           class="sale-line-date"
           @change="(value) => {$emit('tabChange', {dataType: activeName === 'potential' ? '1' : '2', reqType: value})}"
         >
@@ -129,6 +131,11 @@ export default {
 
   mounted() {
     this.$emit('didMount', 'sale')
+  },
+  methods: {
+    funnelClick(data) {
+      this.$router.push({ name: 'StudentMgr', params: { activeTab: 'lantentStu', action: 'followState', followState: data.key }})
+    }
   }
 }
 </script>

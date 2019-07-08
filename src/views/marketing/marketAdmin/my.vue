@@ -28,7 +28,6 @@
       :time="time"
       :create-time="createTime"
     />
-    <downLeaflet ref="downLeaflet" />
     <editMyLeaflet
       v-if="editLeafletShow"
       :visible.sync="editLeafletShow"
@@ -38,18 +37,14 @@
 <script>
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import CommonTable from '@/components/CommonTable/CommonTable'
-import downLeaflet from './components/downLeaflet'
 import { orgInstList, markList, instUpdateStatus } from '@/api/marketing/offlineLeaflet.js'
 import editMyLeaflet from './components/editMyLeaflet'
 import detail from './components/detail'
-// 查看弹框
-// import dataAnalyse from './components/dataAnalyse'
 export default {
   components: {
     CommonSearch,
     CommonTable,
     detail,
-    downLeaflet,
     editMyLeaflet
   },
   data() {
@@ -57,7 +52,6 @@ export default {
       id: '',
       time: {},
       createTime: '',
-      // creatLeafletShow: false,
       editLeafletShow: false,
       obj: {},
       // 搜索参数
@@ -108,22 +102,6 @@ export default {
               }, params.row.name
             )
           }
-          // formatter: (row) => {
-          //   return `
-          //             <div class="tableCell" style="
-          //             font-weight:400;
-          //             overflow: hidden;
-          //             text-overflow:ellipsis;
-          //             width:100px;
-          //             color:rgba(24,145,237,1);
-          //             font-size:14px;
-          //             margin-left:10px;
-          //             ">${row.name}</div>`
-          // },
-          // methods: (row) => {
-          //   this.editLeafletBtnShow(row)
-          // }
-
         },
 
         {
@@ -134,7 +112,7 @@ export default {
           width: 170,
           formatter: (row) => {
             if (row.actName === '' || row.actName === null) {
-              return `<span>-</span>`
+              return `<span>活动未关联</span>`
             } else {
               return `<span>${row.actName}</span>`
             }
@@ -147,8 +125,21 @@ export default {
           isShowSet: true,
           isShowTooltip: true,
           render: (h, params) => {
-            if (params.row.actName === '' || params.row.actName === null) {
-              this.$message.error('请先关联一个活动')
+            if(params.row.count == null || params.row.count == undefined || params.row.count == '') { //eslint-disable-line
+              return h(
+                'div',
+                {
+                  style: 'display:flex;flex-direction:column;'
+                }, [
+                  h('div', { style: 'line-height:12px;font-size:12px' }, '有效用户：0'),
+                  h('a', { style: 'margin-top:10px;line-height:12px;font-size:12px',
+                    on: {
+                      click: () => {
+                        this.picDetailBtn(params.row)
+                      }
+                    }}, '查看')
+                ]
+              )
             } else {
               return h(
                 'div',
@@ -166,23 +157,6 @@ export default {
               )
             }
           }
-          // formatter: (row) => {
-          //   return `<div style="display:flex;flex-direction:column;">
-          //             <div style="line-height:12px;font-size:12px">有效用户：${row.count || '0'}</div>
-          //             <div style="margin-top:10px;color:rgba(70,182,238,1);font-size:12px;line-height:12px;">查看</div>
-          //           </div>`
-          // },
-          // methods: (row) => {
-          //   if (row.actName === '' || row.actName === null) {
-          //     this.$message.error('请先关联一个活动')
-          //   } else {
-          //     this.id = row.actId
-          //     this.time = { startDate: row.startDate, endDate: row.endDate }
-          //     this.createTime = row.createTime
-          //     this.picDetailBtn(row)
-          //   }
-          // }
-
         },
         {
           label: '创建时间',
@@ -196,7 +170,7 @@ export default {
         isSettingShow: true, // 是否出现设置
         apiService: orgInstList // 表格的数据请求接口
       },
-      tableHeight: 'calc(100vh - 243px)',
+      tableHeight: 'calc(100vh - 231px)',
       operates: {
         fixed: 'right',
         width: 200,
@@ -205,10 +179,6 @@ export default {
             label: '编辑',
             type: 'normal',
             method: (row) => {
-              // this.marketActivityDialogShow()
-
-              // this.$refs.marketActivityDialog.marketActivityDialogtitle = '修改市场活动'
-              // this.$refs.marketActivityDialog.changeFlag = false
               this.editLeafletBtnShow(row)
             }
           },
@@ -231,7 +201,6 @@ export default {
             popoverCon: [
               {
                 contentText: '确认删除？'
-                // status: '1'
               }
             ]
           },
@@ -270,10 +239,14 @@ export default {
     },
     // 数据分析弹框方法
     picDetailBtn(row) {
-      this.time = { startDate: row.startDate, endDate: row.endDate }
-      this.createTime = row.createTime
-      this.detailShow = true
-      this.id = row && row.actId
+      if (row.actName === '' || row.actName === null) {
+        this.$message.error('请先关联一个活动')
+      } else {
+        this.time = { startDate: row.startDate, endDate: row.endDate }
+        this.createTime = row.createTime
+        this.detailShow = true
+        this.id = row && row.actId
+      }
     },
     // 下载
     openDownLeaflet(row) {
@@ -282,8 +255,6 @@ export default {
         type: 'download'
       }
       this.editLeafletShow = true
-      // this.$refs.downLeaflet.getInstMsg(row.id)
-      // this.$refs.downLeaflet.leafletDialogShow = true
     },
     // 编辑
     editLeafletBtnShow(val) {
@@ -316,6 +287,7 @@ export default {
     color: #1d9df2;
     font-size: 14px;
     margin-left: 10px;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

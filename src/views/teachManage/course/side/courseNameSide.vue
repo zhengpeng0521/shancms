@@ -144,6 +144,11 @@ export default {
   .info_detail /deep/ .el-tabs__nav-wrap::after {
     background: transparent;
   }
+  .info_detail /deep/ {
+    .el-tabs__nav-wrap {
+      border-bottom: 1px solid #ddd;
+    }
+  }
   .detail_inner {
     padding: 15px 20px 0;
     .detail_inner_message {

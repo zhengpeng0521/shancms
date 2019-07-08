@@ -1,8 +1,9 @@
+<!-- 微官网预览二维码 -->
 <template>
   <el-popover
     v-if="message!=''"
+    :title="title"
     placement="bottom-start"
-    title="手机扫码访问微官网"
     width="240"
     trigger="hover"
     popper-class="hoverDialog"
@@ -34,12 +35,11 @@
     <el-button
       slot="reference"
       :loading="loading"
-      plain
-    >访问微官网</el-button>
+      class="cancel_btn"
+    >{{ btnText }}</el-button>
   </el-popover>
 </template>
 <script>
-import { queryConfig } from '@/api/microWeb/webPreview'
 // 二维码装换插件
 import Vue from 'vue'
 import VueQrcode from '@chenfengyuan/vue-qrcode'
@@ -48,30 +48,50 @@ Vue.component(VueQrcode.name, VueQrcode)
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
 export default {
+  props: {
+    page: {
+      type: String,
+      default: undefined
+    },
+    orgHome: {
+      type: String,
+      default: undefined
+    }
+  },
+
   data() {
     return {
       message: '',
       loading: false
     }
   },
-  created() {
-    queryConfig().then(res => {
-      this.loading = true
-      if (res.data.errorCode === 0) {
-        let orgHome = res.data.results.orgHome
-        if (!orgHome) {
-          orgHome = ''
-        } else if (orgHome.startsWith('//')) {
-          orgHome = window.location.protocol + orgHome
-        } else if (!orgHome.startsWith('http')) {
-          orgHome = 'http://' + orgHome
-        }
-        this.message = orgHome
-      } else {
-        this.$message.error(res.errorMessage)
+
+  computed: {
+    title() {
+      const head = this.page && this.page === 'personCnter' ? '手机扫码访问个人中心' : '手机扫码访问微官网'
+      return head
+    },
+    btnText() {
+      const text = this.page && this.page === 'personCnter' ? '访问个人中心' : '访问微官网'
+      return text
+    }
+  },
+  watch: {
+    orgHome(nextValue) {
+      let orgHome = nextValue
+      if (!orgHome) {
+        orgHome = ''
+      } else if (orgHome.startsWith('//')) {
+        orgHome = window.location.protocol + orgHome
+      } else if (!orgHome.startsWith('http')) {
+        orgHome = 'http://' + orgHome
       }
-      this.loading = false
-    })
+      // 访问个人中心
+      if (this.page && this.page === 'personCnter') {
+        orgHome += '&redirect=personCenter'
+      }
+      this.message = orgHome
+    }
   },
   methods: {
     onCopy: function(e) {
@@ -99,14 +119,6 @@ export default {
 }
 </script>
 <style lang="scss">
-// .rotation-container {
-//   .el-table__row {
-//     height: 100px;
-//   }
-//   .el-table .cell {
-//     height: 70px !important;
-//   }
-// }
 .hoverDialog {
   padding: 0;
   .erweima-footer {

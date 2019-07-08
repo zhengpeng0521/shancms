@@ -218,7 +218,7 @@
     }
   }
   .stuAttendancecont {
-    height: calc(100vh - 238px);
+    height: calc(100vh - 227px);
     overflow: auto;
     position: relative;
     .stuAttendanceconttest {

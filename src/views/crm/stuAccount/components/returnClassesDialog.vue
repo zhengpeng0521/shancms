@@ -27,6 +27,7 @@
           <el-select
             v-model="returnClassesData.purchaseId"
             clearable
+            filterable
             placeholder="请选择合同编号"
             style="width: 100%"
             @change="contractNoChange"
@@ -56,6 +57,7 @@
                   v-model="scope.row.outCourseName"
                   size="small"
                   clearable
+                  filterable
                   placeholder="课时名称"
                   @change="outClassChange"
                 >
@@ -135,6 +137,7 @@
                   v-model="scope.row.inCourseName"
                   size="small"
                   clearable
+                  filterable
                   placeholder="课时名称"
                   @change="inClassChange"
                 >
@@ -287,7 +290,8 @@ export default {
     /* 合同编号下拉框列表数据 */
     getQueryOrderSummary(rowlist) {
       const params = {
-        cardId: rowlist.id
+        cardId: rowlist.id,
+        type: '2'
       }
       this.cardInfoData = rowlist
       queryOrderSummary(params).then(res => {

@@ -16,6 +16,7 @@
             v-model="distributeDialogData.worker"
             placeholder="请选择老师"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option

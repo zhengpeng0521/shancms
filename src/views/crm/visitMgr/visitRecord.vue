@@ -29,6 +29,7 @@
         />
         <div>
           <el-button
+            v-log="{compName:'到访管理',eventName:'web-【学员CRM】-到访管理-新建到访'}"
             type="primary"
             size="mini"
             @click="addVisitDialog()"
@@ -68,7 +69,7 @@ export default {
   data() {
     return {
       commonDateOptions: {
-        mainText: '跟进时间:',
+        mainText: '到访时间:',
         defaultDate: [],
         options: ['today', 'tomorrow', 'thisWeek', 'nextWeek'],
         markText: {},
@@ -138,6 +139,12 @@ export default {
     }
   },
   mounted() {
+    const route = this.$router.history.current.params
+    const action = route && route.action
+    if (action === 'addVisit') { // 打开新建窗口
+      this.addVisitDialog()
+    }
+
     this.querySubUser()
   },
   methods: {
@@ -198,6 +205,7 @@ export default {
     resetFieldHanle(formName) {
       // 重置的入参
       this.operatorType = '0'
+      this.userBranchSelected = '0'
       this.formValue = {}
       this.commonDateReset()
     },

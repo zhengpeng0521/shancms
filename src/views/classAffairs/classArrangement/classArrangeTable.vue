@@ -13,6 +13,7 @@
           <el-select
             v-model="ruleForm.clsId"
             placeholder="请选择"
+            filterable
           >
             <el-option
               v-for="item in classNameList"

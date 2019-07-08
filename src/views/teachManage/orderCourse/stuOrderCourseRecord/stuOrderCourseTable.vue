@@ -113,7 +113,6 @@
       :options="options"
       :operation="operates"
       :table-key="'teachManage_orderCourse_stuOrderCourseRecord_stuOrderCourseTable'"
-      @toChildData="getCheckCol"
       @handleSelectionChange="selectionChange"
     />
     <updateSignType

@@ -33,6 +33,7 @@
         v-for="(field, index) in extraForm"
         :prop="field.key"
         :key="'report' + index"
+        :style="field.type == 'input' && hidden !== field.key ? { marginRight: 0 } : {}"
       >
         <!-- 输入框 -->
         <el-input
@@ -57,7 +58,7 @@
           type="primary"
           icon="el-icon-picture-outline"
           @click="onSearch"
-        >{{ loading ? '统计中' : '生成报表' }}</el-button>
+        >{{ loading ? '统计中' : '更新报表' }}</el-button>
       </el-form-item>
     </el-form>
     <Media :query="{minWidth: mediaWidth}">

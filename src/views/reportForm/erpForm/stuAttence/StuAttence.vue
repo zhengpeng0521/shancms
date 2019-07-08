@@ -276,41 +276,122 @@ export default {
           width: '96px',
           isShowTooltip: true
         }
+      ] : type === '1' ? [
+        {
+          label: '课程名称',
+          prop: 'courseName',
+          width: '100px',
+          isShowTooltip: true
+        }, {
+          label: '预约报读(补课)',
+          prop: 'studyMaa',
+          width: '100px',
+          isShowTooltip: true,
+          render: (h, params) => {
+            return h('span', {}, [
+              h(
+                'span', { slot: 'reference' }, params.row.studyMaa + ' (' + (params.row.studyMaaR || 0) + ')'
+              )
+            ])
+          }
+        }, {
+          label: '出勤(补课)',
+          prop: 'studyAttend',
+          width: '100px',
+          isShowTooltip: true,
+          render: (h, params) => {
+            return h('span', {}, [
+              h(
+                'span', { slot: 'reference' }, params.row.studyAttend + ' (' + (params.row.studyAttendR || 0) + ')'
+              )
+            ])
+          }
+        }, {
+          label: '请假(补课)',
+          prop: 'studyLeave',
+          width: '100px',
+          isShowTooltip: true,
+          render: (h, params) => {
+            return h('span', {}, [
+              h(
+                'span', { slot: 'reference' }, params.row.studyLeave + ' (' + (params.row.studyLeaveR || 0) + ')'
+              )
+            ])
+          }
+        }, {
+          label: '旷课(补课)',
+          prop: 'studyAbsent',
+          width: '100px',
+          isShowTooltip: true,
+          render: (h, params) => {
+            return h('span', {}, [
+              h(
+                'span', { slot: 'reference' }, params.row.studyAbsent + ' (' + (params.row.studyAbsentR || 0) + ')'
+              )
+            ])
+          }
+        }, {
+          label: '出勤率',
+          prop: 'rate',
+          width: '100px',
+          isShowTooltip: true,
+          renderHeader: (h, { column, $index }) => {
+            return h('div', { 'class': 'stu_attence', style: { lineHeight: '23px' }}, [
+              h('span', '出勤率'),
+              h('el-tooltip', { props: { effect: 'dark', content: '已统计补课学员', placement: 'top' }}, [
+                h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', cursor: 'pointer', color: '#666', fontSize: '16px', verticalAlign: 'middle' }})
+              ])
+            ])
+          }
+        }, {
+          label: '正常出勤率',
+          prop: 'rateR',
+          width: '100px',
+          isShowTooltip: true,
+          renderHeader: (h, { column, $index }) => {
+            return h('div', { 'class': 'stu_attence', style: { lineHeight: '23px' }}, [
+              h('span', '正常出勤率'),
+              h('el-tooltip', { props: { effect: 'dark', content: '不统计补课学员', placement: 'top' }}, [
+                h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', cursor: 'pointer', color: '#666', fontSize: '16px', verticalAlign: 'middle' }})
+              ])
+            ])
+          }
+        }
       ] : [
         {
-          label: type === '1' ? '课程名称' : type === '2' ? '主教名称' : type === '3' ? '助教名称'
+          label: type === '2' ? '主教名称' : type === '3' ? '助教名称'
             : type === '4' ? '学员' : '未知',
-          prop: type === '1' ? 'courseName' : type === '4' ? 'stuName' : 'userName',
-          width: '120px',
+          prop: type === '4' ? 'stuName' : 'userName',
+          width: '100px',
           isShowTooltip: true
         }, {
           label: '预约报读',
-          prop: type === '1' ? 'studyMaa' : type === '2' ? 'mstudyMaa' : type === '3' ? 'astudyMaa'
+          prop: type === '2' ? 'mstudyMaa' : type === '3' ? 'astudyMaa'
             : type === '4' ? 'studyMaa' : 'maa',
-          width: '120px',
+          width: '100px',
           isShowTooltip: true
         }, {
           label: '出勤',
-          prop: type === '1' ? 'studyAttend' : type === '2' ? 'mstudyAttend' : type === '3' ? 'astudyAttend'
+          prop: type === '2' ? 'mstudyAttend' : type === '3' ? 'astudyAttend'
             : type === '4' ? 'studyAttend' : 'attend',
-          width: '120px',
+          width: '100px',
           isShowTooltip: true
         }, {
           label: '请假',
-          prop: type === '1' ? 'studyLeave' : type === '2' ? 'mstudyLeave' : type === '3' ? 'astudyLeave'
+          prop: type === '2' ? 'mstudyLeave' : type === '3' ? 'astudyLeave'
             : type === '4' ? 'studyLeave' : 'leave',
-          width: '120px',
+          width: '100px',
           isShowTooltip: true
         }, {
           label: '旷课',
-          prop: type === '1' ? 'studyAbsent' : type === '2' ? 'mstudyAbsent' : type === '3' ? 'astudyAbsent'
+          prop: type === '2' ? 'mstudyAbsent' : type === '3' ? 'astudyAbsent'
             : type === '4' ? 'studyAbsent' : 'absent',
-          width: '120px',
+          width: '100px',
           isShowTooltip: true
         }, {
           label: '出勤率',
           prop: 'rate',
-          width: '120px',
+          width: '100px',
           isShowTooltip: true
         }
       ]
@@ -326,3 +407,10 @@ export default {
   margin-top: 20px;
 }
 </style>
+
+<style lang="scss">
+.stu_attence {
+  padding: 0 !important;
+}
+</style>
+

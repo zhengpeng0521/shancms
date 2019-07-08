@@ -21,6 +21,7 @@
             v-model="ruleForm.classType"
             placeholder="请选择课系"
             style="width:455px"
+            filterable
           >
             <el-option
               v-for="item of typeList"
@@ -115,7 +116,6 @@ export default {
     sureAddFunc(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.info('this', this.ruleForm)
           if (this.type == 'add') { //eslint-disable-line
             const params = {
               courseId: this.courseId,

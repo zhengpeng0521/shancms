@@ -45,9 +45,15 @@
               <span>{{ item.virtualViews }}</span>
             </div>
             <el-button
+              v-if="item.isopen === '1'"
               type="primary"
               @click="picDetailBtn(item)"
             >创建</el-button>
+            <el-button
+              v-else
+              type="primary"
+              @click="buyDialogShow(true)"
+            >{{ '￥'+parseFloat(item.price)+ ' 购买' }}</el-button>
           </div>
         </div>
       </div>
@@ -69,7 +75,24 @@
       v-if="picDetailShow"
       :visible.sync="picDetailShow"
     />
-
+    <el-dialog
+      :visible.sync="buyDialogVisible"
+      title="活动开通"
+      width="300px"
+      append-to-body
+    >
+      <div style="text-align: center">
+        <img
+          class="connect_popover_img"
+          src="https://img.ishanshan.com/gimg/user/n///1557308283.png"
+        >
+        <p class="connect_p">微信扫码，获取专属服务顾问</p>
+        <p class="connect_mobile">客服热线：400-660-5733</p>
+      </div>
+      <span slot="footer">
+        <el-button type="primary" @click="buyDialogShow(false)">知道了</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -91,13 +114,17 @@ export default {
   },
   data() {
     return {
+      buyDialogVisible: false, // 开通弹框
       picDetailShow: false,
       obj: {}
     }
   },
   methods: {
+    // 购买活动显示
+    buyDialogShow(val) {
+      this.buyDialogVisible = val || false
+    },
     picDetailBtn(val) {
-      // console.log(val, '111')
       this.obj = val
       this.picDetailShow = true
     }
@@ -109,18 +136,16 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding-left: 30px;
+  padding-left: 20px;
   background: rgba(240, 242, 245, 0.8);
-  // height: calc(100vh - 430px);
+  min-width: 1100px;
+  min-height: 400px;
 }
 .picBoxCont {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  min-height: calc(100vh - 100px);
   width: 100%;
-  // padding-left: 30px;
-  // background: rgb(240, 240, 244);
   .zhanwei {
     height: 200px;
     width: 100%;
@@ -140,8 +165,6 @@ export default {
 .pic {
   height: 306px;
   min-width: 240px;
-  // border: 1px solid #f00;
-  // width: 22%;
   padding: 10px;
   position: relative;
   transition: all 1s;

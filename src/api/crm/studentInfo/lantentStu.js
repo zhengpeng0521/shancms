@@ -32,7 +32,14 @@ export function addVisitRecord(data) {
     data
   })
 }
-
+// 查询下属
+export async function querySubName(params) {
+  return request({
+    url: `${window.SYS_URL}/sysBase/tenantUser/summaryQueryByIds`,
+    method: 'post',
+    data: params
+  })
+}
 // 员工摘要查询
 export function tenantUserSummaryQuery(data) {
   return request({

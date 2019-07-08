@@ -261,9 +261,7 @@ export default {
           endDate: this.timeObj.endDate
         }
         this.viewDataByDaysQuery(params)
-        console.log(value, params)
       } else if (value === '有效用户') {
-        // console.log(this.radioval, this.radio2)
         this.isradio2()
         const params = {
           activityId: this.$parent.id,
@@ -282,7 +280,6 @@ export default {
       }
     },
     handleDataRadio(val) {
-      // console.log(this.radioval, 'radioval')
       if (val === '7天') {
         this.isradio2()
         const params = {
@@ -375,15 +372,12 @@ export default {
       this.loading2 = true
       countDataByDaysOnMemberQuery(params).then((res) => {
         if (res.data.errorCode === 0) {
-          // const list = []
           const reList = []
           const obj = { ...res.data.data }
           for (var key in obj) {
             const newObj = {}
             obj[key].map((val, index) => {
-              // if (index === 0) {
               newObj.view_date = key
-              // }
               newObj[val.member_name] = val.count
             })
             reList.push(newObj)
@@ -405,8 +399,6 @@ export default {
           }
           this.stuNumProps2.showCols = ['view_date', ...arr]
           this.chartList2 = list
-
-          console.log(this.chartList2, 'this.chartList2')
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -422,7 +414,6 @@ export default {
         dataArr.map((res) => {
           this.timeArr.push({ view_date: res, views: 0 })
         })
-        console.log(dataArr, this.timeArr, '7tian')
       } else if (this.radio2 === '30天') {
         const dataArr = this.getMonthTime(new Date())
         this.timeObj.startDate = dataArr[0]
@@ -431,7 +422,6 @@ export default {
         dataArr.map((res) => {
           this.timeArr.push({ view_date: res, views: 0 })
         })
-        console.log(dataArr, this.timeArr, '30天')
       } else if (this.radio2 === '全部') {
         const dataArr = this.getAllTime(new Date(this.$parent.createTime))
         this.timeObj.endDate = dataArr[dataArr.length - 1]
@@ -440,7 +430,6 @@ export default {
         dataArr.map((res) => {
           this.timeArr.push({ view_date: res, views: 0 })
         })
-        console.log(dataArr, this.timeArr, '全部')
       }
     },
     isradioval(params) {
@@ -449,7 +438,6 @@ export default {
       } else if (this.radioval === '有效用户') {
         this.countDataByDaysQuery(params)
       } else if (this.radioval === '采单人员') {
-        console.log(params, '--------------------菜单人员')
         this.countDataByDaysOnMemberQuery(params)
       }
     }
@@ -459,7 +447,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .baseDataContainer {
-  // overflow: auto;
   .header {
     i {
       display: inline-block;
@@ -488,7 +475,6 @@ export default {
       border-radius: 8px;
       display: flex;
       flex-direction: column;
-      // justify-content: center;
       align-items: center;
       .tit {
         font-size: 14px;
@@ -533,13 +519,6 @@ export default {
         padding-right: 20px;
         display: flex;
         justify-content: space-between;
-        // .radioBox .el-radio-button__inner {
-        //   // background: rgba(70, 182, 238, 0.5);
-        //   background-color: #f00 !important;
-        // }
-        // .radioBox .el-radio-button__orig-radio:checked {
-        //   background: #f00 !important;
-        // }
       }
       .viewNum {
         width: 100%;

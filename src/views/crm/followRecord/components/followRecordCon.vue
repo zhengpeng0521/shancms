@@ -72,7 +72,7 @@
           v-else
           class="null_data"
         >
-          <img src="https://img.ishanshan.com/gimg/img/0f4b3e548fb0edce54c578866babc7af">
+          <img src="https://img.ishanshan.com/gimg/user/n///1550211410.png">
           <div>暂时没有数据</div>
         </div>
       </div>
@@ -138,6 +138,7 @@
           <p class="con_con_text">{{ checkedItem.content }}</p>
           <div>
             <el-button
+              v-log="{compName:'跟进记录',eventName:'web-【学员CRM】-跟进记录-编辑'}"
               type="primary"
               style="margin-right:10px"
               @click="editFollowDialog(checkedItem)"
@@ -158,7 +159,7 @@
     <AddFollowDialog
       ref="addFollowDialog"
       :source="source"
-      @toUpdateTable="getUpdateTable"
+      @toUpdateTable="() => {getUpdateTable(true)}"
     />
     <!-- 侧边详情 -->
     <CrmDetailModal
@@ -169,7 +170,7 @@
       :base-data="baseData"
       :params="idObj"
       class="side_follow_dialog"
-      @toUpdateLeadsTable="getUpdateTable"
+      @toUpdateLeadsTable="(params, keep) => {getUpdateTable(keep)}"
     />
   </div>
 </template>
@@ -226,16 +227,17 @@ export default {
     }
   },
   mounted() {
-    this.getList()
+    // this.getList()
   },
   methods: {
-    getList(val) {
+    getList(val, keep) {
       let params
       if (val) {
         params = {
           pageSize: this.pageSize,
           pageIndex: 0,
-          source: this.source
+          source: this.source,
+          queryType: 'org'
         }
         Object.assign(params, val)
         this.pageIndex = 1
@@ -244,7 +246,8 @@ export default {
           ...this.searchValue,
           pageSize: this.pageSize,
           pageIndex: this.pageIndex - 1,
-          source: this.source
+          source: this.source,
+          queryType: 'org'
         }
       }
       recordQuery(params).then(res => {
@@ -252,7 +255,7 @@ export default {
         if (data.errorCode === 0) {
           this.followDataList = data.results
           this.resultCount = data.data && data.data.resultCount
-          this.followMainInfo(this.followDataList[0], 0)
+          !keep && this.followMainInfo(this.followDataList[0], 0)
           this.searchValue = params
         } else {
           this.$message.error(data.errorMessage)
@@ -320,6 +323,7 @@ export default {
               { label: '年级', key: 'grade' },
               { label: '特长', key: 'speciality' },
               { label: '血型', key: 'bloodType' },
+              { label: '学校', key: 'schaddress' },
               { label: '社保号码', key: 'socialSecurityNum' },
               { label: '备注', key: 'remark' },
               { label: '联系地址', key: 'conaddress' },
@@ -331,8 +335,7 @@ export default {
               { label: '家长邮箱', key: 'email' },
               { label: '固定电话', key: 'tel' },
               { label: '一级来源', key: 'first' },
-              { label: '二级来源', key: 'second' },
-              { label: '校区名称', key: 'orgName' }
+              { label: '二级来源', key: 'second' }
             ]
             this.headerData = {
               last: data.followRecordTime,
@@ -354,6 +357,7 @@ export default {
               grade: data.grade,
               speciality: data.speciality,
               bloodType: data.bloodType,
+              schaddress: data.schaddress,
               socialSecurityNum: data.socialSecurityNum,
               remark: data.remark,
               conaddress: data.conaddress,
@@ -389,6 +393,7 @@ export default {
           { label: '爱好', key: 'hobby' },
           { label: '特长', key: 'speciality' },
           { label: '血型', key: 'bloodType' },
+          { label: '学校', key: 'schaddress' },
           { label: '社保号码', key: 'socialSecurityNum' },
           { label: '手机号', key: 'mobile', popover: 'true' },
           { label: '学员类型', key: 'intentionName' },
@@ -424,6 +429,7 @@ export default {
               hobby: result.hobby,
               speciality: result.speciality,
               bloodType: result.bloodType,
+              schaddress: result.schaddress,
               socialSecurityNum: result.socialSecurityNum,
               mobile: result.mobile,
               intentionName: result.intentionName,
@@ -439,8 +445,8 @@ export default {
         })
       }
     },
-    getUpdateTable() {
-      this.getList()
+    getUpdateTable(keep) {
+      this.getList(false, keep)
     }
   }
 }
@@ -495,8 +501,7 @@ export default {
       align-items: center;
       min-height: 100px;
       img {
-        transform: scale(0.6);
-        margin-bottom: -10px;
+        margin-bottom: 10px;
       }
       div {
         color: #999;
@@ -505,7 +510,8 @@ export default {
     }
     .followCon_left_wrap {
       padding: 20px;
-      overflow: hidden auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       height: calc(100% - 50px);
       max-height: calc(100% - 50px);
       background: rgba(240, 242, 245, 0.6);

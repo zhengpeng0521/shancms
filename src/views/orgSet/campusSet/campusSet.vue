@@ -8,14 +8,11 @@
       id="ID"
       class="campus_header"
     >
-      <span>
-
-        校区设置
-      </span>
-      <el-button
+      <span>校区信息</span>
+      <!-- <el-button
         type="primary"
         @click="saveForm('campusData')"
-      >保存</el-button>
+      >保存</el-button> -->
     </div>
     <div class="campus_content">
 
@@ -31,74 +28,78 @@
         :rules="rules"
         label-width="100px"
       >
-        <el-form-item
-          label="校区名称:"
-          prop="orgName"
-        >
-          <el-input
-            v-model="campusData.orgName"
-            clearable
-            disabled
-          />
-
-        </el-form-item>
-        <el-form-item
-          label="联系人姓名:"
-          prop="contacts"
-        >
-          <el-input
-            v-model="campusData.contacts"
-            clearable
-            placeholder="限20字"
-          />
-
-        </el-form-item>
-        <el-form-item
-          label="联系方式:"
-          prop="tel"
-        >
-          <el-input
-            v-model="campusData.tel"
-            clearable
-            placeholder="请填写联系方式"
-          />
-
-        </el-form-item>
-        <el-form-item
-          label="校区logo:"
-          prop="schoolLogo"
-        >
-
-          <el-upload
-            :class="{'disabled ': bgVisible}"
-            :on-success="handleLogoAvatarSuccess"
-            :on-preview="handleBackImgeAvatarPreview"
-            :on-remove="handleBackImgeAvatarRemove"
-            :on-change="handleBackImgeAvatarChange"
-            :limit="1"
-            :file-list="bgFilelist"
-            action="https://imgsrc.ishanshan.com/gimg/upload"
-            list-type="picture-card"
+        <div class="form-width">
+          <el-form-item
+            label="校区名称:"
+            prop="orgName"
           >
-            <i class="el-icon-plus" />
-            <div class="upload-text">上传照片</div>
-          </el-upload>
-          <el-dialog
-            :visible.sync="bgDialogVisible"
-            size="full"
-            title="预览"
-          >
-            <img
-              :src="campusData.schoolLogo"
-              width="100%"
-              alt=""
-          ></el-dialog>
+            <el-input
+              v-model="campusData.orgName"
+              clearable
+              disabled
+            />
 
-          <span class="logo_explain">支持png、jpeg、gif格式的图片, 建议宽高40×40px; 图片大小小于2M</span>
-        </el-form-item>
+          </el-form-item>
+          <el-form-item
+            label="联系人姓名:"
+            prop="contacts"
+          >
+            <el-input
+              v-model="campusData.contacts"
+              clearable
+              placeholder="限20字"
+            />
+
+          </el-form-item>
+          <el-form-item
+            label="联系方式:"
+            prop="tel"
+          >
+            <el-input
+              v-model="campusData.tel"
+              clearable
+              placeholder="请填写联系方式"
+            />
+
+          </el-form-item>
+          <el-form-item
+            label="校区logo:"
+            prop="schoolLogo"
+          >
+
+            <el-upload
+              :class="{'disabled ': bgVisible}"
+              :on-success="handleLogoAvatarSuccess"
+              :on-preview="handleBackImgeAvatarPreview"
+              :on-remove="handleBackImgeAvatarRemove"
+              :on-change="handleBackImgeAvatarChange"
+              :limit="1"
+              :file-list="bgFilelist"
+              action="https://imgsrc.ishanshan.com/gimg/upload"
+              list-type="picture-card"
+            >
+              <i class="el-icon-plus" />
+              <div class="upload-text">上传照片</div>
+            </el-upload>
+            <el-dialog
+              :visible.sync="bgDialogVisible"
+              size="full"
+              title="预览"
+            >
+              <img
+                :src="campusData.schoolLogo"
+                width="100%"
+                alt=""
+            ></el-dialog>
+
+            <span class="logo_explain">支持png、jpeg、gif格式的图片, 建议宽高40×40px; 图片大小小于2M</span>
+          </el-form-item>
+        </div>
+
         <el-form-item
           label="校区介绍:"
           prop="intro"
+          style="max-width:950px"
         >
           <el-input
             v-model="campusData.intro"
@@ -113,32 +114,34 @@
 
           </span>
         </div>
-        <el-form-item
-          label="营业时间:"
-          prop="serverTime"
-        >
-          <el-input
-            v-model="campusData.serverTime"
-            clearable
-            placeholder="限200字"
-          />
+        <div class="form-width">
+          <el-form-item
+            label="营业时间:"
+            prop="serverTime"
+          >
+            <el-input
+              v-model="campusData.serverTime"
+              clearable
+              placeholder="限30字"
+            />
 
-        </el-form-item>
+          </el-form-item>
 
-        <el-form-item
-          label="适用年龄:"
-          prop="ageTag"
-        >
-          <el-input
-            v-model="campusData.ageTag"
-            placeholder="限40字"
-          />
+          <el-form-item
+            label="适用年龄:"
+            prop="ageTag"
+          >
+            <el-input
+              v-model="campusData.ageTag"
+              placeholder="限40字"
+            />
 
-        </el-form-item>
-
+          </el-form-item>
+        </div>
         <el-form-item
           label="业务范围:"
           prop="categoryTag"
+          style="max-width:950px"
         >
           <el-checkbox-group v-model="campusData.categoryTag">
             <el-checkbox
@@ -307,6 +310,13 @@
 
     </div>
 
+    <div class="campus_bottom">
+      <el-button
+        type="primary"
+        @click="saveForm('campusData')"
+      >保存</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -376,7 +386,7 @@ export default {
         ],
         serverTime: [
           { required: true, message: '请填写营业时间', trigger: 'change' },
-          { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'change' }
+          { max: 30, message: '限制30个字符', trigger: 'change' }
         ],
         ageTag: [
           {
@@ -421,15 +431,21 @@ export default {
       getOrgan().then(res => {
         if (res.data.errorCode === 0) {
           this.campusData = res.data
-
-          this.bgFilelist.push({ url: res.data.schoolLogo })
+          // eslint-disable-next-line
+          if (res.data.schoolLogo != undefined && res.data.schoolLogo != '' && res.data.schoolLogo != null) {
+            this.bgFilelist.push({ url: res.data.schoolLogo })
+          }
           if (this.bgFilelist && this.bgFilelist.length > 0) {
             this.bgVisible = true
           }
           this.campusData.teachers = Object.assign([], JSON.parse(res.data.teachers))
           this.campusData.addrColumn = Object.assign([], JSON.parse(res.data.addrColumn))
-          this.campusData.categoryTag = res.data.categoryTag.split(',')
-          // this.campusData.categoryTag = []
+          // eslint-disable-next-line
+          if (res.data.categoryTag != null && res.data.categoryTag != undefined && res.data.categoryTag != '') {
+            this.campusData.categoryTag = res.data.categoryTag && res.data.categoryTag.split(',')
+          } else {
+            this.campusData.categoryTag = []
+          }
           if (!res.data.images) {
             this.campusData.images = []
           } else {
@@ -614,7 +630,6 @@ export default {
             })
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -626,7 +641,8 @@ export default {
 .campus_set /deep/ {
   margin-left: 20px;
   height: 100%;
-  overflow: auto;
+  // overflow: auto;
+  min-width: 800px;
   .avatar-uploader .el-upload {
     width: 90px;
     height: 90px;
@@ -726,7 +742,10 @@ export default {
 }
 
 .campus_content {
-  padding-right: 20px;
+  margin-right: 20px;
+  height: calc(100% - 148px);
+  overflow: auto;
+  border-bottom: 1px solid #ddd;
 }
 
 .el-form-item {
@@ -746,5 +765,12 @@ export default {
 }
 .title_box {
   margin-bottom: 14px;
+}
+.form-width {
+  width: 500px;
+}
+
+.campus_bottom {
+  padding: 20px;
 }
 </style>

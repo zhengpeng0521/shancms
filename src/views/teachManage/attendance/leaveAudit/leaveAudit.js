@@ -101,10 +101,10 @@ export default {
         },
         {
           label: '上课时间',
-          prop: 'time',
+          prop: 'studyTimeZone',
           isShowSet: true,
           isShowTooltip: true,
-          width: '100'
+          width: '120'
         },
         {
           label: '请假原因',
@@ -157,7 +157,7 @@ export default {
         selectableFunc: this.getSelectAbleFunc,
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 279px)',
+      tableHeight: 'calc(100vh - 269px)',
       checkNum: '0',
       checkList: [],
       formValue: {}, // 搜索栏的数据
@@ -170,7 +170,7 @@ export default {
     let params = {}
     if (route && route.action && route.action === 'waitLeave') {
       params = { auditStatus: '1' }
-      this.$refs.commonSearch.params.auditStatus = '1'
+      this.$refs.commonSearch.formValue.auditStatus = '1'
       this.options.params = params
     }
     this.$refs.tableCommon.getList(params)
@@ -240,9 +240,6 @@ export default {
     selectionChange(val) {
       this.checkNum = val.length
       this.checkList = val
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     /* 多选是否可用 */
     getSelectAbleFunc(row) {

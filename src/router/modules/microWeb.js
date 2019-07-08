@@ -14,6 +14,16 @@ const microWebRouter = {
   },
   children: [
     {
+      path: 'webPreview',
+      component: () => import('@/views/microWeb/webPreview/campusHomepage'),
+      name: 'webPreview',
+      meta: {
+        title: '微官网设置',
+        meunId: '3020000'
+        // icon: 'user'
+      }
+    },
+    {
       path: 'wechatReservation',
       component: () => import('@/views/microWeb/wechatReservation/index'),
       name: 'wechatReservation',
@@ -50,16 +60,6 @@ const microWebRouter = {
       meta: {
         title: '活动管理',
         meunId: '3050000'
-        // icon: 'user'
-      }
-    },
-    {
-      path: 'webPreview',
-      component: () => import('@/views/microWeb/webPreview/campusHomepage'),
-      name: 'webPreview',
-      meta: {
-        title: '微官网设置',
-        meunId: '3020000'
         // icon: 'user'
       }
     }

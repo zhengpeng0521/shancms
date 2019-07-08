@@ -140,7 +140,7 @@ export default {
         apiService: getElvationList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 241px)',
+      tableHeight: 'calc(100vh - 231px)',
       operates: {
         width: '150',
         fixed: 'right',
@@ -157,9 +157,6 @@ export default {
     }
   },
   methods: {
-    getCheckCol(val) {
-      console.info('val--->', val)
-    },
     /* 搜索 */
     searchHandle(formValue) {
       // 搜索的入参

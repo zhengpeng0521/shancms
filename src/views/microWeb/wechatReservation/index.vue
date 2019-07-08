@@ -10,6 +10,7 @@
           @toParent="resetFieldHanle"
         />
         <AdvancedSearch
+          ref="superSearch"
           v-bind="superSearch"
           style="margin-left:10px"
         />
@@ -55,14 +56,14 @@
             </div>
             <el-button
               slot="reference"
-              plain
+              class="cancel_btn"
               style="margin:0 10px"
             >预约链接</el-button>
           </el-popover>
         </template>
         <el-button
           v-if="hasBtn('301000002')"
-          plain
+          class="cancel_btn"
           @click="loadDown"
         >导出</el-button>
       </div>
@@ -359,6 +360,7 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         isSettingShow: true, // 是否出现设置
         apiService: queryList // 表格的数据请求接口
       },
@@ -395,6 +397,8 @@ export default {
       // background: 'rgba(0, 0, 0, 0.7)',
       target: document.querySelector('.wechatReservation-container')
     })
+
+    // 查询预约链接
     queryConfig().then(res => {
       if (res.data.errorCode === 0) {
         // console.log(res.data, '---------')
@@ -412,6 +416,34 @@ export default {
         this.$message.error(res.errorMessage)
       }
     })
+
+    // 根据路由默认查询
+    const route = this.$router.history.current.params
+    const routerDateType = route && route.routerDateType
+    if (routerDateType === 'today') {
+      this.$refs.superSearch.ruleForm.enlistTime = [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+    } else if (routerDateType === 'thisWeek') {
+      const weekOfday = this.$moment().format('d') // 计算今天是这周第几天
+      const monday = this.$moment()
+        .subtract(weekOfday - 1, 'days')
+        .format('YYYY-MM-DD')
+      const sunday = this.$moment()
+        .add(7 - weekOfday, 'days')
+        .format('YYYY-MM-DD') // 周日日期
+      this.$refs.superSearch.ruleForm.enlistTime = [monday, sunday]
+    } else if (routerDateType === 'thisMonth') {
+      // 返回本月
+      const start = this.$moment()
+        .month(this.$moment().month())
+        .startOf('month')
+        .format('YYYY-MM-DD')
+      const end = this.$moment()
+        .month(this.$moment().month())
+        .endOf('month')
+        .format('YYYY-MM-DD')
+      this.$refs.superSearch.ruleForm.enlistTime = [start, end]
+    }
+    this.$refs.superSearch.submitForm()
   },
   methods: {
     /* 搜索 */
@@ -504,7 +536,6 @@ export default {
     reservationSettingDialogShow() {
       this.reservationSettingShow = true
       this.$refs.reservationSettingDialog.reservationSettingDialogShow = true
-      console.log(this.$refs, '11111111')
     },
     //  二维码弹框方法
     onCopy: function(e) {
@@ -524,9 +555,9 @@ export default {
       batchDeal(params).then(ret => {
         if (ret.data.errorCode === 0) {
           this.searchHandle(this.formValue)
-          this.$message.success(ret.errorMessage)
+          this.$message.success(ret.data.errorMessage)
         } else {
-          this.$message.error(ret.errorMessage)
+          this.$message.error(ret.data.errorMessage)
         }
       })
     },
@@ -549,8 +580,8 @@ export default {
     width: 100%;
     padding-top: 20px;
     padding-bottom: 14px;
-    border-bottom: 1px solid #ddd;
-    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
     // background: pink;
   }
   .search {

@@ -33,7 +33,7 @@ export function purchaseDepositDelete(data) {
 // 定金管理---新建定金弹框---学员下拉列表
 export function summaryQuery(data) {
   return request({
-    url: baseUrl + '/crm/stuInfo/stu/summaryQuery',
+    url: baseUrl + '/crm/stuInfo/stu/summaryQueryAll',
     method: 'post',
     data
   })
@@ -162,5 +162,30 @@ export function createRefundOrder(data) {
     url: baseUrl + '/crm/purchaseRefund/createRefundOrder',
     method: 'post',
     data
+  })
+}
+// 退款列表---打印详情
+export function getPrintInfo(data) {
+  return request({
+    url: baseUrl + '/crm/purchaseRefund/getPrintRefundOrderById',
+    method: 'post',
+    data
+  })
+}
+
+// 新建收款单---学员列表数据精确查询
+export async function queryCRMStuList(params) {
+  return request({
+    url: `${window.SS_CRM}/crm/stuInfo/stu/queryCRMStuList`,
+    method: 'post',
+    data: params
+  })
+}
+// 新建收款单---合同列表
+export async function queryOrder(params) {
+  return request({
+    url: `${window.SS_CRM}/crm/contract/queryOrder`,
+    method: 'post',
+    data: params
   })
 }

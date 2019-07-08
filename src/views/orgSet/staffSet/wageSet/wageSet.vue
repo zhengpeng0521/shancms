@@ -24,8 +24,13 @@
       @close="cancelForm('wageData')"
     >
 
-      <div style="margin-bottom:20px"><span class="form_txt" />
-        固定工资</div>
+      <div
+        style="margin-bottom:20px"
+        class="title"
+      >
+        <span class="form_txt" />
+        <span>固定工资</span>
+      </div>
       <el-form
         ref="wageData"
         :model="wageData"
@@ -56,8 +61,12 @@
           />
 
         </el-form-item>
-        <div style=" margin-bottom:20px"><span class="form_txt" />
-          课时提成
+        <div
+          style=" margin-bottom:20px"
+          class="title"
+        >
+          <span class="form_txt" />
+          <span>课时提成</span>
           <el-popover
             v-model="isPopHover"
             placement="right"
@@ -71,14 +80,14 @@
             </div>
             <i
               slot="reference"
-              class="el-icon-question"
-              style="cursor:pointer;color:#46b6ee"
+              class="iconfont icon_ym_ts"
+              style="cursor:pointer;color:#666;font-size:16px;"
             />
           </el-popover>
         </div>
         <div
           v-for="(items,index) in wageData.commission"
-          :key="index"
+          :key="'commission' + index"
           class="class_time_block"
         >
           <div style="text-align: end;">
@@ -115,12 +124,13 @@
           </div>
           <el-form-item
             :prop="'commission.' + index + '.courseId'"
-            :rules="[{ required: true, message: '请选择授课课程', trigger: 'change' },]"
+            :rules="[{ required: true, message: '请选择授课课程', trigger: 'change' }]"
             label="授课课程:"
           >
             <el-select
               v-model="items.courseId"
               placeholder="请选择"
+              filterable
             >
               <el-option
                 v-for="item in options"
@@ -141,8 +151,8 @@
               v-model="items.royaltyMethod"
               @change="getRadio(index,items.royaltyMethod)"
             >
-              <el-radio :label="1"> 按到课人次 </el-radio>
-              <el-radio :label="2"> 按授课次数</el-radio>
+              <el-radio :label="1">按到课人次</el-radio>
+              <el-radio :label="2">按授课次数</el-radio>
               <el-radio :label="3">按销课金额</el-radio>
 
             </el-radio-group>
@@ -153,7 +163,10 @@
             :rules="[{ required: true, message: '请选择计算方式', trigger: 'change' },]"
             label="计算方式:"
           >
-            <el-radio-group v-model="items.payMethod">
+            <el-radio-group
+              v-model="items.payMethod"
+              @change="(value) => {changePayMethod(index, value)}"
+            >
               <el-radio :label="1">固定金额</el-radio>
               <el-radio :label="2">梯度金额 </el-radio>
 
@@ -167,25 +180,25 @@
           >
             <div
               v-for="(i,k) in items.pushMoneyWay"
-              :key="k"
+              :key="'pushWay'+k"
             >
               <el-input
-                v-if="items.payMethod=='2'"
+                v-if="items.payMethod === 2"
                 v-model="i.time"
               >
                 <template slot="prepend">满</template>
 
                 <template
-                  v-if="items.royaltyMethod=='1' &&items.payMethod=='2'"
+                  v-if="items.royaltyMethod === 1 && items.payMethod === 2"
                   slot="append"
                 >人次</template>
 
                 <template
-                  v-if="items.royaltyMethod=='2' &&items.payMethod=='2'"
+                  v-if="items.royaltyMethod === 2 && items.payMethod === 2"
                   slot="append"
                 >次课</template>
                 <template
-                  v-if="items.royaltyMethod=='3' && items.payMethod=='2'"
+                  v-if="items.royaltyMethod === 3 && items.payMethod === 2"
                   slot="append"
                 >元</template>
 
@@ -195,16 +208,16 @@
                 size="mini"
               >
                 <template
-                  v-if="items.royaltyMethod=='1'"
+                  v-if="items.royaltyMethod === 1"
                   slot="prepend"
                 >每人次</template>
                 <template
-                  v-if="items.royaltyMethod=='2'"
+                  v-if="items.royaltyMethod === 2"
                   slot="prepend"
                 >每次课</template>
 
                 <template
-                  v-if="items.royaltyMethod=='3'"
+                  v-if="items.royaltyMethod === 3"
                   slot="append"
                 >%</template>
                 <template
@@ -333,7 +346,7 @@ export default {
           prop: 'userName',
 
           formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.userName}</div>`
+            return `<div style="text-overflow:ellipsis;overflow:hidden">${row.userName}</div>`
           }
         },
         {
@@ -493,16 +506,13 @@ export default {
       })
     },
 
-    filterData() {
-      this.saveOldCommission.forEach((v, i) => {
-        this.wageData.commission.map((ele, ii) => {
-          if (v.royaltyMethod !== ele.royaltyMethod) {
-            this.wageData.commission[ii].pushMoneyWay = [{ money: '', time: '' }]
-          } else {
-            ele = v
-          }
-        })
-      })
+    filterData(index, val) {
+      if (this.saveOldCommission[index] && this.wageData.commission[index].royaltyMethod === this.saveOldCommission[index].royaltyMethod) {
+        this.wageData.commission[index].pushMoneyWay = this.saveOldCommission[index].pushMoneyWay
+      } else {
+        this.wageData.commission[index].pushMoneyWay = [{ money: '', time: '' }]
+      }
+      this.$forceUpdate()
     },
 
     deepCopy(obj) {
@@ -567,8 +577,21 @@ export default {
     },
 
     getRadio(index, val) {
-      this.filterData()
+      this.filterData(index, val)
     },
+
+    /** 计算方式change */
+    changePayMethod(index, value) {
+      if (this.saveOldCommission[index] &&
+      this.wageData.commission[index].royaltyMethod === this.saveOldCommission[index].royaltyMethod &&
+      value === this.saveOldCommission[index].payMethod) {
+        this.wageData.commission[index].pushMoneyWay = this.saveOldCommission[index].pushMoneyWay
+      } else {
+        this.wageData.commission[index].pushMoneyWay = [{ money: '', time: '' }]
+      }
+      this.$forceUpdate()
+    },
+
     cancelLessonItem(val) {
       this.isPopOpen.splice(val, 1, false)
     },
@@ -658,7 +681,6 @@ export default {
             }
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -668,6 +690,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.title {
+  display: flex;
+  align-items: center;
+  span {
+    margin-right: 5px;
+  }
+}
 .el-input-group {
   width: 200px;
 }

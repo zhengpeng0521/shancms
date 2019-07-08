@@ -84,7 +84,11 @@ const lantentStu = {
         if (state.flag) {
           const allRegex = {}
           for (const i in data.data.sourceFields) {
-            allRegex[data.data.sourceFields[i][i]] = i
+            data.data.dataModelFields.forEach(item => {
+              if (data.data.sourceFields[i][i].indexOf(item.value) > -1) {
+                allRegex[i] = item.key
+              }
+            })
           }
           dispatch('previewData', {
             regex: JSON.stringify(allRegex),

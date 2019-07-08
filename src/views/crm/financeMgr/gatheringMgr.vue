@@ -14,11 +14,13 @@
       </div>
       <div>
         <el-button
+          v-log="{compName:'财务管理',eventName:'web-【学员CRM】-财务管理-收款管理-新建收款单'}"
           type="primary"
           size="mini"
           @click="addGatheringDialog()"
         >新建收款单</el-button>
         <el-button
+          v-log="{compName:'财务管理',eventName:'web-【学员CRM】-财务管理-收款管理-导出'}"
           v-if="hasBtn('407000003')"
           class="
           green_btn"
@@ -49,6 +51,7 @@
           class="dialog-footer"
         >
           <el-button
+            v-log="{compName:'财务管理',eventName:'web-【学员CRM】-财务管理-收款管理-到账审核'}"
             type="primary"
             @click="submitForm('1')"
           >确认到账</el-button>
@@ -66,7 +69,12 @@
       </el-dialog>
     </div>
     <!-- 新建收款单弹框 -->
-    <AddGatheringDialog ref="addGatheringDialog" />
+    <AddGatheringDialog
+      v-if="isAddGatheringVisible"
+      ref="addGatheringDialog"
+      @close="getCloseAddGather"
+      @toPayInfoList="getPayInfoListUpdate"
+    />
   </div>
 </template>
 
@@ -203,7 +211,7 @@ export default {
         apiService: payInfoList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 227px)',
       operates: {
         width: '140',
         fixed: 'right',
@@ -285,18 +293,23 @@ export default {
       },
       superValue: {},
       auditDialogShow: false, // 到账审核弹框显隐
-      rowList: {} // 到账审核选中的数据
+      rowList: {}, // 到账审核选中的数据
+      isAddGatheringVisible: false // 新建收款单弹窗
     }
   },
 
   mounted() {
     const route = this.$router.history.current.params
     let params = {}
-    if (route && route.action && route.action === 'waitPay') {
+    const action = route && route.action
+    if (route.action === 'waitPay') {
       params = { status: '2' }
-      this.$refs.commonSearch.params.status = '2'
+      this.$refs.commonSearch.formValue.status = '2'
       this.options.params = params
+    } else if (action === 'addGathering') { // 打开新建窗口
+      this.addGatheringDialog()
     }
+
     this.$refs.tableCommon.getList(params)
   },
 
@@ -308,7 +321,21 @@ export default {
     },
     /* 新建收款单弹框 */
     addGatheringDialog() {
-      this.$refs.addGatheringDialog.showDialog()
+      this.isAddGatheringVisible = true
+      this.$nextTick(() => {
+        this.$refs.addGatheringDialog.showDialog()
+      })
+    },
+    /* 关闭新建收款单弹窗 */
+    getCloseAddGather() {
+      this.isAddGatheringVisible = false
+    },
+    /* 更新收款列表 */
+    getPayInfoListUpdate() {
+      const param = {
+        pageIndex: 0
+      }
+      this.$refs.tableCommon.getList(param)
     },
     /* 关闭弹框 */
     cancelDialog() {

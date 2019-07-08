@@ -14,6 +14,7 @@
           <el-select
             v-model="course"
             multiple
+            filterable
             placeholder="请选择"
             @change="courseChange"
             @remove-tag="removeTagFunc"
@@ -159,7 +160,7 @@
       </div>
       <div
         id="print_area_stu"
-        style="height:0;width:1000px;padding-bottom:50px;opacity:0"
+        style="height:0;width:100%;padding-bottom:50px;opacity:0"
       />
     </div>
   </div>
@@ -167,7 +168,7 @@
 <script src="./printSignInTable.js"></script>
 <style lang="scss" scoped>
 .printSignTable /deep/ {
-  width: 100%;
+  min-width: 1060px;
   height: calc(100vh - 147px);
   overflow: auto;
   padding-right: 10px;
@@ -187,7 +188,7 @@
     overflow: auto;
   }
   .print_area {
-    width: 1060px;
+    min-width: 1060px;
     .sign_head {
       margin: 0 auto;
       height: 100%;

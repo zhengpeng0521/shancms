@@ -10,14 +10,17 @@
       />
       <div>
         <el-button
+          v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-兑换商品'}"
           class="green_btn"
           @click="changeDialog()"
         >兑换商品</el-button>
         <el-button
+          v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-积分变动'}"
           class="green_btn"
           @click="productDialog()"
         >积分变动</el-button>
         <el-button
+          v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-积分导入'}"
           class="green_btn"
           @click="importDialog()"
         >积分导入</el-button>
@@ -32,14 +35,15 @@
       :options="options"
       table-key="crm_integral_account"
     />
-    <!-- 兑换商品组件弹框组件 -->
-    <ConProductDialog ref="conProductDialog" />
     <!-- 积分变动弹框组件 -->
+    <ConProductDialog ref="conProductDialog" />
+    <!-- 兑换商品组件弹框组件 -->
     <IntChangeDialog ref="intChangeDialog" />
     <!-- 积分导入弹框组件 -->
     <IntImportDialog
       ref="intImportDialog"
       :refresh="refresh"
+      @toUpdateTable="getUpdateTable"
     />
   </div>
 </template>
@@ -160,7 +164,7 @@ export default {
                   {
                     props: {
                       placement: 'top',
-                      trigger: 'click',
+                      trigger: 'hover',
                       content: text
                     }
                   },
@@ -188,7 +192,7 @@ export default {
                 {
                   props: {
                     placement: 'top',
-                    trigger: 'click'
+                    trigger: 'hover'
                   }
                 },
                 [
@@ -209,7 +213,7 @@ export default {
         apiService: getInterialList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 239px)',
+      tableHeight: 'calc(100vh - 228px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -244,6 +248,13 @@ export default {
     /* 积分导入弹框显示 */
     importDialog() {
       this.$refs.intImportDialog.showDialog()
+    },
+    /* 刷新列表数据 */
+    getUpdateTable() {
+      const params = {
+        pageIndex: 0
+      }
+      this.$refs.tableCommon.getList(params)
     },
     /* 搜索 */
     searchHandle(formValue) {

@@ -18,9 +18,15 @@
           class="print_title"
           style="text-align: center;font-size: 15px; margin-top: 5px;"
         >缴费单</div>
-        <div>
-          <span>学员姓名:</span>
-          <span>{{ printData.stuName }}</span>
+        <div class="containt1">
+          <div class="left">
+            <span>学员姓名:</span>
+            <span>{{ printData.stuName }}</span>
+          </div>
+          <div class="right">
+            <span>收款单号:</span>
+            <span>{{ printData.orderId }}</span>
+          </div>
         </div>
         <div style="margin: 16px 0;">
           <table
@@ -31,7 +37,8 @@
               <th style="height:32px;border: 1px solid #ddd;">交易内容</th>
               <th style="height:32px;border: 1px solid #ddd;">数量</th>
               <th style="height:32px;border: 1px solid #ddd;">优惠</th>
-              <th style="height:32px;border: 1px solid #ddd;">实收</th>
+              <th style="height:32px;border: 1px solid #ddd;">应收</th>
+              <!-- <th style="height:32px;border: 1px solid #ddd;">实收</th> -->
             </tr>
             <tr
               v-for="(item,index) of printData.content"
@@ -41,6 +48,7 @@
               <td style="height: 32px;text-align: center;border: 1px solid #ddd;">{{ item.amount }}</td>
               <td style="height: 32px;text-align: center;border: 1px solid #ddd;">{{ item.discount }}</td>
               <td style="height: 32px;text-align: center;border: 1px solid #ddd;">￥{{ item.money }}</td>
+              <!-- <td style="height: 32px;text-align: center;border: 1px solid #ddd;">￥{{ item.money }}</td> -->
             </tr>
             <tr>
               <td
@@ -48,10 +56,11 @@
                 style="height: 32px;text-align: center;border: 1px solid #ddd;"
               >总计</td>
               <td style="height: 32px;text-align: center;border: 1px solid #ddd;">￥{{ printData.totalMoney }}</td>
+              <!-- <td style="height: 32px;text-align: center;border: 1px solid #ddd;">￥{{ printData.totalMoney }}</td> -->
             </tr>
           </table>
         </div>
-        <div
+        <!-- <div
           class="print_info"
           style="display: flex;"
         >
@@ -102,17 +111,35 @@
             <span>地址:</span>
             <span>{{ printData.address }}</span>
           </p>
-        </div>
-        <div
-          class="print_info print_last"
-          style="display: flex; margin: 20px 0;justify-content: space-between;"
-        >
+        </div> -->
+        <div class="print_info">
+          <p>
+            <span>经办日期:</span>
+            <span>{{ printData.createTime }}</span>
+          </p>
           <p style="width: 260px;">
-            <span>经办人签字:</span>
+            <span>经办人:</span>
+            <span>{{ printData.operator }}</span>
           </p>
-          <p style="margin-right: 150px;">
-            <span>客户签字:</span>
+          <p style="width: 260px;">
+            <span>电话:</span>
+            <span>{{ printData.tel }}</span>
           </p>
+          <p>
+            <span>地址:</span>
+            <span>{{ printData.address }}</span>
+          </p>
+          <div
+            class="print_info print_last"
+            style="display: flex; margin: 20px 0;justify-content: space-between;"
+          >
+            <p style="width: 260px;">
+              <span>经办人签字:</span>
+            </p>
+            <p style="margin-right: 400px;">
+              <span>客户签字:</span>
+            </p>
+          </div>
         </div>
       </div>
       <span
@@ -125,9 +152,6 @@
         >打 印</el-button>
       </span>
     </el-dialog>
-    <!-- <div class="print_content" >
-
-    </div> -->
   </div>
 </template>
 
@@ -217,5 +241,15 @@ export default {
 //     }
 //   }
 // }
+ .containt1{
+    display: flex;
+    justify-content: space-between;
+ }
+ .print_info{
+    padding: 6px 0;
+    p{
+       padding: 6px 0;
+    }
+ }
 </style>
 

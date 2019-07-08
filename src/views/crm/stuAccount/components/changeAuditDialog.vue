@@ -32,6 +32,7 @@
             v-model="auditData.joinStu"
             placeholder="请选择转入学员"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -84,7 +85,8 @@ export default {
         detail: ''
       },
       rules: {
-        radio: [{ required: true }]
+        radio: [{ required: true }],
+        joinStu: [{ required: true, message: '请选择转入学员', trigger: ['blur', 'change'] }]
       },
       changeSchoolList: {}, // 转校列表数据单条
       allStuListData: [] // 转入学员下拉列表数据
@@ -93,7 +95,7 @@ export default {
   methods: {
     /* 获取学员下拉列表数据 */
     queryCRMStuListFun(row) {
-      queryCRMStuList().then(res => {
+      queryCRMStuList({ pageSize: 99999 }).then(res => {
         if (res.data.errorCode === 0) {
           this.allStuListData = res.data.results
         } else {

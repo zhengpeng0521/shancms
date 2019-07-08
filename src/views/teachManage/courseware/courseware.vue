@@ -3,6 +3,14 @@
     <div class="page_title_text">
       教学课件
     </div>
+    <div class="treeSelect">
+      <TreeSelect
+        :options="treeList"
+        v-model="category"
+        width="120"
+        placeholder="类目"
+      />
+    </div>
     <CommonSearch
       :is-inline="true"
       :params="formInline"
@@ -18,7 +26,6 @@
       :options="options"
       :operation="operates"
       :table-key="'teachManage_courseware_courseware'"
-      @toChildData="getCheckCol"
       @handleSortChange="handleSortChange"
     />
     <CoursewareOverdue ref="coursewareOverdue" />
@@ -47,6 +54,11 @@
     &:hover {
       color: #56c0f5;
     }
+  }
+  .treeSelect {
+    vertical-align: top;
+    float: left;
+    margin-right: 10px;
   }
 }
 </style>

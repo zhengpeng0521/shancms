@@ -88,6 +88,7 @@
       append-to-body
       @closeComplete="closeComplete"
       @downloadErr="downloadErr"
+      @closeDialogAll="closeDialogAll"
     />
   </div>
 </template>
@@ -169,6 +170,8 @@ export default {
     /* 显示弹框 */
     showDialog() {
       this.importDialogShow = !this.importDialogShow
+      this.active = 0
+      this.UPDATE_STATE({ flag: false, btnDisabled: true, uploadId: '' })
     },
 
     /** 关闭 */
@@ -253,6 +256,12 @@ export default {
     /** 关闭完成弹窗 */
     closeComplete() {
       this.UPDATE_STATE({ completeVisible: false })
+    },
+    /* 关闭所有弹窗 */
+    closeDialogAll() {
+      this.UPDATE_STATE({ completeVisible: false })
+      this.importDialogShow = false
+      this.$emit('toUpdateTable')
     },
 
     /** 下载错误日志 */

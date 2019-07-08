@@ -12,6 +12,7 @@
           v-model="type"
           placeholder="请选择"
           style="margin-right:10px;width:140px"
+          filterable
         >
           <el-option
             label="老师"
@@ -26,25 +27,16 @@
           v-model="list"
           :placeholder="placeholder"
           multiple
+          filterable
           style="margin-right:10px;width:180px"
           @change="selectChange"
         >
-          <template v-if="type == '2'">
-            <el-option
-              v-for="item in roomList"
-              :key="item.id"
-              :label="item.name? item.name:''"
-              :value="item.id + '-' + item.name"
-            />
-          </template>
-          <template v-else>
-            <el-option
-              v-for="item in teachList"
-              :key="item.id"
-              :label="item.name"
-              :value=" item.id + '-' + item.name "
-            />
-          </template>
+          <el-option
+            v-for="item in selectList"
+            :key="item.id"
+            :label="item.name? item.name:''"
+            :value="item.id + '-' + item.name"
+          />
         </el-select>
         <el-date-picker
           v-model="modifyTime"

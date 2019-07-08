@@ -25,30 +25,12 @@
         label="操作"
       >
         <template slot-scope="scope">
-          <el-popover
-            v-model="visible2"
-            placement="top"
-            width="160"
-          >
-            <p class="pop_content">确定移除学员？</p>
-            <div class="bc">
-              <el-button
-                size="mini"
-                class="delete_btn"
-                @click="visible2 = false"
-              >取消</el-button>
-              <el-button
-                type="primary"
-                size="mini"
-                class="edit_btn"
-                @click="sureDeleteStu(scope.row.id)"
-              >确定</el-button>
-            </div>
-            <el-button
-              slot="reference"
-              type="text"
-            >移除</el-button>
-          </el-popover>
+          <Confirm
+            :text="'移除'"
+            :placement="'top'"
+            :content="'确定移除该学员？'"
+            :confirm="()=>{sureDeleteStu(scope.row.id)}"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -58,9 +40,11 @@
 <script>
 import { cardStuInfoById, delStuByCardId } from '@/api/crm/stuAccount/stuAccount.js'
 import CommonTable from '../../../../../components/CommonTable/CommonTable'
+import Confirm from '@/components/MiniCommon/Confirm'
 export default {
   components: {
-    CommonTable
+    CommonTable,
+    Confirm
   },
   data() {
     return {

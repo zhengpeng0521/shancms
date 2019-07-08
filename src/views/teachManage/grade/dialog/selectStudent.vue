@@ -21,6 +21,7 @@
       :table-height="tableHeight"
       :pagination="pagination"
       :options="options"
+      :no-select-ids="clsStuIdArr"
       @handleSelectionChange="selectionChange"
     />
     <div class="checkList">
@@ -63,11 +64,11 @@ export default {
   },
   data() {
     return {
+      clsStuIdArr: [], // 已在班级中的学员
       findDialogShow: false, // 弹窗显示
+      formValue: {},
       formInline: {
-        searchMethod: () => {
-          this.searchHandle('formInline')
-        },
+        searchMethod: this.searchHandle,
         forms: [
           {
             itemType: 'input',
@@ -134,14 +135,21 @@ export default {
           prop: 'seller'
         }
       ],
-      tableHeight: 'calc(100vh - 585px)',
+      tableHeight: 'calc(100vh - 485px)',
       pagination: {
         show: true,
         sizeChange: this.sizeChange,
         indexChange: this.indexChange
       },
       options: {
-        mutiSelect: true
+        mutiSelect: true,
+        selectableFunc: (row, index) => {
+          if (this.clsStuIdArr.indexOf(row.id) >= 0) {
+            return 0
+          } else {
+            return 1
+          }
+        }
       },
       checkNum: '', // 选中的个数
       checkList: [],
@@ -149,7 +157,7 @@ export default {
     }
   },
   methods: {
-    show(val) {
+    show(val, clsStuIdArr) {
       this.checkList = val
       this.options.apiService = queryCRMStuList
       this.options.params = {
@@ -157,10 +165,12 @@ export default {
       }
       this.options.selected = val
       this.findDialogShow = true
+      this.clsStuIdArr = clsStuIdArr
     },
     /** 页数改变 */
     indexChange(pageIndex) {
       const payload = {
+        ...this.formValue,
         type: '2',
         pageIndex: pageIndex - 1
       }
@@ -169,6 +179,7 @@ export default {
     /** 每页条数改变 */
     sizeChange(pageSize) {
       const payload = {
+        ...this.formValue,
         type: '2',
         pageSize
       }
@@ -176,11 +187,10 @@ export default {
     },
     /* 搜索 */
     searchHandle(formValue) {
+      this.formValue = formValue
       // 搜索的入参
       const params = {
-        name: this.formInline.name,
-        nickName: this.formInline.nickName,
-        mobile: this.formInline.mobile,
+        ...formValue,
         type: '2'
       }
       this.$refs.commonTable.getList(params)
@@ -192,15 +202,11 @@ export default {
         pageIndex: 0,
         type: '2'
       }
-      this.formInline.nickName = ''
       this.$refs.commonTable.getList(params)
     },
     /* 取消 */
     cancelFindDialog() {
       this.findDialogShow = false
-      this.formInline.nickName = ''
-      this.formInline.name = ''
-      this.formInline.mobile = ''
       this.$emit('toclose', false)
     },
     /* 确定 */

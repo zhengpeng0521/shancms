@@ -45,7 +45,9 @@ export default {
       }
     }
   },
-
+  mounted() {
+    this.$i18n.locale = this.$store.getters.language
+  },
   methods: {
     // handleClickOutside() {
     //   this.$store.dispatch('closeSideBar', { withoutAnimation: false })

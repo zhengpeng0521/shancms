@@ -314,8 +314,8 @@
                 prop="sex"
               >
                 <el-radio-group v-model="staffData.sex">
-                  <el-radio :label="1">男</el-radio>
-                  <el-radio :label="2">女</el-radio>
+                  <el-radio label="1">男</el-radio>
+                  <el-radio label="2">女</el-radio>
 
                 </el-radio-group>
 
@@ -342,10 +342,13 @@
               >
                 <el-select
                   v-model="staffData.roleIds"
+                  :disabled="disableSelectRole"
                   placeholder="请选择角色"
+                  filterable
                 >
                   <el-option
                     v-for="item in tenantRole"
+                    :disabled="item.roleKey === 'admin'"
                     :key="item.value"
                     :label="item.name"
                     :value="item.id"
@@ -393,6 +396,7 @@
                   v-model="staffData.leaderId"
                   placeholder="请选择汇报对象"
                   clearable
+                  filterable
                 >
                   <el-option
                     v-for="item in chiefUser"
@@ -517,16 +521,18 @@ export default {
         },
         {
           label: '状态',
-          prop: 'status',
+          prop: 'activeStatus',
           formatter: (row, column, cellValue) => {
-            if (row.status == 0) {//eslint-disable-line
-              return `<div class='text_color'>无效</div>`
-            } else if (row.status == 1) {//eslint-disable-line
-              return `<div class='text_color'>使用中</div>`
-            } else if (row.status == 2) {//eslint-disable-line
-              return `<div class='text_color'>冻结</div>`
-            } else if (row.status == 3) {//eslint-disable-line
-              return `<div class='text_color'>停用</div>`
+            if (row.activeStatus == 1) {//eslint-disable-line
+              return `<div style="text-overflow:ellipsis;overflow:hidden">
+                        <span style="display: inline-block;width:8px;height:8px;background-color: #87D068;border-radius: 50px;margin-right: 5px;"></span>
+                        ${'已激活'}
+                      </div>`
+            } else {//eslint-disable-line
+              return `<div style="text-overflow:ellipsis;overflow:hidden">
+                        <span style="display: inline-block;width:8px;height:8px;background-color: #D0021B;border-radius: 50px;margin-right: 5px;"></span>
+                        ${'未激活'}
+                      </div>`
             }
           }
         },
@@ -557,7 +563,7 @@ export default {
             })])
           },
           formatter: (row, column, cellValue) => {
-            return `<div >${row.isWechatBind ? '已绑定' : '未绑定'}</div>`
+            return `<i class="iconfont icon_gb_wx ${row.isWechatBind ? 'nowx' : ''}" />`
           }
 
         }, {
@@ -621,11 +627,11 @@ export default {
         name: '',
         mobile: '',
         intro: '',
-        sex: '',
+        sex: '1',
         roleIds: '',
         deptId: [],
         leaderId: '',
-        dataPermission: '',
+        dataPermission: '1',
         password: '123456'
       },
 
@@ -709,7 +715,8 @@ export default {
       },
       orgId: '',
       showED: false,
-      flag: false
+      flag: false,
+      disableSelectRole: false // 角色是否可修改
     }
   },
 
@@ -787,14 +794,12 @@ export default {
     },
     // 编辑部门
     editDepart(node, data) {
-      console.info('data', data)
       this.getRoleList()
       this.switchDialog = true
       this.dialogTitle = '编辑部门'
       this.isAddDepart = true
       this.deptData.departmentName = data.label
       if (data.parentId === -1) { // 没有上级部门
-        console.log('没有上级部门----', data)
         this.orgId = data.value
         this.deptData.pids = []
       } else {
@@ -907,6 +912,7 @@ export default {
     editStaff(val) {
       this.dialogTitle = '编辑员工'
       this.switchDialog = true
+      this.disableSelectRole = false
 
       const data = {
         id: val.id
@@ -919,9 +925,16 @@ export default {
           if (res.data.data.leaderId == 0) {//eslint-disable-line
             this.staffData.leaderId = ''
           }
-          this.staffData.sex = parseInt(res.data.data.sex)
+          this.staffData.sex = res.data.data.sex
           this.staffData.deptId = res.data.data.deptPids.split(',').map((value) => {
             return parseInt(value)
+          })
+          // 判断角色是否可修改
+          this.tenantRole && this.tenantRole.length > 0 && this.tenantRole.forEach((item) => {
+            if (this.staffData.roleIds === item.id && item.roleKey === 'admin') {
+              this.disableSelectRole = true
+              return
+            }
           })
         } else {
           this.$message.error(res.data.errorMessage)
@@ -956,6 +969,7 @@ export default {
     // 新增员工
     addStaff() {
       this.switchDialog = true
+      this.disableSelectRole = false
       this.dialogTitle = '新增员工'
       this.getRoleList()
       this.getChiefUser()
@@ -1064,7 +1078,6 @@ export default {
             }
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -1082,6 +1095,8 @@ export default {
 <style lang="scss" scoped>
 .staff_manage {
   display: flex;
+  min-width: 1060px;
+  height: calc(100vh - 150px);
 }
 
 .tree_box {
@@ -1089,7 +1104,7 @@ export default {
   height: 100%;
   border: 1px solid #dddddd;
   border-radius: 5px;
-  overflow: auto;
+  // overflow: auto;
 }
 
 .block_title {
@@ -1104,8 +1119,8 @@ export default {
 }
 .block_tree {
   min-width: 268px;
-  height: 590px;
-
+  height: calc(100% - 32px);
+  overflow: auto;
   padding: 20px;
   position: relative;
 }
@@ -1119,10 +1134,8 @@ export default {
 }
 
 .staff_manage_right {
-  width: 100%;
+  width: calc(100% - 270px);
   padding: 0px 20px 20px 20px;
-  min-width: 1100px;
-
   .el-tabs--card /deep/ {
     .el-tabs__nav-scroll {
       padding-left: 0 !important;
@@ -1191,7 +1204,7 @@ export default {
 }
 
 .note_title {
-  color: #6666;
+  color: #999;
   font-size: 12px;
 }
 
@@ -1199,3 +1212,9 @@ export default {
   margin: 10px 0;
 }
 </style>
+<style>
+.nowx {
+  color: #46b6ee;
+}
+</style>
+

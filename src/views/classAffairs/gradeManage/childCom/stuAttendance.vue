@@ -218,7 +218,15 @@
           slot="reference"
           class="setting"
         >
-          <div class="setting_img" />
+          <div class="setting_img">
+            <el-tooltip
+              content="显示表格字段"
+              placement="bottom"
+              effect="dark"
+            >
+              <i class="iconfont icon_gb_jgsz" />
+            </el-tooltip>
+          </div>
         </div>
       </el-popover>
       <!-- 分页-->
@@ -273,14 +281,13 @@
   cursor: pointer;
   z-index: 11;
   .setting_img {
-    background-image: url("https://img.ishanshan.com/gimg/img/927fe7934a2ce4c294c1a643742015ea");
-    background-size: cover;
-    width: 16px;
-    height: 16px;
     display: inline-block;
     position: relative;
-    top: 2px;
+    top: 0px;
     content: "";
+  }
+  &:hover .setting_img {
+    color: #46b6ee;
   }
 }
 </style>
@@ -539,8 +546,8 @@
     margin-bottom: 20px;
     padding-left: 0;
     color: #333;
-    height: 43px;
     line-height: 28px;
+    height: 43px;
     .btn {
       float: right;
     }

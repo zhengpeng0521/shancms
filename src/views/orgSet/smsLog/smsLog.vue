@@ -1,9 +1,6 @@
 
 <template>
   <div class="sms_log">
-    <div class="page_title_text">
-      短信记录
-    </div>
     <CommonSearch
       :is-inline="true"
       :params="formInline"
@@ -46,10 +43,7 @@ export default {
         {
           label: '接收人手机号',
           prop: 'recepMobile',
-
-          formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.recepMobile}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '姓名',
@@ -95,7 +89,7 @@ export default {
         isSettingShow: true // 是否出现设置
       },
 
-      tableHeight: 'calc(100vh - 225px)',
+      tableHeight: 'calc(100vh - 280px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -127,8 +121,6 @@ export default {
 
     searchHandle(formValue) {
       // 搜索的入参
-      console.log('搜索的入参', formValue)
-
       const params = {
         mobile: formValue.mobile
 
@@ -137,7 +129,6 @@ export default {
         params.startTime = formValue.date[0]
         params.endTime = formValue.date[1]
       }
-      console.log('parames-----', params)
       this.$refs.tableCommon.getList(params)
     },
     /* 搜索重置 */
@@ -155,7 +146,6 @@ export default {
 
 <style lang="scss" scoped>
 .sms_log /deep/ {
-  padding: 20px;
   .sms_content {
     flex-wrap: wrap;
     line-height: 20px;

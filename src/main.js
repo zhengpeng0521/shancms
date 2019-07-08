@@ -36,6 +36,16 @@ import 'fullcalendar/dist/fullcalendar.css'
 
 import * as filters from './filters' // global filters
 
+// 通用版本引入
+// import { axiosReport } from 'web-report'
+// // 使用
+// axiosReport({
+//   domain: 'http://192.168.1.155:7001/api/v1/report/web',
+//   add: {
+//     appId: 'aBXeamE1558076362921'
+//   }
+// })
+
 import global_ from './org.vue' // 定义全局org和tenantId
 
 Vue.prototype.GLOBAL = global_
@@ -54,6 +64,24 @@ Vue.use(BaiduMap, {
   ak: 'XpzcjaqlX0oCEYNGa4aR4LKtkmt4ncyb'
 })
 Vue.use(VCharts)
+
+/**
+ * 点击量打点指令
+ * compName 模块名称
+ * eventName 事件名称
+ * v-log="{compName:'首页',eventName:'BANNER点击'}"
+ */
+Vue.directive('log', {
+  bind(el, binding, vnode) {
+    el.addEventListener('click', () => {
+      const value = binding.value
+      const compName = value.compName || ''
+      const eventName = value.eventName || ''
+      window.__ml && window.__ml.api && window.__ml.api(eventName, true, 0, 200, compName)
+    })
+  }
+})
+
 Vue.prototype.$moment = moment // 赋值使用
 Vue.prototype.hasMenu = function(meunId) {
   return contains(store.getters.roles, meunId)

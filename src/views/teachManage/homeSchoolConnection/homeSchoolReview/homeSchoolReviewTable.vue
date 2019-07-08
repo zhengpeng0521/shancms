@@ -21,7 +21,6 @@
       :options="options"
       :operation="operates"
       :table-key="'teachManage_homeSchoolConnection_homeSchoolReview_homeSchoolReviewTable'"
-      @toChildData="getCheckCol"
     />
     <!-- 侧边栏 -->
     <CourseNameDetail

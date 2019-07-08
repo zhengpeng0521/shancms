@@ -1,8 +1,5 @@
 <template>
   <div class="accounts_mgr">
-    <div class="page_title_text">
-      公众号管理
-    </div>
 
     <!-- 未开通 -->
     <div
@@ -10,20 +7,44 @@
       class="no_accounts"
     >
 
-      <div class="banner" />
-
-      <div class="account_btn">
-
-        <el-button
-          type="primary"
-          @click="openDialog('buy')"
+      <div class="banner">
+        <img
+          class="banner_img"
+          src="https://img.ishanshan.com/gimg/n/20190422/cb1fca45aecb20c721dc53b507eeae62?p=image/format,jpg/quality,q_80"
         >
-          立即购买
-
-        </el-button>
-
       </div>
 
+      <div class="account_btn">
+        <div>
+          <p class="banner_title">绑定你的公众号</p>
+          <p class="banner_item">
+            <img
+              src="https://img.ishanshan.com/gimg/n/20190422/11b52bfe5e39cf9aa01b9646dda488ac"
+              class="banner_item_icon"
+            >
+            <span>公众号吸粉</span>
+          </p>
+          <p class="banner_item">
+            <img
+              src="https://img.ishanshan.com/gimg/n/20190422/11b52bfe5e39cf9aa01b9646dda488ac"
+              class="banner_item_icon"
+            >
+            <span>提高公众号粘性</span>
+          </p>
+          <p class="banner_item">
+            <img
+              src="https://img.ishanshan.com/gimg/n/20190422/11b52bfe5e39cf9aa01b9646dda488ac"
+              class="banner_item_icon"
+            >
+            <span>给家长发送微信模板消息</span>
+          </p>
+        </div>
+        <img
+          class="buy_img"
+          src="https://img.ishanshan.com/gimg/n/20190422/e23bbd866cd8df4760d79d45d5d6475f"
+          @click="openDialog('buy')"
+        >
+      </div>
     </div>
 
     <!-- 未授权 -->
@@ -105,19 +126,33 @@
     >
 
       <!-- 购买套餐 -->
-      <div v-if="switchOnOff==='buy'">
-        <img
+      <div
+        v-if="switchOnOff==='buy'"
+        style="margin-bottom:10px;"
+      >
+        <!-- <img
           class="connect_popover_img"
           src="//img.ishanshan.com/gimg/img/f696b637df0aba27f96116ca10e6756c"
+        > -->
+        <img
+          class="connect_popover_img"
+          src="https://img.ishanshan.com/gimg/user/n///1557308283.png"
         >
+        <p class="connect_p">微信扫码，获取专属服务顾问</p>
+        <p class="connect_mobile">客服热线：400-660-5733</p>
+      </div>
+      <!-- <div
+        v-if="switchOnOff==='buy'"
+        slot="footer"
+        class="dialog_footer"
+      >
         <el-button
           type="primary"
-          style="width: 220px;margin-bottom: 10px;"
           @click="openWindow"
         >
           <svg-icon icon-class="qq" /> <span>QQ在线</span>
         </el-button>
-      </div>
+      </div> -->
 
       <!-- 警告 -->
       <div v-if="switchOnOff==='set'">
@@ -264,15 +299,16 @@ export default {
 
     /** 授权 */
     openDialog(val) {
-      if (!this.isSmallGame) {
+      if (!this.isSmallGame && val === 'set') {
         queryQrCode().then(res => {
           if (res.data.errorCode === 0) {
             window.open(`${res.data.data.authUrl}`, '_blank', 'height=644, width=644,toolbar=no,scrollbars=no,menubar=no,status=no')
+            this.switchOnOff = 'power'
           } else {
             this.$message.error(res.data.errorMessage)
+            this.switchOnOff = val
           }
         })
-        this.switchOnOff = 'power'
       } else {
         this.switchOnOff = val
       }
@@ -309,16 +345,51 @@ export default {
 .accounts_mgr /deep/ {
   padding: 20px;
   .banner {
-    height: 600px;
-
+    min-width: 1366;
+    width: 100%;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    background-image: url("https://img.ishanshan.com/gimg/n/20181227/26a7de12411e7dbd5e4154b304feb48b");
+    // background-image: url("https://img.ishanshan.com/gimg/n/20190422/2423db644fab158ba4f50abdaa6f8377?p=image/format,jpg/quality,q_80");
+  }
+  .banner_title {
+    font-size: 80px;
+    color: #333333;
+    padding: 160px 0 40px 0;
+  }
+  .banner_item {
+    font-size: 25px;
+    color: #333333;
+    margin-top: 16px;
+    line-height: 34px;
+    vertical-align: middle;
+    .banner_item_icon {
+      width: 30px;
+      line-height: 34px;
+      vertical-align: middle;
+    }
+    span {
+      line-height: 34px;
+      margin-left: 20px;
+      vertical-align: middle;
+    }
+  }
+  .banner_img {
+    min-width: 1366px;
+    width: 100%;
+    height: auto;
   }
 
   .account_btn {
-    text-align: center;
-    margin-top: 50px;
+    position: absolute;
+    top: 0%;
+    left: 40px;
+    text-align: left;
+  }
+
+  .buy_img {
+    width: 200px;
+    height: 70px;
+    margin-top: 70px;
   }
 
   .el-dialog__body {
@@ -352,5 +423,15 @@ export default {
       line-height: 30px;
     }
   }
+}
+.dialog_footer {
+  text-align: center;
+}
+.connect_p {
+  margin: 14px 0 10px 0;
+  color: #666;
+}
+.connect_mobile {
+  color: #1d9df2;
 }
 </style>

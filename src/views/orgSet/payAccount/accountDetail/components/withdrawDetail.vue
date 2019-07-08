@@ -32,54 +32,52 @@ export default {
           label: '编号',
           prop: 'mchId',
           width: '120px',
-          render: (h, params) => {
-            return h('span', {}, [
-              h('el-popover', {
-                props: { placement: 'top', trigger: 'hover', content: params.row.mchId }
-              }, [
-                h('a', { slot: 'reference' }, params.row.mchId)
-              ])
-            ])
-          }
-          // formatter: (row, column, cellValue) => {
-          //   return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.mchId}</div>`
-          // }
+          isShowTooltip: true
         },
         {
           label: '提现金额',
-          prop: 'settAmount'
+          prop: 'settAmount',
+          isShowTooltip: true
         },
         {
           label: '实际到账',
-          prop: 'remitAmount'
+          prop: 'remitAmount',
+          isShowTooltip: true
         },
         {
           label: '手续费',
-          prop: 'settFee'
-
+          prop: 'settFee',
+          isShowTooltip: true
         },
         {
           label: '户名',
-          prop: 'mchName'
+          prop: 'mchName',
+          isShowTooltip: true
         },
         {
           label: '账号',
-          prop: 'payeeAccount'
+          prop: 'payeeAccount',
+          isShowTooltip: true
         }, {
           label: '开户行',
-          prop: 'remitWay'
+          prop: 'remitWay',
+          isShowTooltip: true
         },
         {
           label: '操作人',
-          prop: 'operator'
+          prop: 'operator',
+          isShowTooltip: true
         },
         {
           label: '提交时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: '140px',
+          isShowTooltip: true
         },
         {
           label: '状态',
-          prop: 'settStatus'
+          prop: 'settStatus',
+          isShowTooltip: true
         }
 
       ],
@@ -88,7 +86,7 @@ export default {
         isSettingShow: false // 是否出现设置
       },
 
-      tableHeight: 'calc(100vh - 270px)'
+      tableHeight: 'calc(100vh - 259px)'
 
     }
   },

@@ -18,7 +18,6 @@
       :is-border="true"
       :operation="operates"
       @handleSelectionChange="selectionChange"
-      @toChildData="getCheckCol"
     />
     <side-dialog :visible.sync="sideDialogShow">
       <div>ID是 {{ id }}</div>
@@ -345,9 +344,6 @@ export default {
   methods: {
     selectionChange(val) {
       console.info('val--->', val.length)
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     openSideDialog(val) {
       console.info('row--->', val)

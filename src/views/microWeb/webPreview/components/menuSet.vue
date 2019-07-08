@@ -49,16 +49,11 @@ export default {
   // props: ['changeRemarkVal'],
   data() {
     var validatePass2 = (rule, value, callback) => {
-      var Expression = /(http|https):\/\/([\w.]+\/?)\S*/
-      var Expression1 = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*$/
-      if (Expression1.test(value) === true) {
-        if (Expression.test(value) === true) {
-          callback()
-        } else {
-          callback('链接必须以http://或https://开头')
-        }
+      var Expression = /^(http|https):\/\/[^\s]*/
+      if (Expression.test(value) === true) {
+        callback()
       } else {
-        callback('请输入正确的网址')
+        callback('链接必须以http://或https://开头')
       }
     }
     return {

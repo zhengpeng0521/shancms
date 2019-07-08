@@ -1,131 +1,151 @@
 
 <template>
   <div class="message_notice">
-    <div class="page_title_text">
-      消息通知
-    </div>
-    <div style="text-align:end;margin-bottom: 12px;">
+    <div style="margin-bottom: 20px;">
+      <el-button
+        :class="fourthRoute === 'notice' ? 'active_btn' : ''"
+        @click="changeFourth('notice')"
+      >通知设置</el-button>
+      <el-button
+        :class="fourthRoute === 'sms' ? 'active_btn' : ''"
+        @click="changeFourth('sms')"
+      >短信消息</el-button>
 
       <el-button
+        v-if="fourthRoute === 'notice'"
         type="primary"
+        class="notice_bind_btn"
         @click="openDialog"
       >员工微信绑定</el-button>
     </div>
 
-    <CommonTable
-      ref="tableCommon"
-      :columns="columns"
-      :table-height="tableHeight"
-      :pagination="listQuery"
-      :options="optionsTab"
-    />
+    <!-- 菜单改动！！！--通知设置start -->
+    <div v-if="fourthRoute === 'notice'">
+      <CommonTable
+        ref="tableCommon"
+        :columns="columns"
+        :table-height="tableHeight"
+        :pagination="listQuery"
+        :options="optionsTab"
+      />
 
-    <el-dialog
-      :visible.sync="switchDialog"
-      :title="dialogTitle"
-      @close="cancelDialog()"
-    >
-      <div v-if="!isAdd">
-        <el-form>
-          <el-form-item label="短信通知：">
-            <span>{{ noticeData.smsSwitch==='1'?'开启':'关闭' }}</span>
+      <el-dialog
+        :visible.sync="switchDialog"
+        :title="dialogTitle"
+        @close="cancelDialog()"
+      >
+        <div v-if="!isAdd">
+          <el-form>
+            <el-form-item label="短信通知：">
+              <span>{{ noticeData.smsSwitch==='1'?'开启':'关闭' }}</span>
 
-          </el-form-item>
-          <el-form-item label="微信通知：">
-            <span>{{ noticeData.wxSwitch==='1'?'开启':'关闭' }}</span>
-
-          </el-form-item>
-          <el-form-item label="通知时间：">
-            <span>{{ noticeData.sendTime }}</span>
-
-          </el-form-item>
-          <el-form-item label="消息实例：">
-            <pre>
-           {{ noticeData.tplContent }}
-            </pre>
-          </el-form-item>
-
-          <el-form-item label="推送对象：">
-            <span v-if="noticeData.target== '1'">绑定微信并关注微信公众号的家长
-
-              <el-popover
-                placement="top-start"
-                width="290"
-                trigger="hover"
-                content="1、前往CRM-学员家长绑定家长微信。2、家长关注闪闪。"
-              >
-
-                <i
-                  slot="reference"
-                  class="el-icon-question"
-                />
-              </el-popover>
-            </span>
-            <span
-              v-for="(v,index) in noticeData.userList"
-              :key="index"
-            > {{ v.userName }}<i :class="[{'nowx':v.flag=='0'},'iconfont','icon_gb_wx']" /></span>
-          </el-form-item>
-        </el-form>
-
-      </div>
-      <div v-else>
-        <div>
-          <el-form label-width="90px">
-
-            <el-form-item label="信息接收人:">
-
-              <el-select
-                v-model="newPerson"
-                multiple
-                placeholder="请输入新建消息接收人"
-                @change="(val)=> {newPersonChange(saveRows.userList,val)}"
-                @visible-change="(val)=>{visibleChange(saveRows.userList,val)}"
-              >
-                <el-option
-                  v-for="item in userList"
-                  :disabled="item.display"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id+'_'+item.name"
-                />
-              </el-select>
             </el-form-item>
-            <el-form-item label="已选:">
-              <span
-                v-for="(v,i) in saveRows.userList"
-                :key="i"
-              >
-                <span @click="deleteReceive(v,i)"> {{ v.userName }} <i class="el-icon-error" /></span>
+            <el-form-item label="微信通知：">
+              <span>{{ noticeData.wxSwitch==='1'?'开启':'关闭' }}</span>
+
+            </el-form-item>
+            <el-form-item label="通知时间：">
+              <span>{{ noticeData.sendTime }}</span>
+
+            </el-form-item>
+
+            <el-form-item label="消息实例：">
+              <pre style="margin:0;padding-left:82px;white-space:pre-wrap;">{{ noticeData.tplContent }}</pre>
+            </el-form-item>
+
+            <el-form-item label="推送对象：">
+              <span v-if="noticeData.target== '1'">绑定微信并关注微信公众号的家长
+
+                <el-popover
+                  placement="top-start"
+                  width="290"
+                  trigger="hover"
+                  content="1、前往CRM-学员家长绑定家长微信。2、家长关注闪闪。"
+                >
+
+                  <!-- <i
+                    slot="reference"
+                    class="el-icon-question"
+                  /> -->
+                  <i
+                    slot="reference"
+                    class="iconfont icon_ym_ts"
+                    style="color:#666"
+                  />
+                </el-popover>
               </span>
               <span
-                v-for="(sel,selIndex) in selectedArr"
-                :key="sel.stuId"
-              >
-                <span @click="deleteReceive1(sel,selIndex)"> {{ sel.userName }} <i class="el-icon-error" /></span>
-              </span>
+                v-for="(v,index) in noticeData.userList"
+                :key="index"
+              > {{ v.userName }}<i :class="[{'nowx':v.flag==='1'},'iconfont','icon_gb_wx']" /></span>
             </el-form-item>
           </el-form>
 
         </div>
+        <div v-else>
+          <div>
+            <el-form label-width="90px">
 
-      </div>
-      <span
-        v-if="isAdd"
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button
-          class="cancel_btn"
-          @click="cancelDialog()"
-        >取 消</el-button>
-        <el-button
-          type="primary"
-          @click="addReceive(saveRows.userList)"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
-    <WeChat ref="wechatCode" />
+              <el-form-item label="信息接收人:">
+
+                <el-select
+                  v-model="newPerson"
+                  multiple
+                  filterable
+                  placeholder="请输入新建消息接收人"
+                  @change="(val)=> {newPersonChange(saveRows.userList,val)}"
+                  @visible-change="(val)=>{visibleChange(saveRows.userList,val)}"
+                >
+                  <el-option
+                    v-for="item in userList"
+                    :disabled="item.display"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id+'_'+item.name"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="已选:">
+                <span
+                  v-for="(v,i) in saveRows.userList"
+                  :key="i"
+                >
+                  <span @click="deleteReceive(v,i)"> {{ v.userName }} <i class="el-icon-error" /></span>
+                </span>
+                <span
+                  v-for="(sel,selIndex) in selectedArr"
+                  :key="sel.stuId"
+                >
+                  <span @click="deleteReceive1(sel,selIndex)"> {{ sel.userName }} <i class="el-icon-error" /></span>
+                </span>
+              </el-form-item>
+            </el-form>
+
+          </div>
+
+        </div>
+        <span
+          v-if="isAdd"
+          slot="footer"
+          class="dialog-footer"
+        >
+          <el-button
+            class="cancel_btn"
+            @click="cancelDialog()"
+          >取 消</el-button>
+          <el-button
+            type="primary"
+            @click="addReceive(saveRows.userList)"
+          >确 定</el-button>
+        </span>
+      </el-dialog>
+      <WeChat ref="wechatCode" />
+    </div>
+    <!-- 菜单改动！！！--通知设置end -->
+
+    <!-- 菜单改动！！！--短信消息start -->
+    <SmsLog v-if="fourthRoute === 'sms'" />
+    <!-- 菜单改动！！！--短信消息end -->
   </div>
 </template>
 
@@ -135,13 +155,17 @@ import { queryTemp, addReceiver, updateMsgTemp, removeReceiver, tenantUserSummar
 
 import CommonTable from '@/components/CommonTable/CommonTable'
 import WeChat from '@/components/WeChat/WeChat'
+import SmsLog from '@/views/orgSet/smsLog/smsLog'
+
 export default {
   components: {
     CommonTable,
-    WeChat
+    WeChat,
+    SmsLog
   },
   data() {
     return {
+      fourthRoute: 'notice',
       classRoomData: {
         name: '',
         direction: ''
@@ -215,7 +239,7 @@ export default {
                     { class: {
                       'iconfont': true,
                       'icon_gb_wx': true,
-                      'nowx': item.flag === '0'
+                      'nowx': item.flag === '1'
                     },
                     style: 'margin-left:2px'
                     })]))
@@ -241,7 +265,7 @@ export default {
                             { class: {
                               'iconfont': true,
                               'icon_gb_wx': true,
-                              'nowx': item.flag === '0'
+                              'nowx': item.flag === '1'
                             },
                             style: 'margin-left:2px'
                             })])),
@@ -257,7 +281,7 @@ export default {
                             { class: {
                               'iconfont': true,
                               'icon_gb_wx': true,
-                              'nowx': item.flag === '0'
+                              'nowx': item.flag === '1'
                             }, style: 'margin-left:2px' })]))),
                         h('span', { style: 'margin-right:10px', slot: 'reference' },
                           '...')
@@ -316,15 +340,18 @@ export default {
         isSettingShow: false // 是否出现设置
       },
 
-      tableHeight: 'calc(100vh - 222px)',
+      tableHeight: 'calc(100vh - 228px)',
       userList: [], // 新建消息接收人列表
       selectedArr: [] // 已选的列表
     }
   },
-  mounted() {
 
-  },
   methods: {
+    /** 改变4级菜单 */
+    changeFourth(route) {
+      this.fourthRoute = route
+    },
+
     /* 消息接收人改变 */
     newPersonChange(list, val) {
       this.selectedArr = []
@@ -470,9 +497,19 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+.notice_bind_btn {
+  float: right;
+}
+
+.active_btn {
+  border-color: #46b6ee;
+  color: #46b6ee;
+}
+</style>
+
 <style lang="scss">
 .message_notice {
-  padding: 20px;
   box-sizing: border-box;
 }
 

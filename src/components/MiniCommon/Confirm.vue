@@ -10,6 +10,7 @@
  *    btnType      str          按钮类型
  *    btnClass     str          按钮样式类名
  *    isVisibleFun bool         是否通过数据控制气泡显隐
+ *    loading      bool         按钮加载状态
  * slot
  */
 <template>
@@ -43,6 +44,7 @@
       :disabled="btnDisabled"
       :type="btnType"
       :class="btnClass"
+      :loading="loading"
       class="btn-style"
       is-visible-fun="isVisibleFun"
       @click="visibleFunc"
@@ -90,6 +92,10 @@ export default {
       default: 0
     },
     isVisibleFun: {
+      type: Boolean,
+      default: false
+    },
+    loading: {
       type: Boolean,
       default: false
     }

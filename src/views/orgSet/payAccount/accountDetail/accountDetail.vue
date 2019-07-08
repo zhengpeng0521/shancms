@@ -318,7 +318,7 @@
         label="退款明细"
       />
       <payRefundDetail
-        v-show="!isWithdraw"
+        v-show="isWithdraw"
         ref="paidRefund"
       />
       <el-tab-pane
@@ -468,17 +468,15 @@ export default {
           { required: true, message: '请输入费率', trigger: 'blur' }
         ],
         vCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }, {
-          pattern: /^\d{4}$/, message: '请输入正确的验证码', trigger: 'bule'
+          pattern: /^\d{4}$/, message: '请输入正确的验证码', trigger: 'blur'
         }]
       },
       turnRules: {
 
         code: [{ required: true, message: '请输入验证码', trigger: 'blur' }, {
-          pattern: /^\d{4}$/, message: '请输入正确的验证码', trigger: 'bule'
+          pattern: /^\d{4}$/, message: '请输入正确的验证码', trigger: 'blur'
         }]
       }
-
-      // activeTab=''
     }
   },
 
@@ -689,7 +687,6 @@ export default {
             })
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -714,17 +711,14 @@ export default {
     },
 
     handleClick(tab) {
-      if (tab.label === '提现记录') {
-        this.isWithdraw = true
-      } else {
-        this.isWithdraw = false
-      }
       this.tabLabel = tab.label
 
-      if (tab.label === '提现记录') {
-        this.$refs.withdrawals.getTableList(tab.label)
-      } else {
+      if (tab.label === '支付明细' || tab.label === '退款明细') {
+        this.isWithdraw = true
         this.$refs.paidRefund.changeTabName(tab.label)
+      } else {
+        this.isWithdraw = false
+        this.$refs.withdrawals.getTableList(tab.label)
       }
     }
 
@@ -736,6 +730,8 @@ export default {
 .account_detail /deep/ {
   .el-tabs__content {
     padding-right: 0 !important;
+    overflow: auto;
+    height: 100%;
   }
 }
 .account_table_detail {

@@ -42,7 +42,7 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-select v-model="secendForm.tenantId" placeholder="请选择机构" style="width: 90%;" @change="orgSelectChange">
+        <el-select v-model="secendForm.tenantId" placeholder="请选择机构" style="width: 90%;" filterable @change="orgSelectChange">
           <el-option
             v-for="item in orgOptions"
             :key="item.orgId"

@@ -67,7 +67,6 @@
             :pagination="listQuery"
             :options="options"
             :operation="operates"
-            :is-border="isBorder"
           />
 
         </div>
@@ -363,7 +362,6 @@ export default {
             label: '优先等位',
             type: 'mulChoose',
             method: (row) => {
-              console.log(row, this.$parent.activityObj)
               const params = {
                 id: row.id,
                 activityId: this.$parent.activityObj.id,
@@ -388,7 +386,7 @@ export default {
           }
         ]
       },
-      tableHeight: 'calc(100vh - 176px)',
+      tableHeight: 'calc(100vh - 186px)',
       isBorder: true,
       // 高级搜索参数
       superSearch: {
@@ -480,7 +478,6 @@ export default {
     },
     /* 搜索 */
     searchHandle(formValue) {
-      console.log(formValue, '1111111')
       if (formValue.date2 && formValue.date2.length > 0) {
         formValue.startDate = formValue.date2[0]
         formValue.endDate = formValue.date2[1]
@@ -550,7 +547,6 @@ export default {
     },
     // 修改备注信息弹框
     remarkShow(row) {
-      console.log(row, 'row')
       this.actObj = { id: row.id, activityId: this.$parent.activityObj.id }
       this.$refs.remarkDialog.changeRemarkVal = row.remark
       this.$refs.remarkDialog.remarkDialogShow = true
@@ -591,7 +587,8 @@ export default {
     border-bottom: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
-    padding: 10px 0 10px 0;
+    padding: 20px 0 20px 0;
+    line-height: 28px;
     .top-left {
       display: flex;
       font-size: 16px;
@@ -607,7 +604,7 @@ export default {
   }
   .body {
     padding-top: 20px;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 61px);
     overflow: auto;
     .cont {
       margin-top: 20px;

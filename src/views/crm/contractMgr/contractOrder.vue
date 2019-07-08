@@ -11,6 +11,7 @@
           />
         </div>
         <CommonSearch
+          ref="CommonSearch"
           :is-inline="true"
           :params="formInline"
           :forms="formInline"
@@ -22,19 +23,21 @@
         />
       </div>
       <div>
-        <el-button
+        <!-- <el-button
           v-if="hasBtn('406000003')"
           class="green_btn"
           size="mini"
           @click="importContractDialog()"
-        >导入合同</el-button>
+        >导入合同</el-button> -->
         <el-button
+          v-log="{compName:'合同订单',eventName:'web-【学员CRM】-合同管理-合同订单-导出合同'}"
           v-if="tableExportStu == '0' && hasBtn('406000004') ? false : true"
           class="green_btn"
           size="mini"
           @click="exportContract"
         >导出合同</el-button>
         <el-button
+          v-log="{compName:'合同订单',eventName:'web-【学员CRM】-合同管理-合同订单-新建合同'}"
           v-if="hasBtn('406000001')"
           class="green_btn"
           size="mini"
@@ -58,6 +61,7 @@
       @toContractList="getContractList"
       @toEidtContract="editContractOrderDialog"
     />
+
     <!-- 合同批量导入弹框 -->
     <ImportContractDialog ref="importContractDialog" />
     <!-- 合同订单弹框 -->
@@ -83,13 +87,15 @@ import { queryOrder, querySubName } from '@/api/crm/contract/contract.js'
 import CommonTable from './../../../components/CommonTable/CommonTable'
 import CommonSearch from './../../../components/CommonSearch/CommonSearch'
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
-import ContractSideDialog from './side/contractSideDialog.vue'
+import ContractSideDialog from './side/contractSideDialog.vue' // 普通合同详情弹框
 import ImportContractDialog from './components/importContractDialog.vue'
 import ContractOrderDialog from './components/contractOrderDialog.vue'
 import CheckContractDialog from './components/checkContractDialog.vue'
 import GatheringDialog from './components/gatheringDialog.vue'
 import SubUserSelect from './../../../components/SubUserSelect/SubUserSelect.vue'
 import { exportFile } from '@/utils/exportFile'
+import { mapState } from 'vuex'
+import moment from 'moment'
 export default {
   components: {
     CommonTable,
@@ -148,6 +154,25 @@ export default {
           prop: 'signTypeName',
           isShowTooltip: true
         },
+
+        // 合同类型添加！
+        {
+          label: '合同类型',
+          prop: 'purchaseType',
+          isShowTooltip: true,
+          formatter: (row, column, cellValue) => { // 1代表的是正式合同和赠送合同相加，2代表赠送合同，3代表正式合同
+            if(row.purchaseType == '1') { //eslint-disable-line
+              return `<div>${'正式合同'}</div>`
+            }
+            if(row.purchaseType == '2') { //eslint-disable-line
+              return `<div>${'赠送合同'}</div>`
+            }
+            if(row.purchaseType == '3') { //eslint-disable-line
+              return `<div>${'正式合同'}</div>`
+            }
+          }
+        },
+
         {
           label: '购买类型',
           prop: 'orderType',
@@ -179,47 +204,13 @@ export default {
           render: (h, params) => {
             return h('span', {}, [
               h('el-popover', {
-                props: { placement: 'top', trigger: 'click', content: params.row.mobile }
+                props: { placement: 'top', trigger: 'hover', content: params.row.mobile }
               }, [
                 h('a',
                   { slot: 'reference' }, '查看')
               ])
             ])
           }
-        },
-        {
-          label: '合同期限',
-          prop: 'startEndTime',
-          isShowTooltip: true
-        },
-        {
-          label: '过期作废',
-          prop: 'expireInvalid',
-          isShowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            if(row.expireInvalid == '0'){ //eslint-disable-line
-              return `<div>${'否'}</div>`
-            }
-            if(row.expireInvalid == '1'){ //eslint-disable-line
-              return `<div>${'是'}</div>`
-            }
-          }
-        },
-        {
-          label: '合同金额',
-          prop: 'orderMoney',
-          align: 'right',
-          isShowTooltip: true
-        },
-        {
-          label: '合同来源',
-          prop: 'sourceName',
-          isShowTooltip: true
-        },
-        {
-          label: '审核人',
-          prop: 'checkUserName',
-          isShowTooltip: true
         },
         {
           label: '审核状态',
@@ -279,6 +270,64 @@ export default {
           }
         },
         {
+          label: '合同期限',
+          prop: 'startEndTime',
+          isShowTooltip: true
+        },
+        {
+          label: '过期作废',
+          prop: 'expireInvalid',
+          isShowTooltip: true,
+          formatter: (row, column, cellValue) => {
+            if(row.expireInvalid == '0'){ //eslint-disable-line
+              return `<div>${'否'}</div>`
+            }
+            if(row.expireInvalid == '1'){ //eslint-disable-line
+              return `<div>${'是'}</div>`
+            }
+          }
+        },
+        {
+          label: '合同金额',
+          prop: 'orderMoney',
+          align: 'right',
+          isShowTooltip: true
+        },
+        {
+          label: '已收金额',
+          prop: 'payMoney',
+          align: 'right',
+          isShowTooltip: true
+        },
+        {
+          label: '常规课时',
+          prop: 'period',
+          align: 'right',
+          isShowTooltip: true
+        },
+        {
+          label: '赠送课时',
+          prop: 'extPeriod',
+          align: 'right',
+          isShowTooltip: true
+        },
+        {
+          label: '付清时间',
+          prop: 'payOffTime',
+          align: 'right',
+          isShowTooltip: true
+        },
+        {
+          label: '合同来源',
+          prop: 'sourceName',
+          isShowTooltip: true
+        },
+        {
+          label: '审核人',
+          prop: 'checkUserName',
+          isShowTooltip: true
+        },
+        {
           label: '签订日期',
           prop: 'signTime',
           isShowTooltip: true
@@ -295,10 +344,11 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         apiService: queryOrder, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 227px)',
       operates: {
         width: '140',
         fixed: 'right',
@@ -352,13 +402,24 @@ export default {
             label: '会员卡号'
           }, {
             type: 'select',
+            key: 'purchaseType',
+            label: '合同类型',
+            optionValue: 'id',
+            optionLabel: 'name',
+            options: [
+              { id: '1', name: '正式合同' }, // 1代表的是正式合同和赠送合同相加，2代表赠送合同，3代表正式合同
+              { id: '2', name: '赠送合同' }
+            ]
+          }, {
+            type: 'select',
             key: 'signType',
             label: '签约类型',
             optionValue: 'id',
             optionLabel: 'name',
             options: [
               { id: '0', name: '新签约' },
-              { id: '1', name: '续约' }
+              { id: '1', name: '续约' },
+              { id: '2', name: '新签-转介绍' }
             ]
           }, {
             type: 'select',
@@ -405,6 +466,12 @@ export default {
             type: 'datePicker',
             key: 'firstDate',
             dateType: 'daterange',
+            label: '付清日期',
+            name: ['startPayOffTime', 'endPayOffTime']
+          }, {
+            type: 'datePicker',
+            key: 'signDate',
+            dateType: 'daterange',
             label: '签约日期',
             name: ['startTime', 'endTime']
           }, {
@@ -439,23 +506,70 @@ export default {
       tableExportStu: '', // 获取合同是否可以导出
       userBranchOptions: [],
       userBranchSelected: '0',
-      operatorType: 0, // 操作类型, 0.全部,1.我的, 2.我的下属
+      operatorType: '0', // 操作类型, 0.全部,1.我的, 2.我的下属
       operatorUser: '' // 查询用户
     }
   },
-
+  computed: {
+    ...mapState('home', [
+      'contractExpire'])
+  },
   mounted() {
-    const params = {}
-    const route = this.$router.history.current.params
-    if (route && route.action && route.action === 'waitCheck') {
-      this.$refs.superSearch.ruleForm.orderState = '1'
-      params.orderState = '1'
-    }
-
     // 查询下属
     this.querySubUser()
+    // 根据路由参数进行默认查询
+    const route = this.$router.history.current.params
+    if (route.activeTab === 'contractOrder') {
+      const action = route && route.action
+      if (route.action === 'willExpire') {
+        const startTime = moment().add(1, 'days').format('YYYY-MM-DD')
+        let endTime = startTime
+        if (this.contractExpire <= 1) {
+          endTime = moment().add(1, 'days').format('YYYY-MM-DD')
+        } else {
+          endTime = moment().add(this.contractExpire, 'days').format('YYYY-MM-DD')
+        }
+        this.$refs.superSearch.ruleForm.secondData = [startTime, endTime]
+      }
+      // 待审核
+      if (action === 'waitCheck') {
+        this.$refs.superSearch.ruleForm.orderState = '1'
+      }
+      // 打开新建窗口
+      if (action === 'addContract' && this.hasBtn('406000001')) {
+        this.contractOrderDialog()
+      }
+      // this.onSearch(this.superValue)
+    }
+    // 时间范围内的合同数
+    const routerDateType = route && route.routerDateType
+    if (routerDateType === 'today') {
+      this.$refs.superSearch.ruleForm.createTime = [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+    } else if (routerDateType === 'thisWeek') {
+      const weekOfday = this.$moment().format('d') // 计算今天是这周第几天
+      const monday = this.$moment()
+        .subtract(weekOfday - 1, 'days')
+        .format('YYYY-MM-DD')
+      const sunday = this.$moment()
+        .add(7 - weekOfday, 'days')
+        .format('YYYY-MM-DD') // 周日日期
+      this.$refs.superSearch.ruleForm.createTime = [monday, sunday]
+    } else if (routerDateType === 'thisMonth') {
+      // 返回本月
+      const start = this.$moment()
+        .month(this.$moment().month())
+        .startOf('month')
+        .format('YYYY-MM-DD')
+      const end = this.$moment()
+        .month(this.$moment().month())
+        .endOf('month')
+        .format('YYYY-MM-DD')
+      this.$refs.superSearch.ruleForm.createTime = [start, end]
+    }
+    this.$refs.superSearch.submitForm()
+
     // 查询列表
-    this.searchHandle()
+    // this.searchHandle()
   },
 
   methods: {
@@ -475,7 +589,7 @@ export default {
     },
     /** 查询下属 */
     querySubUser() {
-      const userBranchOptions = [{ id: '0', type: 0, name: '全部', children: [] }, { id: '1', type: 1, name: '我的', children: [] }]
+      const userBranchOptions = [{ id: '0', type: '0', name: '全部', children: [] }, { id: '1', type: 1, name: '我的', children: [] }]
       const children = []
       const self = this
       querySubName().then(res => {
@@ -539,6 +653,11 @@ export default {
     editContractOrderDialog(rowEidt) {
       this.$refs.contractOrderDialog.showDialog(rowEidt)
     },
+
+    /* 编辑赠送合同订单弹框 */
+    editContractOrderGiveDialog(rowEidt) {
+      this.$refs.contractOrderDialog.showDialog(rowEidt)
+    },
     /* 审核合同弹框 */
     checkContractDialog(row) {
       this.$refs.checkContractDialog.showDialog(row)
@@ -577,11 +696,12 @@ export default {
     /* 搜索重置 */
     resetFieldHanle(formName) {
       // 重置的入参
-      this.userBranchSelected = 0
+      this.userBranchSelected = '0'
       this.searchHandle({})
     },
     /** 高级搜索 */
     onSearch(superValue) {
+      // console.info(superValue, 'superValue====')
       // 用户权限选择
       const userBranchParams = {}
       if (this.userBranchSelected === '0' || this.userBranchSelected === '1') { // 全部、我的
@@ -645,6 +765,7 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

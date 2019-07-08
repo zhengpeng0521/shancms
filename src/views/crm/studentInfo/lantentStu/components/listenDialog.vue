@@ -18,6 +18,7 @@
             v-model="listenDialogData.name"
             placeholder="请选择名单姓名"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -113,7 +114,6 @@ export default {
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
-      console.log('formName', formName)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.listenDialogShow = false

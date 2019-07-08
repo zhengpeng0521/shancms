@@ -54,18 +54,17 @@ export default {
         {
           label: '编号',
           prop: 'id',
-
-          formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.id}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '交易单号',
-          prop: 'tradeNo'
+          prop: 'tradeNo',
+          isShowTooltip: true
         },
         {
           label: '业务类型',
-          prop: 'businessType'
+          prop: 'businessType',
+          isShowTooltip: true
         },
         {
           label: '业务名称',
@@ -82,19 +81,24 @@ export default {
         },
         {
           label: '发生人',
-          prop: 'payUser'
+          prop: 'payUser',
+          isShowTooltip: true
         },
         {
           label: '发生金额',
-          prop: 'payAmount'
+          prop: 'payAmount',
+          isShowTooltip: true
         }, {
           label: '支付状态',
-          prop: 'status'
+          prop: 'status',
+          isShowTooltip: true
         },
 
         {
           label: '提交时间',
-          prop: 'modifyTime'
+          prop: 'modifyTime',
+          width: '140px',
+          isShowTooltip: true
         }
       ],
       optionsTab: {
@@ -106,7 +110,7 @@ export default {
           endTime: this.$moment().format('YYYY-MM-DD')
         }
       },
-      tableHeight: 'calc(100vh - 355px)',
+      tableHeight: 'calc(100vh - 347px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -123,6 +127,7 @@ export default {
           valueFormat: 'yyyy-MM-dd',
           modelValue: 'modifyTime',
           itemStyle: 'width:231px',
+          default: true,
           isClearable: true,
           toChange: 'dateChange'
         },

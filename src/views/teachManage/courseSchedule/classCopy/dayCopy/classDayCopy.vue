@@ -23,7 +23,6 @@
       :options="options"
       :table-key="'teachManage_courseSchedule_classCopy_dayCopy_classDayCopy'"
       @handleSelectionChange="selectionChange"
-      @toChildData="getCheckCol"
     />
     <BatchCopyCourse ref="batchCopy" />
   </div>

@@ -1,17 +1,26 @@
-import CommonSearch from '@/components/CommonSearch/CommonSearch'
-import CommonTable from '@/components/CommonTable/CommonTable'
-import { FormatDate } from '../../../../../utils/dateFormat'
 import {
   queryArrageCourseList,
   courseSummaryQuery
 } from '@/api/teachManage/orderCourse'
+import { FormatDate } from '../../../../../utils/dateFormat'
+/* 普通搜索 */
+import CommonSearch from '@/components/CommonSearch/CommonSearch'
+import CommonTable from '@/components/CommonTable/CommonTable'
+/* 高级搜索 */
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
+/* 详情页 */
 import OrderCourseDetail from './side/orderCourseDetail'
+/* 取消上课学员 */
 import CancelOrderCourse from './dialog/cancelOrderCourse'
+/* 取消试听学员 */
 import CancelTryStudent from './dialog/cancelTryStudent'
+/* 单次约课 */
 import OnceOrderCourse from './dialog/onceOrderCourse'
+/* 批量约课 */
 import BatchOrderCourse from './dialog/batchOrderCourse'
+/* 预约补课 */
 import OrderMissLesson from './dialog/orderMissLesson'
+/* 预约试听 */
 import OrderTryCourse from './dialog/orderTryCourse'
 import OrderCourseSchedule from '../orderCourseSchedule/orderCourseSchedule.vue'
 import SchedulePrintByDay from './schedulePrintByDay.vue'
@@ -226,7 +235,7 @@ export default {
           }
         }
       ],
-      tableHeight: 'calc(100vh - 289px)',
+      tableHeight: 'calc(100vh - 277px)',
       listQuery: {
         show: true,
         sizes: true,
@@ -313,6 +322,8 @@ export default {
       isSchedulePrintByDay: false, // 是否是按天打印课程表
       value4: [],
       superValue: {}, // 高级搜索数据
+      pageSize: 10,
+      pageIndex: 0,
       formValue: {
         modifyTime: [
           this.$moment().format('YYYY-MM-DD'),
@@ -350,7 +361,7 @@ export default {
         this.isBackWeek = true
       }
       if (
-        this.start == this.$moment().format('YYYY-MM-DD') && //eslint-disable-line
+        this.start == this.$moment().format("YYYY-MM-DD") && //eslint-disable-line
         this.start == this.end //eslint-disable-line
       ) {
         this.isBackDay = false
@@ -362,17 +373,18 @@ export default {
     indexChange(pageIndex) {
       let startDate = ''
       let endDate = ''
-      if (this.flag) {
+      if (this.tabKey === '1') {
         startDate = this.formValue.modifyTime[0]
         endDate = this.formValue.modifyTime[1]
       } else {
         startDate = this.$refs.search.formValue.modifyTime[0]
         endDate = this.$refs.search.formValue.modifyTime[1]
       }
+      this.pageIndex = pageIndex - 1
       const payload = {
         startDate: startDate,
         endDate: endDate,
-        pageIndex: pageIndex - 1,
+        pageIndex: this.pageIndex,
         ...this.formValue,
         ...this.superValue
       }
@@ -388,18 +400,20 @@ export default {
     sizeChange(pageSize) {
       let startDate = ''
       let endDate = ''
-      if (this.flag) {
+      if (this.tabKey === '1') {
         startDate = this.formValue.modifyTime[0]
         endDate = this.formValue.modifyTime[1]
       } else {
         startDate = this.$refs.search.formValue.modifyTime[0]
         endDate = this.$refs.search.formValue.modifyTime[1]
       }
-
+      this.pageSize = pageSize
+      this.pageIndex = 0
       const payload = {
         startDate: startDate,
         endDate: endDate,
         pageSize,
+        pageIndex: this.pageIndex,
         ...this.formValue,
         ...this.superValue
       }
@@ -415,10 +429,14 @@ export default {
     searchHandle(formValue) {
       // 搜索的入参
       this.formValue = formValue
+      if (formValue.startDate && formValue.endDate) {
+        this.formValue.modifyTime = [formValue.startDate, formValue.endDate]
+      }
+      this.pageIndex = 0
       const params = {
         ...this.formValue,
         ...this.superValue,
-        pageIndex: 0
+        pageIndex: this.pageIndex
       }
       this.flag = true
       // params.startDate = formValue.modifyTime[0]
@@ -434,8 +452,9 @@ export default {
     /* 搜索重置 */
     resetFieldHanle() {
       // 重置的入参
+      this.pageIndex = 0
       const params = {
-        pageIndex: 0,
+        pageIndex: this.pageIndex,
         startDate: this.$moment().format('YYYY-MM-DD'),
         endDate: this.$moment().format('YYYY-MM-DD'),
         ...this.superValue
@@ -460,13 +479,20 @@ export default {
     /* 高级搜索 */
     onSearch(superValue) {
       this.superValue = superValue
-      const params = {
-        ...this.superValue,
-        ...this.formValue
+      if (superValue.pageIndex) {
+        this.pageIndex = superValue.pageIndex
+      } else {
+        this.pageIndex = 0
       }
-      if (this.superValue.studyTime && this.superValue.studyTime.length > 0) {
-        params.startTime = this.superValue.studyTime[0]
-        params.endTime = this.superValue.studyTime[1]
+      const params = {
+        ...superValue,
+        ...this.formValue,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize
+      }
+      if (superValue.studyTime && superValue.studyTime.length > 0) {
+        params.startTime = superValue.studyTime[0]
+        params.endTime = superValue.studyTime[1]
       }
       if (this.formValue.modifyTime) {
         params.startDate = this.formValue.modifyTime[0]
@@ -478,8 +504,9 @@ export default {
     },
     /* 清空高级搜索 */
     onClear() {
+      this.pageIndex = 0
       const params = {
-        pageIndex: 0,
+        pageIndex: this.pageIndex,
         ...this.formValue
       }
       if (this.formValue.modifyTime) {
@@ -487,10 +514,6 @@ export default {
         params.endDate = this.formValue.modifyTime[1]
       }
       delete params.modifyTime
-      this.formValue.modifyTime = [
-        this.formValue.modifyTime[0],
-        this.formValue.modifyTime[1]
-      ]
       this.tabKey = '1'
       this.superValue = {}
       this.$refs.tableCommon.getList(params)
@@ -526,7 +549,7 @@ export default {
         this.end = FormatDate(end).substr(0, 10)
         // this.$refs.search.formValue.modifyTime = [this.start, this.end]
         if (
-          this.start == this.$moment().format('YYYY-MM-DD') && //eslint-disable-line
+          this.start == this.$moment().format("YYYY-MM-DD") && //eslint-disable-line
           this.start == this.end //eslint-disable-line
         ) {
           this.isBackDay = false
@@ -545,7 +568,7 @@ export default {
         this.end = FormatDate(end).substr(0, 10)
         // this.formValue.modifyTime = [this.start, this.end]
         if (
-          this.start == this.$moment().format('YYYY-MM-DD') && //eslint-disable-line
+          this.start == this.$moment().format("YYYY-MM-DD") && //eslint-disable-line
           this.start == this.end //eslint-disable-line
         ) {
           this.isBackDay = false
@@ -603,11 +626,13 @@ export default {
         // this.formInline.modifyTime = [this.start, this.end]
         this.isBackWeek = false
       }
+      this.pageIndex = 0
       const params = {
+        ...this.superValue,
+        ...this.formValue,
         startDate: this.start,
         endDate: this.end,
-        ...this.superValue,
-        ...this.formValue
+        pageIndex: this.pageIndex
       }
       if (this.superValue.studyTime && this.superValue.studyTime.length > 0) {
         params.startTime = this.superValue.studyTime[0]
@@ -617,6 +642,7 @@ export default {
       delete params.studyTime
       this.$refs.tableCommon.getList(params)
       this.$refs.search.formValue.modifyTime = [this.start, this.end]
+      this.formValue.modifyTime = [this.start, this.end]
     },
     /* 天数radio切换*/
     tabChange(val) {
@@ -636,7 +662,8 @@ export default {
         this.end = this.$moment().format('YYYY-MM-DD')
         const params = {
           startDate: this.$refs.search.formValue.modifyTime[0],
-          endDate: this.$refs.search.formValue.modifyTime[1]
+          endDate: this.$refs.search.formValue.modifyTime[1],
+          pageIndex: 0
         }
         this.$refs.tableCommon.getList(params)
       } else if (val === '2') {
@@ -645,15 +672,14 @@ export default {
         this.end = sunday
         const params = {
           startDate: monday,
-          endDate: sunday
+          endDate: sunday,
+          pageIndex: 0
         }
         this.$refs.tableCommon.getList(params)
       }
       this.isBackWeek = false
       this.isBackDay = false
     },
-    /* 获取表格列 */
-    getCheckCol() {},
     /* 约课详情 */
     toOrderCourseDetail(row) {
       this.$refs.orderDetail.show(row)
@@ -676,12 +702,20 @@ export default {
     },
     /* 单次约课更新 */
     getUpdateOnceOrder(val) {
-      console.info('val-----', val)
+      // const params = {
+      //   startDate: this.formValue.modifyTime[0],
+      //   endDate: this.formValue.modifyTime[1],
+      //   pageSize: this.pageSize,
+      //   pageIndex: this.pageIndex
+      // }
+      // this.$refs.tableCommon.getList(params)
+
       const params = {
-        startDate: this.formInline.modifyTime[0],
-        endDate: this.formInline.modifyTime[1]
+        ...this.superValue,
+        pageSize: this.pageSize,
+        pageIndex: this.pageIndex
       }
-      this.$refs.tableCommon.getList(params)
+      this.onSearch(params)
       this.$refs.orderDetail.show(val)
     },
     /* 批量约课 */

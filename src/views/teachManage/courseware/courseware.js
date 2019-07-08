@@ -5,6 +5,7 @@ import {
   // getCoursewareList,
   queryCourseware
 } from '@/api/teachManage/courseware'
+import TreeSelect from '@/components/SubUserSelect/SubUserSelect'
 import { do_printImg } from '@/utils/printUtils'
 import CoursewareOverdue from './dialog/coursewareOverdue'
 import CoursewareCheck from './dialog/coursewareCheck'
@@ -18,7 +19,8 @@ export default {
     CommonTable,
     CoursewareOverdue,
     CoursewareCheck,
-    CoursewareVideo
+    CoursewareVideo,
+    TreeSelect
   },
   data() {
     return {
@@ -41,17 +43,17 @@ export default {
             isClearable: true,
             itemStyle: 'width:140px'
           },
-          {
-            itemType: 'select',
-            placeholder: '类目',
-            modelValue: 'cat',
-            isFilterable: true,
-            isClearable: true,
-            itemStyle: 'width:140px',
-            valueKey: 'id',
-            labelKey: 'name',
-            apiService: summeryQueryCat // 是否从接口中获取
-          },
+          // {
+          //   itemType: 'select',
+          //   placeholder: '类目',
+          //   modelValue: 'cat',
+          //   isFilterable: true,
+          //   isClearable: true,
+          //   itemStyle: 'width:140px',
+          //   valueKey: 'id',
+          //   labelKey: 'name',
+          //   apiService: summeryQueryCat // 是否从接口中获取
+          // },
           {
             itemType: 'select',
             placeholder: '类型',
@@ -169,6 +171,7 @@ export default {
         {
           label: '发布时间',
           prop: 'publishTime',
+          hasSort: true,
           isShowTooltip: true,
           width: '100'
         }
@@ -183,30 +186,72 @@ export default {
         },
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 234px)',
-      operates: {
+      tableHeight: 'calc(100vh - 235px)',
+      treeList: [],
+      category: '', // 类目
+      printCfg: '1' // 打印配置
+    }
+  },
+  mounted() {
+    this.getSummeryQueryCat()
+  },
+  computed: {
+    operates() {
+      return this.printCfg === '1' ? {
         width: '150',
         fixed: 'right',
-        list: [
-          {
-            label: '打印',
-            method: row => {
-              this.toPrint(row)
-            }
+        list: [{
+          label: '打印',
+          method: row => {
+            this.toPrint(row)
           }
-        ]
+        }]
       }
+        : undefined
     }
   },
   methods: {
+    getSummeryQueryCat() {
+      summeryQueryCat().then(res => {
+        const data = res.data
+        let catList = []
+        const parentList = []
+        const childList = []
+        if (data.errorCode === 0) {
+          catList = data.results
+          catList.map(item => {
+            // eslint-disable-next-line
+            if (item.pid != '-1') {
+              childList.push(item)
+            } else {
+              parentList.push(item)
+            }
+          })
+          for (const i in parentList) {
+            parentList[i].children = []
+            for (const j in childList) {
+              // eslint-disable-next-line
+              if (parentList[i].id == childList[j].pid) {
+                parentList[i].children.push(childList[j])
+              }
+            }
+          }
+          this.treeList = parentList
+        } else {
+          this.$message.error(data.errorMessage)
+        }
+      })
+    },
     /* 搜索 */
     searchHandle(formValue) {
       // 搜索的入参
       const params = {
         ...formValue,
-        nameOrder: '2'
+        nameOrder: '2',
+        cat: this.category
       }
       this.$refs.tableCommon.getList(params)
+      this.printCfg = this.$refs.tableCommon.tableAllData.print
     },
     /* 搜索重置 */
     resetFieldHanle(formName) {
@@ -215,6 +260,7 @@ export default {
         pageIndex: 0,
         nameOrder: '2'
       }
+      this.category = ''
       this.$refs.tableCommon.getList(params)
     },
     handleSortChange(val) {
@@ -234,9 +280,6 @@ export default {
         type: this.formInline.type
       }
       this.$refs.tableCommon.getList(params)
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     /* 查看课件详情 */
     toCoursewareDetail(row) {

@@ -6,8 +6,8 @@
         <div class="campusHomepage-cont">
           <div class="head">
             <img
-              src="https://img.ishanshan.com/gimg/n/20190320/7520a62ea0b5b3eb8af55fefc2a8779c"
-              alt=""
+              src="https://img.ishanshan.com/gimg/user/n///1557127683.png"
+              alt="手机头部"
             >
           </div>
           <div class="cont">
@@ -33,19 +33,33 @@
                 <i class="el-icon-phone" />
               </div>
             </div>
-            <div class="orgItem">
-              <div class="tit"><i />业务范围</div>
-              <span class="workType">
-                启蒙类
-              </span>
-            </div>
-            <div class="orgItem">
+            <div
+              v-if="nav.ageRangeShow === 1"
+              class="orgItem"
+            >
               <div class="tit"><i />适合年龄</div>
               <span class="age">
                 {{ campusData.ageTag }}
               </span>
             </div>
-            <div class="orgItem">
+            <div
+              v-if="nav.busnessRangeShow === 1"
+              class="orgItem"
+            >
+              <div class="tit"><i />业务范围</div>
+              <span
+                v-for="(item,index) in typeLabel(campusData.categoryTag)"
+                :key="index"
+                class="workType"
+                style="margin:5px 2px;line-height:20px"
+              >
+                {{ item }}
+              </span>
+            </div>
+            <div
+              v-if="nav.orgAlbumShow === 1"
+              class="orgItem"
+            >
               <div class="tit"><i />环境相册</div>
               <div
                 v-for="(item,index) in campusData.images"
@@ -61,13 +75,19 @@
                 <!-- </div> -->
               </div>
             </div>
-            <div class="orgItem">
+            <div
+              v-if="nav.orgIntroShow === 1"
+              class="orgItem"
+            >
               <div class="tit"><i />机构简介</div>
               <p class="intro">
                 {{ campusData.intro }}
               </p>
             </div>
-            <div class="orgItem">
+            <div
+              v-if="nav.orgFacultyShow === 1"
+              class="orgItem"
+            >
               <div class="tit"><i />师资力量</div>
               <div
                 v-for="(data,index) in campusData.teachers"
@@ -84,21 +104,20 @@
                 <p class="rank">{{ data.teacherIntro }}</p>
               </div>
             </div>
-            <div class="orgItem">
+            <div
+              v-if="nav.orgFacilityShow === 1"
+              class="orgItem"
+            >
               <div class="tit"><i />机构设施
               </div>
-              <div class="facility">
-                <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/66c0c7c21760e3b9c5f64dd550f03385"></div>
-                <div class="facilityName">TV</div>
-              </div>
-              <div class="facility">
-                <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/ffafddccb7f855da5292f6a826bb5805"></div>
-                <div class="facilityName">母婴间</div>
-              </div>
-              <div class="facility">
-                <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/37af3077e6cc28917c4941bcb78deb9f"></div>
-                <div class="facilityName">茶水间</div>
-              </div>
+              <span
+                v-for="(item,index) in utilityLabel(campusData.utilityTag)"
+                :key="index"
+                class="facility"
+              >
+                <div class="facilityBacground"><img :src="item.img"></div>
+                <div class="facilityName">{{ item.text }}</div>
+              </span>
             </div>
             <div style="width:200px;height:50px" />
           </div>
@@ -112,7 +131,16 @@
             @click="addLessonShow()"
           >设置首页</el-button>
           <!-- <el-button plain>访问微官网</el-button> -->
-          <hoverBtn style="margin-left:20px" />
+          <hoverBtn
+            :org-home="orgHome"
+            style="margin-left:10px"
+          />
+          <hoverBtn
+            :org-home="orgHome"
+            style="margin-left:10px"
+            page="personCnter"
+          />
+
         </div>
         <div class="table">
           <div class="table-top"><i />菜单设置</div>
@@ -134,12 +162,13 @@
       v-if="homePageSettingShow"
       ref="homePageSettingDialog"
       :visible.sync="homePageSettingShow"
+      @refreshPage="refreshPage"
     />
   </div>
 </template>
 <script>
 import CommonTable from '@/components/CommonTable/CommonTable'
-import { queryConfig, changeConfig, getOrgan } from '@/api/microWeb/webPreview'
+import { queryConfig, changeConfig, getOrgan, dictOrgan } from '@/api/microWeb/webPreview'
 import menuSet from './components/menuSet'
 import hoverBtn from './components/hoverBtn'
 import homePageSetting from './components/homePageSetting'
@@ -153,7 +182,10 @@ export default {
   data() {
     return {
       id: '',
+      orgHome: '', // 微官网地址
       setObj: {},
+      organCategory: [],
+      utilityCategory: [],
       // 手机初始参数
       campusData: {
         name: '',
@@ -165,6 +197,7 @@ export default {
         city: '',
         area: '',
         categoryTag: [],
+        utilityTag: [],
         images: ['https://img.ishanshan.com/gimg/n/20190320/e6ac78d3554f3d45833f6e6db62861f7',
           'https://img.ishanshan.com/gimg/n/20190320/407a2913b00b8682ef56dfd7e9f6edfd',
           'https://img.ishanshan.com/gimg/n/20190320/8a861bf1883567a46c6c556cbc09a278'],
@@ -191,13 +224,20 @@ export default {
         courseTab: '',
         activityTab: '',
         gameTab: '',
-        otherTab: '' },
+        otherTab: '',
+        ageRange: '1', // 适合年龄
+        busnessRange: '1', // 业务范围
+        orgAlbum: '1', // 环境相册
+        orgIntro: '1', // 机构简介
+        orgFaculty: '1', // 师资力量
+        orgFacility: '1' // 机构设施
+      },
       // 表格参数
 
       dataSource: [],
       loading: false,
       operates: {
-        width: '250',
+        width: '200px',
         fixed: 'right',
         list: [
           {
@@ -242,13 +282,10 @@ export default {
             method: (row) => {
               this.setObj = row
               if (row.type !== 1) {
-                console.log(row, 'row')
                 this.menuSetDialogShow(row)
                 this.$refs.menuSetDialog.addressVisible = false
                 this.$refs.menuSetDialog.menuSetForm.menuTitle = row.title
               } else {
-                // console.log(typeof (row.title))
-                console.log(row, 'row1')
                 this.menuSetDialogShow(row)
                 this.$refs.menuSetDialog.addressVisible = true
                 this.$refs.menuSetDialog.menuSetForm.menuTitle = row.title
@@ -264,12 +301,6 @@ export default {
           isShowSet: true,
           width: '150',
           isShowTooltip: true
-          // formatter: (row) => {
-          //   console.log(row.title)
-          //   if (row.type !== 2) {
-          //     return `<div>${row.title}</div>`
-          //   }
-          // }
         },
         {
           label: '状态',
@@ -283,16 +314,6 @@ export default {
               return `<div >显示</div>`
             }
           }
-          // methods: (row) => {
-          //   // this.openSideDialog(row)
-          //   // console.log(this.$refs.tableCommon)
-          //   console.log(row.show)
-          //   if (row.show === 1) {
-          //     row.show = 0
-          //   } else {
-          //     row.show = 1
-          //   }
-          // }
         }
       ],
       options: {
@@ -305,6 +326,7 @@ export default {
     }
   },
   mounted() {
+    this.getDictOrgan()
     this.queryConfig()
     this.getOrganList()
   },
@@ -318,15 +340,19 @@ export default {
           this.campusData.addrColumn = Object.assign([], JSON.parse(res.data.addrColumn))
           if (res.data.categoryTag) {
             this.campusData.categoryTag = res.data.categoryTag.split(',')
+          } else {
+            this.campusData.categoryTag = []
           }
-
+          if (res.data.utilityTag) {
+            this.campusData.utilityTag = res.data.utilityTag.split(',')
+          } else {
+            this.campusData.utilityTag = []
+          }
           if (!res.data.images) {
             this.campusData.images = []
           } else {
-            // this.imageFileList = []
             this.campusData.images = Object.assign([], res.data.images.split(','))
           }
-          // this.choiceLocation = res.data.addrColumn.join(',') + res.data.addr
         } else {
           this.$message.error(res.data.errorMessage)
         }
@@ -335,10 +361,13 @@ export default {
     menuSetDialogShow(row) {
       this.$refs.menuSetDialog.menuSetShow = true
     },
+    // 刷新页面
+    refreshPage() {
+      this.queryConfig()
+    },
     // 首页设置
     addLessonShow() {
       this.homePageSettingShow = true
-      // this.$refs.addLessonDialog.addLessonDialogTitlt = '新建课程'
     },
     openStopHandle(row) {
       const name = row.name + 'Show'
@@ -354,24 +383,123 @@ export default {
       queryConfig().then(res => {
         if (res.data.errorCode === 0) {
           const arr = []
+          const sourceArr = []
           res.data.results.menuConfig.map((val) => {
             if (val.type !== 2) {
-              arr.push(val)
+              sourceArr.push(val)
             }
+            arr.push(val)
           })
-          this.dataSource = arr
+          this.dataSource = sourceArr
           this.id = res.data.results.id
-          console.log(arr, 'arr')
+          this.orgHome = res.data.results.orgHome
           arr.map(val => {
             const name = val.name
             this.nav[name] = val.title
             this.nav[name + 'Show'] = val.show
           })
-          console.log(this.nav, '111')
         } else {
           this.$message.error(res.errorMessage)
         }
       })
+    },
+    // 业务范围
+    getDictOrgan() {
+      dictOrgan().then(res => {
+        if (res.data.errorCode === 0) {
+          let organCategory = []
+          let utilityCategory = []
+          res.data.dictItemList.forEach(v => {
+            if (v.code === 'organcategory') {
+              organCategory = v.items
+            }
+            if (v.code === 'utilitytag') {
+              utilityCategory = v.items
+            }
+          })
+          this.organCategory = organCategory
+          this.utilityCategory = utilityCategory
+        } else {
+          this.$message.error(res.data.errorMessage)
+        }
+      })
+    },
+    // 机构设施处理处理
+    utilityLabel(values) {
+      const items = []
+      this.utilityCategory.forEach(item => {
+        if (values.indexOf(item.value) > -1) {
+          switch (item.value) {
+            case '101':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/6c1735716d135a51f7d5472c1d3c41c6'
+              break
+            case '102':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/f2e7d2e414bfa11d1619f68799ca39bc'
+              break
+            case '103':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2128bf4b593cd125480ee36728fcf206'
+              break
+            case '104':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2349ceb503ad2256627c0d8ec178bee7'
+              break
+            case '105':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2e93d8aaef852f00c06e7b313f72114d'
+              break
+            case '106':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/cbea5c12d83e76c9393a669f285bcced'
+              break
+            case '107':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/db145dae09819d8c4193f423da1e4cf4'
+              break
+            case '108':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/8584d4c9e5474c212dec463d3c7aaded'
+              break
+            case '109':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/351ebb07a76dc5a8f9200e124af3f70c'
+              break
+            case '110':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/30d13c63d90cd251e992cd0338f8ea16'
+              break
+            case '111':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2b54b4f601f66d3446cb0a98f68c3e94'
+              break
+            case '112':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/61a60e294b9662b130904123458b5c2c'
+              break
+            case '113':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/cfa4cbbff5a207a9466047a005ad96b6'
+              break
+            case '114':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/04edca4320cf1160a1073ddaea70a391'
+              break
+            case '115':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/085367478a5825d4d0891077f4181727'
+              break
+            case '116':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/8621a39fedc4b245b01fb397227079e3'
+              break
+            case '117':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/5fe7a0e7c8928f483a7dcd98490b32cf'
+              break
+            default:
+              item.img = ''
+              break
+          }
+          items.push(item)
+        }
+      })
+      return items
+    },
+    // 业务范围label显示处理
+    typeLabel(values) {
+      const labels = []
+      this.organCategory.forEach(item => {
+        const index = values.indexOf(item.value)
+        if (index > -1) {
+          labels.push(item.text)
+        }
+      })
+      return labels
     }
   }
 }
@@ -389,14 +517,12 @@ export default {
   padding: 0 20px;
   overflow-x: hidden;
   overflow-y: auto;
-  // border: 1px solid #f00;
   .campusHomepage-top {
     width: 100%;
     padding-top: 20px;
     padding-bottom: 14px;
-    border-bottom: 1px solid #ddd;
-    font-size: 16px;
-    // background: pink;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
   }
   .campusHomepage-body {
     display: flex;
@@ -406,14 +532,13 @@ export default {
     overflow: auto;
     .campusHomepage-contBox {
       width: 435px;
-      height: 727px;
-      padding: 30px;
-      background: rgba(240, 242, 245, 0.8);
+      padding: 0 30px;
     }
     .campusHomepage-cont {
       width: 100%;
       height: 667px;
       box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
     }
     .head {
       width: 100%;
@@ -572,18 +697,24 @@ export default {
         .facility {
           display: inline-block;
           text-align: center;
-          margin-right: 12px;
+          // margin-right: 12px;
+          width: calc(100% / 6);
           .facilityBacground {
             border-radius: 50%;
             background: #c4d4e9;
             overflow: hidden;
             width: 36px;
             height: 36px;
-            margin-bottom: 4px;
+            margin: 0 auto 4px;
             img {
               width: 100%;
               height: 100%;
             }
+          }
+          .facilityName {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
           }
         }
       }
@@ -598,11 +729,10 @@ export default {
             display: inline-block;
             vertical-align: top;
             margin-right: 10px;
-            width: 6px;
+            width: 8px;
             height: 14px;
             background: rgba(70, 182, 238, 1);
-            border-radius: 2px;
-            // margin-left: -20px;
+            border-radius: 3px;
           }
         }
       }

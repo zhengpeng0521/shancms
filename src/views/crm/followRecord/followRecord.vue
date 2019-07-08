@@ -28,17 +28,19 @@
       <div>
         <div class="radio">
           <el-radio-group v-model="source">
-            <el-radio-button label="2">潜在学员</el-radio-button>
-            <el-radio-button label="1">在读学员</el-radio-button>
+            <el-radio-button v-log="{compName:'跟进记录',eventName:'web-【学员CRM】-跟进记录-潜在学员'}" label="2">潜在学员</el-radio-button>
+            <el-radio-button v-log="{compName:'跟进记录',eventName:'web-【学员CRM】-跟进记录-在读学员'}" label="1">在读学员</el-radio-button>
           </el-radio-group>
         </div>
         <el-button
+          v-log="{compName:'跟进记录',eventName:'web-【学员CRM】-跟进记录-导出'}"
           class="cancel_btn"
           size="mini"
           style="float:right"
           @click="exportContent"
         >导出</el-button>
         <el-button
+          v-log="{compName:'跟进记录',eventName:'web-【学员CRM】-跟进记录-新建跟进记录'}"
           style="float:right;margin:0 10px"
           type="primary"
           size="mini"
@@ -156,10 +158,43 @@ export default {
       this.$refs.search.formValue.name = ''
       this.$refs.search.formValue.type = ''
       this.$refs.advanced.ruleForm.uidName = ''
-      this.$refs.tableCommon.getList({ source: val })
+      // this.$refs.tableCommon.getList({ source: val })
+      const params = {
+        ...this.formValue,
+        source: val
+      }
+      this.searchHandle(params)
     }
   },
   mounted() {
+    // 根据路由默认查询
+    const route = this.$router.history.current.params
+    const routerDateType = route && route.routerDateType
+    if (routerDateType === 'today') {
+      this.$refs.advanced.ruleForm.followTime = [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+    } else if (routerDateType === 'thisWeek') {
+      const weekOfday = this.$moment().format('d') // 计算今天是这周第几天
+      const monday = this.$moment()
+        .subtract(weekOfday - 1, 'days')
+        .format('YYYY-MM-DD')
+      const sunday = this.$moment()
+        .add(7 - weekOfday, 'days')
+        .format('YYYY-MM-DD') // 周日日期
+      this.$refs.advanced.ruleForm.followTime = [monday, sunday]
+    } else if (routerDateType === 'thisMonth') {
+      // 返回本月
+      const start = this.$moment()
+        .month(this.$moment().month())
+        .startOf('month')
+        .format('YYYY-MM-DD')
+      const end = this.$moment()
+        .month(this.$moment().month())
+        .endOf('month')
+        .format('YYYY-MM-DD')
+      this.$refs.advanced.ruleForm.followTime = [start, end]
+    }
+    this.$refs.advanced.submitForm()
+
     this.querySubUser()
   },
   methods: {
@@ -265,10 +300,7 @@ export default {
     },
     /* 刷新列表 */
     getUpdateTable() {
-      const params = {
-        pageIndex: 0
-      }
-      this.$refs.tableCommon.getList(params)
+      this.searchHandle(this.formValue)
     },
     /** 查询下属 */
     querySubUser() {
@@ -347,9 +379,9 @@ export default {
 }
 .radio /deep/ {
   display: inline-block;
-  .el-radio-button--mini .el-radio-button__inner {
-    // font-size: 14px;
-  }
+  // .el-radio-button--mini .el-radio-button__inner {
+  //   // font-size: 14px;
+  // }
 }
 .subUserSelect {
   vertical-align: top;

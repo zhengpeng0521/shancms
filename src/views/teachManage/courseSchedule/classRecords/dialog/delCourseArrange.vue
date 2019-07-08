@@ -43,7 +43,6 @@ export default {
       this.checkNum = val
       this.checkList = rowArr
       this.dialogVisible = true
-      console.info(this.checkList)
     },
     sure() {
       const cpdIdArr = []

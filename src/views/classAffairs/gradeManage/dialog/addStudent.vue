@@ -16,6 +16,7 @@
             v-model="ruleForm.stuId"
             placeholder="请选择学员"
             multiple
+            filterable
             style="width:280px"
           >
             <el-option

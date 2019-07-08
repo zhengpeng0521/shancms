@@ -25,7 +25,7 @@
         </div>
         <div class="body">
           <el-button
-            plain
+            class="cancel_btn"
             @click="handelSwitch"
           >{{ detailTitle }}</el-button>
           <div class="cont">

@@ -33,7 +33,8 @@ import {
   createParent, // 添加名单家长信息
   getOpenIdByMobile, // 学员家长手机号查重
   parentDupCheck, // 名单家长手机号查重
-  deleteClueParent // 名单删除家长信息
+  deleteClueParent, // 名单删除家长信息
+  deleteParents // 在读学员家长删除
 } from '@/api/crmDetail/crmDetail'
 
 export default {
@@ -76,7 +77,7 @@ export default {
           render: (h, params) => {
             return h('span', {}, [
               h('el-popover', {
-                props: { placement: 'top', trigger: 'click', popperClass: 'detail-parent-pop', content: params.row.mobile }
+                props: { placement: 'top', trigger: 'hover', popperClass: 'detail-parent-pop', content: params.row.mobile }
               }, [
                 h('a', { slot: 'reference' }, '查看')
               ])
@@ -91,6 +92,14 @@ export default {
             return h('span', {}, text)
           }
         }, {
+          label: '绑定人脸',
+          prop: 'bandStatus',
+          render: (h, params) => {
+            // eslint-disable-next-line
+            const text = params.row.parentfaceBinding == '0' ? '未绑定' : '已绑定'
+            return h('span', {}, text)
+          }
+        }, {
           label: '邮箱',
           prop: 'email',
           width: '140px'
@@ -100,7 +109,7 @@ export default {
           width: '120px'
         }
       ],
-      columnsStu: [
+      columnsClue: [
         {
           label: '家长姓名',
           prop: 'parentName'
@@ -178,22 +187,35 @@ export default {
     getParentListFun() {
       // 名单家长信息
       if(this.$props.params.source && this.$props.params.source == '2'){ //eslint-disable-line
-        this.getStuParentList()
+        this.getClueParentList()
       } else {
-        // 学员家长信息
-        this.options.apiService = getParentList // 表格的数据请求接口
-        this.options.params = {
-          pageSize: 20,
-          pageIndex: 0,
-          stuId: this.$props.params.stuId
-        }
-        this.operates = {}
-        this.columns = this.columns
+        this.getStuParentList()
       }
     },
-
-    /* 名单家长列表刷新 */
+    /** 学员家长列表获取 */
     getStuParentList() {
+      const params = {
+        pageSize: 20,
+        pageIndex: 0,
+        stuId: this.$props.params.stuId
+      }
+      getParentList(params).then(res => {
+        if (res.data.errorCode === 0) {
+          this.$refs.tableCommon.tableData = res.data.results
+          this.tableDataLength = res.data.results.length
+          // 家长 长度为1时处理
+          if(this.tableDataLength == 1 ) {//eslint-disable-line
+            this.operates.list[0].label = ''
+          } else {
+            this.operates.list[0].label = '删除'
+          }
+        } else {
+          this.$message.error(res.data.errorMessage)
+        }
+      })
+    },
+    /* 名单家长列表刷新 */
+    getClueParentList() {
       const params = {
         pageSize: 20,
         pageIndex: 0,
@@ -201,7 +223,7 @@ export default {
       }
       parentOrderList(params).then(res => {
         if (res.data.errorCode === 0) {
-          this.columns = this.columnsStu
+          this.columns = this.columnsClue
           this.$refs.tableCommon.tableData = res.data.results
           this.tableDataLength = res.data.results.length
           // 家长 长度为1时处理
@@ -293,9 +315,25 @@ export default {
       // 名单
       if(this.$props.params.source && this.$props.params.source == '2') { //eslint-disable-line
         this.deleteClueParentFun(row)
+      } else {
+        this.deleteStuParentFun(row)
       }
     },
-
+    /** 学员删除家长信息 */
+    deleteStuParentFun(row) {
+      const params = {
+        pid: row.id,
+        stuId: row.stuId
+      }
+      deleteParents(params).then(res => {
+        if (res.data.errorCode === 0) {
+          this.$message.success(res.data.errorMessage)
+          this.getParentListFun()
+        } else {
+          this.$message.error(res.data.errorMessage)
+        }
+      })
+    },
     /* 名单删除家长信息 */
     deleteClueParentFun(row) {
       const params = {
@@ -305,7 +343,7 @@ export default {
       deleteClueParent(params).then(res => {
         if (res.data.errorCode === 0) {
           this.$message.success(res.data.errorMessage)
-          this.getStuParentList()
+          this.getClueParentList()
           // this.deleteParentOne()
         } else {
           this.$message.error(res.data.errorMessage)
@@ -356,9 +394,13 @@ export default {
         }
         addClueParent(params).then(res => {
           if (res.data.errorCode === 0) {
+            if (res.data.allowedAdd === false) {
+              this.$message.success('家长重复：' + (res.data.results[0] && (res.data.results[0].parentName + res.data.results[0].mobile)))
+              return
+            }
             this.$message.success(res.data.errorMessage)
             this.$refs.parentAdd.closeAdd()
-            this.getStuParentList()
+            this.getClueParentList()
           } else {
             this.$message.error(res.data.errorMessage)
           }
@@ -390,7 +432,7 @@ export default {
           if (res.data.errorCode === 0) {
             this.$message.success(res.data.errorMessage)
             this.$refs.parentAdd.closeAdd()
-            this.getOrderParentList()
+            this.getStuParentList()
           } else {
             this.$message.error(res.data.errorMessage)
           }

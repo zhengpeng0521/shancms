@@ -60,7 +60,6 @@ export default {
   methods: {
     picDetailBtn(val) {
       this.obj = val
-      // console.log(val, 'val')
       this.creatLeafletShow = true
     }
 
@@ -72,10 +71,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding-left: 30px;
-  background: rgb(240, 240, 244);
+  padding: 30px 0 0 30px;
+  background: rgba(240, 242, 245, 0.8);
   // height: 500px;
-  height: calc(100vh - 150px);
+  // height: calc(100vh - 150px);
   // overflow: auto;
   // border: 1px solid #0f0;
 }

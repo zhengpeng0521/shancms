@@ -32,21 +32,17 @@ export default {
         {
           label: '编号',
           prop: 'id',
-
-          formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.id}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '交易单号',
-          prop: 'tradeNo'
+          prop: 'tradeNo',
+          isShowTooltip: true
         },
         {
           label: '描述',
           prop: 'subject',
-          formatter: (row, column, cellValue) => {
-            return `<div style="color:#666666;text-overflow:ellipsis;overflow:hidden">${row.subject}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '发生金额',
@@ -63,14 +59,18 @@ export default {
         },
         {
           label: '账号金额',
-          prop: 'balance'
+          prop: 'balance',
+          isShowTooltip: true
         },
         {
           label: '类型',
-          prop: 'trxType'
+          prop: 'trxType',
+          isShowTooltip: true
         }, {
           label: '提交时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: '140px',
+          isShowTooltip: true
         }
 
       ],
@@ -79,7 +79,7 @@ export default {
         isSettingShow: false // 是否出现设置
       },
 
-      tableHeight: 'calc(100vh - 270px)'
+      tableHeight: 'calc(100vh - 259px)'
 
     }
   },

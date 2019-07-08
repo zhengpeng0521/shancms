@@ -90,7 +90,7 @@ export default {
       options: {
         apiService: querySignList // 表格的数据请求接口
       },
-      tableHeight: 'calc(100vh - 241px)'
+      tableHeight: 'calc(100vh - 231px)'
     }
   },
   methods: {

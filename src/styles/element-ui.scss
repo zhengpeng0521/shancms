@@ -551,13 +551,13 @@ i {
 
 .el-dialog__headerbtn .el-dialog__close {
   color: #666666;
+  transition: all 0.3s;
 }
 
 .el-dialog__headerbtn:focus .el-dialog__close,
 .el-dialog__headerbtn:hover .el-dialog__close {
-  color: #666666;
-  transform: rotate(360deg);
-  transition: all 0.5s;
+  color: #46b6ee;
+  // transform: rotate(360deg);
 }
 
 // dialog底部---按钮
@@ -666,10 +666,10 @@ i {
 .el-form-item__label {
   color: #666666 !important;
 }
-.el-form-item--mini .el-form-item__content,
-.el-form-item--mini .el-form-item__label {
-  // height: 28px;
-}
+// .el-form-item--mini .el-form-item__content,
+// .el-form-item--mini .el-form-item__label {
+// height: 28px;
+// }
 
 // error样式
 .el-form-item.is-error .el-input__inner {

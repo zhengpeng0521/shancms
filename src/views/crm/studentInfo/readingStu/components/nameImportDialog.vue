@@ -220,7 +220,7 @@ export default {
           23: 'endTime', // 合同期限结束时间
           24: 'expireInvalid', // 到期是否作废
           25: 'extCourse', // 赠送课程
-          26: 'extPerioc', // 赠送课时
+          26: 'extPeriod', // 赠送课时
           27: 'sellerName', // 所属销售
           28: 'orderNum', // 合同编号
           29: 'extPeriodReason', // 赠送原因

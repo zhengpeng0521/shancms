@@ -42,9 +42,15 @@
               <span>{{ item.allUsers }}</span>
             </div>
             <el-button
+              v-if="item.btnType === 'ON'"
               type="primary"
               @click="outerDialog(item)"
             >创建</el-button>
+            <el-button
+              v-else
+              type="primary"
+              @click="outerDialog(item)"
+            >{{ '￥'+item.price+ ' 购买' }}</el-button>
           </div>
         </div>
       </div>
@@ -118,10 +124,17 @@
                 <span>扫码试玩</span>
               </div>
               <el-button
-                v-if="hasBtn('202000001')"
+                v-if="obj.btnType === 'ON'"
                 type="primary"
                 @click="picDetailBtn()"
               >立即创建</el-button>
+              <el-button
+                v-else
+                type="primary"
+                @click="buyDialogShow(true)"
+              >
+                {{ '￥'+obj.price+ ' 购买' }}
+              </el-button>
             </div>
           </div>
         </div>
@@ -144,19 +157,79 @@
     <GameDetail
       v-if="picDetailShow"
       :visible.sync="picDetailShow"
+      @openPreviewDialog="openPreviewDialog"
     />
-
+    <!-- 游戏保存成功后的弹框 -->
+    <el-dialog
+      :visible.sync="dialogVisible"
+      title="保存成功"
+      width="400px"
+      append-to-body
+      @close="closeDialog"
+    >
+      <div>
+        <p class="game_top"><i class="el-icon-circle-check icon_success" />微游戏已保存成功</p>
+        <div class="game_qrcode">
+          <transition name="el-zoom-in-bottom">
+            <Qrcode
+              v-if="dialogData.qrcodeUrl"
+              :value="dialogData.qrcodeUrl"
+              :options="{ width: 190,height:190,margin: 0 }"
+            />
+          </transition>
+        </div>
+        <div class="copy_box">
+          <el-input
+            ref="url"
+            v-model="dialogData.qrcodeUrl"
+            :readonly="true"
+            :style="{marginRight: '20px'}"
+          />
+          <el-button
+            v-clipboard:copy="dialogData.qrcodeUrl"
+            v-clipboard:success="onCopy"
+            v-clipboard:error="onError"
+            type="primary"
+          >复制</el-button>
+        </div>
+      </div>
+      <span slot="footer">
+        <el-button @click="goMyGame('edit')">再次编辑</el-button>
+        <el-button
+          type="primary"
+          @click="goMyGame"
+        >立即查看</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="buyDialogVisible"
+      title="游戏开通"
+      width="300px"
+      append-to-body
+    >
+      <div style="text-align: center">
+        <img
+          class="connect_popover_img"
+          src="https://img.ishanshan.com/gimg/user/n///1557308283.png"
+        >
+        <p class="connect_p">微信扫码，获取专属服务顾问</p>
+        <p class="connect_mobile">客服热线：400-660-5733</p>
+      </div>
+      <span slot="footer">
+        <el-button type="primary" @click="buyDialogShow(false)">知道了</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import Vue from 'vue'
-import VueQrcode from '@chenfengyuan/vue-qrcode'
+import Qrcode from '@chenfengyuan/vue-qrcode'
 import GameDetail from './creatGame'
 import { gameChoose } from '@/api/marketing/microGame.js'
-Vue.component(VueQrcode.name, VueQrcode)
+import { mapState, mapActions } from 'vuex'
 export default {
   components: {
-    GameDetail
+    GameDetail,
+    Qrcode
   },
   props: {
     data: {
@@ -167,6 +240,7 @@ export default {
   },
   data() {
     return {
+      buyDialogVisible: false, // 开通弹框
       picDetailShow: false,
       // 弹出框参数
       outerVisible: false,
@@ -178,23 +252,71 @@ export default {
       leftImg: '',
       erweima: '',
       otherIntro: [],
-      obj: {}
+      obj: {},
+      dialogVisible: false, // 游戏保存后预览弹框显示
+      dialogData: {} // 游戏保存后预览弹框显示数据
     }
   },
+  computed: {
+    ...mapState('changeThirdMain', [
+      'tabsName'
+    ])
+  },
   methods: {
+    // 购买游戏显示
+    buyDialogShow(val) {
+      this.buyDialogVisible = val || false
+      this.outerVisible = false
+    },
+    // 打开游戏保存后的预览弹框, gameUrl: 游戏链接, data: iframe传递的信息
+    openPreviewDialog(data) {
+      this.dialogVisible = true
+      this.dialogData = {
+        qrcodeUrl: data.instH5Url
+      }
+      this.obj = {
+        ...this.obj,
+        dataId: data.instId
+      }
+    },
+    // 关闭游戏保存后的预览弹框
+    closeDialog() {
+      this.dialogVisible = false
+    },
+    onCopy: function(e) {
+      this.$message({
+        message: '复制成功',
+        type: 'success'
+      })
+    },
+    onError: function(e) {
+      this.$message.error('复制失败')
+    },
+    ...mapActions('changeThirdMain', [
+      'changeTabs'
+    ]),
+    /** 跳转我的 */
+    goMyGame(type) {
+      if (type && type === 'edit') {
+        this.dialogVisible = false
+        this.picDetailShow = true
+      } else {
+        this.dialogVisible = false
+        this.$nextTick(() => {
+          this.changeTabs('myGame')
+        })
+      }
+    },
     picDetailBtn() {
-      // console.log(val, 'val')
-      // this.obj = val
       this.picDetailShow = true
       this.outerVisible = false
     },
     // 弹框方法
     outerDialog(e) {
       this.outerVisible = true
-      console.log(e)
       this.obj = e
       this.tit = e.gameTitle
-      this.modelType = e.labels
+      this.modelType = e.labels || []
       this.leftImg = e.showImg
       this.erweima = e.demoUrl
       this.gameIntro = e.gameIntro
@@ -206,23 +328,12 @@ export default {
           this.$message.error(res.errorMessage)
         }
       })
-      // fetch('../../../../static/json/gameOutDialog.json')
-      //   .then(res => res.json())
-      //   .then(data => {
-      //     if (data.errorCode === 9000) {
-      //       this.otherIntro = data.gameList
-      //     } else {
-      //       console.info()
-      //     }
-      //   })
     },
     imgBtn(gid) {
-      console.log(this.data)
       this.outerVisible = false
       this.data.map((val) => {
         if (val.gameId === gid) {
           setTimeout(() => { this.outerDialog(val) }, 300)
-          // this.outerDialog(val)
         }
       })
     }
@@ -230,15 +341,15 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.pic-container {
+  min-height: calc(100vh - 328px);
+  background: rgba(240, 242, 245, 0.8);
+}
 .pic-box {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  padding-left: 30px;
-  min-height: calc(100vh - 100px);
-  background: rgba(240, 242, 245, 0.8);
-  // background: rgba(240, 242, 245, 0.8);
-  // border: 1px solid #0f0;
+  padding: 15px 0 0 15px;
   .zhanwei {
     height: 200px;
     width: 100%;
@@ -258,8 +369,6 @@ export default {
 .pic {
   height: 306px;
   min-width: 240px;
-  // border: 1px solid #f00;
-  // width: 22%;
   padding: 10px;
   position: relative;
   transition: all 1s;
@@ -356,40 +465,17 @@ export default {
     border-bottom: 0;
   }
   .el-dialog__body {
-    // padding: 50px 0 0 0 !important;
     max-height: 560px !important;
     overflow: hidden;
     .box {
       width: 100%;
       height: 500px;
       padding-top: 15px;
-      // padding: 15px;
-      // box-sizing: border-box;
       display: flex;
       .box-left {
-        // height: 100%;
-        // background: #f0f;
         width: 311px;
-        // height: 500px;
         overflow: hidden;
         overflow-y: scroll;
-        // border: 1px solid rgb(192, 192, 192);
-        // ::-webkit-scrollbar-track {
-        //   -webkit-box-shadow: inset 0 0 6px rgba(255, 0, 0, 0.3);
-        //   border-radius: 10px;
-        //   background-color: #f5f5f5;
-        // }
-        // ::-webkit-scrollbar {
-        //   width: 16px;
-        //   height: 16px;
-        //   background-color: #f00;
-        //   // background-color: #f5f5f5;
-        // }
-        // ::-webkit-scrollbar-thumb {
-        //   border-radius: 10px;
-        //   -webkit-box-shadow: inset 0 0 6px rgba(255, 0, 0, 0.3);
-        //   background-color: #f00;
-        // }
         img {
           width: 100%;
           min-height: 1000px;
@@ -399,9 +485,7 @@ export default {
         display: flex;
         flex-direction: column;
         width: 329px;
-        // height: 500px;
         margin-left: 30px;
-        // border: 1px solid #f0f;
         position: relative;
         h2 {
           font-size: 16px;
@@ -409,7 +493,6 @@ export default {
           letter-spacing: 2px;
           margin-bottom: 30px;
           font-weight: 900;
-          // border: 1px solid #f00;
           margin-top: 0;
         }
         .dian {
@@ -418,7 +501,6 @@ export default {
           background: #5d9cec;
           display: inline-block;
           border-radius: 50%;
-          // margin-right: 6px;
         }
         .tit {
           font-size: 12px;
@@ -432,15 +514,12 @@ export default {
           font-size: 12px;
           color: #333;
           letter-spacing: 1px;
-          // margin-bottom: 8px;
           margin-top: 10px;
-          // border: 1px solid #f00;
 
           .modelTypeCont {
             font-size: 12px;
             color: #5d9cec;
             padding-left: 13px;
-            // margin-bottom: 12px;
             -webkit-box-sizing: border-box;
             box-sizing: border-box;
             margin-top: 8px;
@@ -465,7 +544,6 @@ export default {
           -webkit-line-clamp: 3;
           overflow: hidden;
           letter-spacing: 1px;
-          // border: 1px solid #f00;
           div {
             font-size: 12px;
             color: #999;
@@ -516,6 +594,35 @@ export default {
       }
     }
   }
+}
+//---------------------- 保存成功 start---------------------------
+.game_top {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  .icon_success {
+    color: #87d068;
+    margin-right: 5px;
+  }
+}
+
+.game_qrcode {
+  text-align: center;
+}
+
+.copy_box {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 14px;
+}
+//---------------------- 保存成功 end---------------------------
+
+.connect_p {
+  margin: 14px 0 10px 0;
+  color: #666;
+}
+.connect_mobile {
+  color: #1d9df2;
 }
 </style>
 

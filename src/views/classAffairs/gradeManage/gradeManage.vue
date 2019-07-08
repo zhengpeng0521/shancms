@@ -28,7 +28,6 @@
         :options="options"
         :operation="operates"
         :table-key="'classAffairs_gradeManage_gradeManage'"
-        @toChildData="getCheckCol"
       />
       <GradeInfo
         ref="gradeInfo"
@@ -87,6 +86,7 @@
 .gradeManage {
   .gradeName {
     color: #1d9df2;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

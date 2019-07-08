@@ -23,6 +23,7 @@
             :placeholder="source == '2' ? '请选择跟进名单': '请选择跟进学员'"
             :disabled="isDisabled"
             clearable
+            filterable
             style="width:100%"
             @change="stuChange"
           >
@@ -46,6 +47,7 @@
             :disabled="isDisabled"
             placeholder="请选择跟进家长"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -64,6 +66,7 @@
             v-model="addFollowData.type"
             placeholder="请选择跟进方式"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -83,6 +86,7 @@
               v-model="addFollowData.followType"
               placeholder="请选择跟进状态"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -339,7 +343,7 @@ export default {
               const data = res.data
               if (data.errorCode === 0) {
                 this.addFollowDialogShow = false
-                this.$emit('toUpdateTable')
+                this.$emit('toUpdateTable', true)
                 this.$message.success(data.errorMessage)
               } else {
                 this.$message.error(data.errorMessage)

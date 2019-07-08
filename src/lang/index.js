@@ -7,6 +7,8 @@ import elementEsLocale from 'element-ui/lib/locale/lang/es'// element-ui lang
 import enLocale from './en'
 import zhLocale from './zh'
 import esLocale from './es'
+import defaultLocale from './default'
+import dsfLocale from './dsf'
 
 Vue.use(VueI18n)
 
@@ -15,9 +17,15 @@ const messages = {
     ...enLocale,
     ...elementEnLocale
   },
-  zh: {
+  default: {
     ...zhLocale,
-    ...elementZhLocale
+    ...elementZhLocale,
+    ...defaultLocale
+  },
+  dsf: {
+    ...zhLocale,
+    ...elementZhLocale,
+    ...dsfLocale
   },
   es: {
     ...esLocale,
@@ -28,7 +36,7 @@ const messages = {
 const i18n = new VueI18n({
   // set locale
   // options: en | zh | es
-  locale: Cookies.get('language') || 'zh',
+  locale: Cookies.get('language') || 'default',
   // set locale messages
   messages
 })

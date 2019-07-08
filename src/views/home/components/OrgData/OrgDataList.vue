@@ -1,5 +1,8 @@
 <template>
-  <div class="drap-list-box">
+  <div
+    v-if="isDraggable"
+    class="drap-list-box"
+  >
     <div class="drap-table">
       <div class="table-head">
         <span />
@@ -50,6 +53,43 @@
       />
     </div>
   </div>
+  <div
+    v-else
+    class="drap-list-box"
+  >
+    <div class="drap-table">
+      <div class="table-head">
+        <span />
+        <span>数据</span>
+        <span>描述</span>
+        <span>操作</span>
+      </div>
+      <ul class="list-group">
+        <li
+          v-for="(element, index) in list"
+          :key="'drap' + index"
+          class="list-group-item"
+          style="cursor: default"
+        >
+          <i
+            :class="
+              element.fixed ? 'fa fa-anchor' : 'glyphicon glyphicon-pushpin'
+            "
+            aria-hidden="true"
+            @click="element.fixed = !element.fixed"
+          />
+          <span class="item-common"><img :src="element.icon"></span>
+          <span class="item-common">{{ element.name }}</span>
+          <span class="item-common">{{ element.desc }}</span>
+          <el-button
+            type="text"
+            class="item-common"
+            @click="() => {otherAction(index)}"
+          >{{ action }}</el-button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -74,6 +114,10 @@ export default {
     select: {
       type: Array,
       default: () => ([])
+    },
+    isDraggable: {
+      type: Boolean,
+      default: true
     }
   },
 

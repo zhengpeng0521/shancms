@@ -10,6 +10,7 @@
       />
       <div>
         <el-button
+          v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-库存管理-新增退领'}"
           class="green_btn"
           @click="addNewDialog()"
         >新增</el-button>
@@ -117,6 +118,7 @@
                   value-key="id"
                   size="small"
                   placeholder="物品名称"
+                  filterable
                   @change="(value) => {nameChange(scope.$index, value)}"
                 >
                   <el-option
@@ -184,6 +186,7 @@
             <el-table-column width="50">
               <template slot-scope="scope">
                 <el-button
+                  v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-库存管理-删除退领'}"
                   v-if="!rowId && addDataTble.length > 1"
                   type="text"
                   @click="deleteTableRow(scope.row)"

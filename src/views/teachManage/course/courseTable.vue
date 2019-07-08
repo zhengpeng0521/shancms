@@ -29,7 +29,6 @@
       :options="options"
       :operation="operates"
       :table-key="'teachManage_course_courseTable'"
-      @toChildData="getCheckCol"
     />
     <!-- 新增课程 -->
     <AddNewCourse
@@ -150,7 +149,7 @@ export default {
           width: 120
         }
       ], // 表格列
-      tableHeight: 'calc(100vh - 234px)', // 表格高度
+      tableHeight: 'calc(100vh - 235px)', // 表格高度
       pagination: {
         show: true,
         sizes: true
@@ -203,10 +202,6 @@ export default {
       }
       this.$refs.tableCommon.getList(params)
     },
-    /* 获取表头的选择 */
-    getCheckCol(val) {
-      console.info(val, '111')
-    },
     /* 新增课程 */
     newCourse() {
       this.$refs.addNewCourse.show()
@@ -241,7 +236,6 @@ export default {
     },
     /* 编辑课程 */
     getData(val) {
-      console.info(this.$refs.editCourse)
       this.$refs.editCourse.show(val)
     },
     /* 删除课程 */

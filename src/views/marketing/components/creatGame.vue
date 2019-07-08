@@ -45,15 +45,62 @@
           />
         </div>
       </div>
+      <!-- 保存成功 -->
+      <el-dialog
+        :visible.sync="dialogVisible"
+        title="保存成功"
+        width="400px"
+        append-to-body
+        @close="closeSuccess"
+      >
+        <div>
+          <p class="game_top"><i class="el-icon-circle-check icon_success" />微游戏已保存成功</p>
+          <div class="game_qrcode">
+            <transition name="el-zoom-in-bottom">
+              <VueQrcode
+                v-if="qrcodeUrl"
+                :value="qrcodeUrl"
+                :options="{ width: 190,height:190,margin: 0 }"
+              />
+            </transition>
+          </div>
+          <div class="copy_box">
+            <el-input
+              ref="url"
+              v-model="qrcodeUrl"
+              :readonly="true"
+              :style="{marginRight: '20px'}"
+            />
+            <el-button
+              v-clipboard:copy="qrcodeUrl"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              type="primary"
+            >复制</el-button>
+          </div>
+        </div>
+        <span slot="footer">
+          <el-button @click="goMyGame('edit')">再次编辑</el-button>
+          <el-button
+            type="primary"
+            @click="goMyGame"
+          >立即查看</el-button>
+        </span>
+      </el-dialog>
     </div>
   </transition>
 </template>
 <script>
-// import { micActivityRequest, sysHostRequest } from '@/api/marketing/microAct.js'
+import Vue from 'vue'
+import { mapMutations } from 'vuex'
+import VueQrcode from '@chenfengyuan/vue-qrcode'
 import Confirm from '@/components/MiniCommon/Confirm'
 import { mapState, mapActions } from 'vuex'
+// 复制插件
+import VueClipboard from 'vue-clipboard2'
+Vue.use(VueClipboard)
 export default {
-  components: { Confirm },
+  components: { Confirm, VueQrcode },
   props: {
     'visible': {
       type: Boolean,
@@ -62,11 +109,11 @@ export default {
   },
   data() {
     return {
-      // visible2: false,
-      // visible3: false,
       isVisible: this.visible,
       url: '',
-      topShow: true
+      topShow: true,
+      dialogVisible: false,
+      qrcodeUrl: undefined
     }
   },
   computed: {
@@ -77,7 +124,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -87,6 +133,9 @@ export default {
     const side = this.$refs.sideModal
     document.body.appendChild(side)
     this.url = `${this.$parent.obj.provider}/page?m=create&tenantId=${this.$parent.obj.tenantId}&orgId=${this.$parent.obj.orgId}&gameCode=${this.$parent.obj.gameCode}&gameId=${this.$parent.obj.gameId}&uid=${this.$store.getters.id}&runAs=runAs`
+    if (this.$parent.obj.dataId) {
+      this.url += '&dataId=' + this.$parent.obj.dataId
+    }
     if (this.$parent.obj.isGameEdit === 'false' || this.$parent.obj.isGameEdit === null || this.$parent.obj.isGameEdit === '') {
       this.topShow = true
     } else {
@@ -95,21 +144,61 @@ export default {
     }
     const self = this
     window.addEventListener('message', function(e) {
-      // console.log(e.data, 'e.data--------------------')
       if (e.data === 'close') {
         self.close()
       } else if (e.data === 'closeAndLink' || (e.data && e.data.messageType === 'preview')) {
-        self.close()
-        setTimeout(() => {
-          self.setBlankCard()
-        }, 10)
+        if (typeof e.data === 'object' && e.data.messageType === 'preview') {
+          self.openPreviewDialog(e.data)
+          self.close()
+        } else {
+          self.close()
+          setTimeout(() => {
+            self.setBlankCard()
+          }, 10)
+        }
       }
     }, false)
-    // window.parent.postMessage('closeAndLink', '*') // 关闭并展示链接
-    // window.parent.postMessage('close', '*')
   },
   methods: {
+    ...mapMutations('microGame', [
+      'GET_EDIT_URL'
+    ]),
+    openPreviewDialog(data) {
+      this.$emit('openPreviewDialog', data)
+    },
+    onCopy: function(e) {
+      this.$message({
+        message: '复制成功',
+        type: 'success'
+      })
+    },
+    onError: function(e) {
+      this.$message.error('复制失败')
+    },
 
+    /** 成功弹窗关闭 */
+    closeSuccess() {
+      this.dialogVisible = false
+      this.close()
+    },
+
+    /** 跳转我的 */
+    goMyGame(type) {
+      if (type && type === 'edit') {
+        this.dialogVisible = false
+        this.close()
+        this.$nextTick(() => {
+          this.setBlankCard()
+        })
+      } else {
+        this.dialogVisible = false
+        this.GET_EDIT_URL({ editUrl: '', isEdit: false })
+        this.close()
+        this.$nextTick(() => {
+          this.setBlankCard()
+        })
+      }
+    },
     close() {
       this.isVisible = false
     },
@@ -118,15 +207,6 @@ export default {
       ifr.contentWindow.postMessage({
         type: 'game'
       }, '*')
-      // const self = this
-      // window.addEventListener('message', function(e) {
-      //   console.log(e, 'e.data', self.setBlankCard)
-      //   if (e.data === 'close') {
-      //     self.close()
-      //   } else if (e.data === 'closeAndLink') {
-      //     self.setBlankCard()
-      //   }
-      // }, false)
     },
     ...mapActions('changeThirdMain', [
       'changeTabs'
@@ -179,7 +259,6 @@ export default {
       display: inline-block;
       margin-right: 5px;
     }
-    // background: pink;
     .top-left {
       display: flex;
       font-size: 16px;
@@ -212,6 +291,28 @@ export default {
     }
   }
 }
+
+//---------------------- 保存成功 start---------------------------
+.game_top {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  .icon_success {
+    color: #87d068;
+    margin-right: 5px;
+  }
+}
+
+.game_qrcode {
+  text-align: center;
+}
+
+.copy_box {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 14px;
+}
+//---------------------- 保存成功 end---------------------------
 
 .slide-fade-enter-active {
   transition: all 0.5s ease;

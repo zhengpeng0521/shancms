@@ -26,16 +26,15 @@ export default {
     return {
       data: [],
       // loadmore组件参数
-      pageSize: 20,
+      pageSize: 50,
       pageIndex: 0,
-      // pageArr: [],
       pageCount: 0,
       textInfo: false
     }
   },
   mounted() {
     const params = {
-      pageSize: 20,
+      pageSize: this.pageSize,
       pageIndex: 0
     }
     orgLeafletModelList(params).then((res) => {
@@ -49,21 +48,15 @@ export default {
   },
   methods: {
     loadMore() {
-      console.log(this.pageIndex, this.pageCount, '111111111111')
       this.pageIndex++
       const params = {
-        // 'tenantId': this.GLOBAL.tenantId,
-        // 'orgId': this.GLOBAL.orgId,
         'pageIndex': this.pageIndex,
-        'pageSize': 20
+        'pageSize': this.pageSize
       }
       if (this.pageIndex < this.pageCount) {
         const loading = this.$loading({
           lock: true,
-          // text: 'Loading',
-          spinner: 'el-icon-loading',
           fullscreen: false,
-          // background: 'rgba(0, 0, 0, 0.7)',
           target: document.querySelector('.pic-box')
         })
         orgLeafletModelList(params).then(res => {
@@ -80,7 +73,6 @@ export default {
         })
       } else {
         this.textInfo = true
-        console.log(this.textInfo, 'textInfo')
       }
     }
   }
@@ -88,9 +80,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .leaflet-container {
-  background: rgb(240, 240, 244);
   min-width: 1060px;
-  // height: calc(100vh - 150px);
+  height: calc(100vh - 150px);
 }
 .leads-bottom-text {
   text-align: center;

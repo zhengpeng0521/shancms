@@ -19,12 +19,15 @@
       @remove="remove"
     />
     <div class="org-line" />
-    <BlockTitle><p class="org-title">未选</p></BlockTitle>
+    <BlockTitle>
+      <p class="org-title">未选</p>
+    </BlockTitle>
     <OrgDataList
       v-loading="dialogLoading"
       ref="unselected"
       :data-source="newUnselected"
       :select="newSelected"
+      :is-draggable="false"
       element-loading-text="拼命加载中"
       type="unselected"
       @changeSort="changeUnselect"

@@ -61,7 +61,6 @@ export default {
   methods: {
     show(val) {
       if (val) {
-        console.info(val)
         this.ruleForm.deptName = val.name
         this.groupId = val.id
         this.title = '编辑课系'

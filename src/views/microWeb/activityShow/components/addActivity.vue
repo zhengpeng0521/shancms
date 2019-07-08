@@ -11,7 +11,7 @@
         <div class="top">
           <div class="top-left">
             <span v-if="lessonForm.name!=''">{{ lessonForm.name }}</span>
-            <span v-if="lessonForm.name===''">标题</span>
+            <span v-if="lessonForm.name===''">新建活动</span>
           </div>
           <div class="top-right">
             <Confirm
@@ -21,6 +21,7 @@
               :confirm="()=>{close('lessonForm')}"
               :is-button="true"
               :btn-type="'plain'"
+              style="margin-right:5px"
             />
             <Confirm
               :text="'保存'"
@@ -29,6 +30,7 @@
               :confirm="()=>{submitForm('lessonForm')}"
               :is-button="true"
               :btn-type="'primary'"
+              style="margin-right:-5px"
             />
           </div>
         </div>
@@ -36,10 +38,7 @@
           <div class="body-left">
             <div class="body-left-container">
               <div class="body-left-header">
-                <img
-                  src="https://img.ishanshan.com/gimg/n/20190320/7520a62ea0b5b3eb8af55fefc2a8779c"
-                  alt=""
-                >
+                <img src="https://img.ishanshan.com/gimg/user/n///1557127683.png">
               </div>
               <div class="body-left-cont">
                 <el-carousel
@@ -244,13 +243,16 @@
                 <el-radio-button label="分享设置" />
               </el-radio-group>
             </div>
+
             <div v-show="radioTabs === '内容设置'">
               <quill-editor
                 ref="myTextEditor"
                 v-model="iptCont"
+                style="padding-left:38px;padding-right:38px;"
                 @change="transferAddact($event)"
               />
             </div>
+
             <el-form
               ref="lessonForm"
               :model="lessonForm"
@@ -258,9 +260,11 @@
               label-width="140px"
             >
               <div v-show="radioTabs === '分享设置'">
+
                 <el-form-item
                   label="分享标题:"
                   prop="shareTitle"
+                  style="width:540px"
                 >
                   <el-input
                     v-model="lessonForm.shareTitle"
@@ -268,9 +272,11 @@
                     placeholder="请输入分享标题（1-40个字）"
                   />
                 </el-form-item>
+
                 <el-form-item
                   label="分享简介:"
                   prop="shareInfo"
+                  style="width:540px"
                 >
                   <el-input
                     v-model="lessonForm.shareInfo"
@@ -278,6 +284,7 @@
                     placeholder="请输入分享简介（1-80个字）"
                   />
                 </el-form-item>
+
                 <el-form-item
                   label="分享图片:"
                   prop="shareCover"
@@ -312,10 +319,12 @@
                   </el-dialog>
                 </el-form-item>
               </div>
+
               <div v-show="radioTabs === '基础设置'">
                 <el-form-item
                   label="活动名称:"
                   prop="name"
+                  style="width:540px"
                 >
                   <el-input
                     v-model="lessonForm.name"
@@ -354,7 +363,7 @@
                       >
                     </div>
                   </el-dialog>
-                  <p class="tips">课程首图, 支持png、jpeg、gif格式的图片, 建议宽高 350*350px; 图片大小小于2M</p>
+                  <p class="tips">课程首图, 支持png、jpeg、gif格式的图片, 建议宽高 750*400px; 图片大小小于2M</p>
                 </el-form-item>
                 <el-form-item
                   label="轮播图:"
@@ -365,8 +374,8 @@
                     :on-success="handleBannerSuccess"
                     :on-remove="handleBannerRemove"
                     :before-upload="beforeAvatarUpload"
-                    :limit="limit"
                     :file-list="Banner"
+                    :limit="5"
                     class="banner"
                     action="https://imgsrc.ishanshan.com/gimg/upload"
                     list-type="picture-card"
@@ -401,6 +410,7 @@
                     range-separator="~"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    style="width:400px"
                   />
                   <p class="tips">允许用户报名的时间</p>
                 </el-form-item>
@@ -416,11 +426,13 @@
                     range-separator="~"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
+                    style="width:400px"
                   />
                 </el-form-item>
                 <el-form-item
                   label="活动地点"
                   prop="address"
+                  style="width:540px"
                 >
                   <el-input
                     v-model="lessonForm.address"
@@ -443,12 +455,14 @@
                 <el-form-item
                   label="活动类型:"
                   prop="activityType"
+                  style="width:540px"
                 >
                   <el-select
                     v-model="lessonForm.activityType"
                     :disabled="editObj.id !== undefined"
                     placeholder="请选择活动类型"
                     clearable
+                    filterable
                     style="width:100%"
                   >
                     <el-option
@@ -463,11 +477,13 @@
                 <el-form-item
                   label="报名缴费:"
                   prop="applyType"
+                  style="width:540px"
                 >
                   <el-select
                     v-model="lessonForm.applyType"
                     placeholder="请选择报名缴费类型"
                     clearable
+                    filterable
                     style="width:100%"
                   >
                     <el-option
@@ -505,6 +521,7 @@
                 <el-form-item
                   label="活动对象"
                   prop="target"
+                  style="width:540px"
                 >
                   <el-input
                     v-model="lessonForm.target"
@@ -542,14 +559,15 @@
                     </span>
                   </template>
                   <el-input
-                    v-model="lessonForm.sort"
+                    v-model.number="lessonForm.sort"
                     size="mini"
                     clearable
                     placeholder="设置为0-9999的某个数字，用户浏览列表是排序值大的在前"
+                    style="width:400px"
                   />
                 </el-form-item>
                 <el-form-item
-                  label="是否显示报名名单"
+                  label="报名名单"
                   prop="participate"
                   class="radioSwitch"
                   checked
@@ -561,7 +579,7 @@
                 </el-form-item>
 
                 <el-form-item
-                  label="是否等位名单"
+                  label="等位名单"
                   prop="waiting"
                   class="radioSwitch"
                   checked
@@ -573,7 +591,7 @@
                 </el-form-item>
 
                 <el-form-item
-                  label="是否允许用户自主标记学员"
+                  label="自主标记学员"
                   prop="vipSet"
                   class="radioSwitch"
                   checked
@@ -591,7 +609,7 @@
                           style="margin-right:2px"
                         />
                       </el-tooltip>
-                      是否允许用户自主标记学员
+                      自主标记学员
                     </span>
                   </template>
                   <el-radio-group v-model="lessonForm.vipSet">
@@ -601,7 +619,7 @@
                 </el-form-item>
 
                 <el-form-item
-                  label="是否设置支付金额"
+                  label="开启支付"
                   prop="enablePay"
                   class="radioSwitch"
                   checked
@@ -651,6 +669,16 @@ export default {
     }
   },
   data() {
+    const shareValidator = (rule, value, callback) => {
+      this.shareTitle === '' || this.shareInfo === ''
+      if (!value) {
+        this.$message.error('请填写分享设置')
+        callback(new Error())
+        return
+      } else {
+        callback()
+      }
+    }
     return {
       visible2: false,
       visible3: false,
@@ -664,7 +692,6 @@ export default {
       shareCoverArr: [],
       activityCoverArr: [],
       previewImg: '',
-      limit: 5,
       isActivityCoverShow: true,
       lessonForm: {
         name: '',
@@ -679,7 +706,7 @@ export default {
         applyType: '',
         target: '',
         cancelTime: '',
-        sort: '0',
+        sort: 1,
         participate: '1',
         waiting: '1',
         vipSet: '1',
@@ -718,18 +745,22 @@ export default {
         classCus: [{ required: true, message: '请输入消耗课时', trigger: 'blur' }],
         materialFee: [{ required: true, message: '请输入物料费, 单位元', trigger: 'blur' }],
         target: [{ required: true, message: '请输入活动对象', trigger: 'change' }],
-        sort: [{ validator: /^\+?[1-9]\d{0,3}(\.\d*)?$/, trigger: 'change' }],
+        sort: [{ type: 'number', min: 0, max: 9999, message: '请输入0-9999的数字', trigger: 'change' }],
         participate: [{ required: true, message: ' ', trigger: 'change' }],
         waiting: [{ required: true, message: ' ', trigger: 'change' }],
         vipSet: [{ required: true, message: ' ', trigger: 'change' }],
         enablePay: [{ required: true, message: ' ', trigger: 'change' }],
         payAmount: [{ required: true, message: '填写大于0的金额', trigger: 'change' }],
         shareTitle: [{ max: 40, min: 1, message: '分享标题为1-40个字', trigger: 'blur' },
-          { required: true, message: '请填写内容', trigger: 'change' }],
+          { validator: shareValidator, message: '请填写分享标题', trigger: 'change' },
+          { required: true, message: '请填写分享标题', trigger: 'change' }
+        ],
         shareInfo: [{ max: 80, min: 1, message: '分享简介为1-80个字', trigger: 'blur' },
-          { required: true, message: '请填写内容', trigger: 'change' }],
+          { validator: shareValidator, message: '请填写分享简介', trigger: 'change' },
+          { required: true, message: '请填写分享简介', trigger: 'change' }
+        ],
         shareCover: [
-          { required: true, message: '支持png、jpeg、gif格式的图片，建议宽高 750*400px，图片大小不大于2M！', trigger: 'change' }
+          { required: true, message: '350*350px，图片大小不大于2M！', trigger: 'change' }
         ]
       },
       // 内容设置参数
@@ -789,6 +820,7 @@ export default {
       this.lessonForm.shareCover = []
       this.lessonForm.actBanner = []
       this.iptCont = ''
+      this.$emit('closeCreateDialog')
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
@@ -796,10 +828,9 @@ export default {
       this.$refs[formName].validate(valid => {
         this.visible3 = false
         if (this.iptCont === '') {
-          this.$message.error('请输入内容')
+          this.$message.error('请填写内容设置')
         } else {
           if (valid) {
-            this.isVisible = false
             var nid = ''
             var orgIds = ''
             if (this.editObj.id && this.editObj.orgIds.length > 0) {
@@ -829,7 +860,7 @@ export default {
               vipSet: this.lessonForm.vipSet,
               number: this.lessonForm.number,
               enablePay: this.lessonForm.enablePay,
-              payAmount: this.lessonForm.payAmount,
+              payAmount: this.lessonForm.enablePay && this.lessonForm.enablePay === '1' ? this.lessonForm.payAmount : 0,
               shareTitle: this.lessonForm.shareTitle,
               shareInfo: this.lessonForm.shareInfo,
               waiting: this.lessonForm.waiting,
@@ -848,10 +879,12 @@ export default {
                 loading.close()
                 this.$parent.resetFieldHanle()
                 reset()
+                this.isVisible = false
                 this.lessonForm.activityCover = []
                 this.lessonForm.shareCover = []
                 this.lessonForm.actBanner = []
                 this.iptCont = ''
+                this.$emit('closeCreateDialog')
               } else {
                 this.$message.error(res.errorMessage)
               }
@@ -863,13 +896,13 @@ export default {
     },
     // 上传分享图片
     handleShareCoverSuccess(res, file, fileList) {
-      this.shareCoverArr.push({ name: file.name, url: res.url })
-      this.lessonForm.shareCover.push({ name: file.name, url: res.url })
       if (res.url !== '') {
         this.$message({
           message: '上传成功',
           type: 'success'
         })
+        this.lessonForm.shareCover.push({ name: file.name, url: res.url })
+        this.shareCoverArr = this.lessonForm.shareCover
       } else {
         this.$message.error('上传失败')
       }
@@ -886,11 +919,9 @@ export default {
       this.ShareCoverDialogVisible = true
     },
     handleRemove(file, fileList) {
-      // console.log(file, fileList, this.lessonForm.shareCover)
-      this.lessonForm.shareCover = []
       this.shareCoverArr.map((val, index) => {
         if (val.uid === file.uid) {
-          this.Banner.splice(index, 1)
+          this.lessonForm.shareCover.splice(index, 1)
         }
       })
     },
@@ -900,45 +931,43 @@ export default {
       this.activityCoverDialogVisible = true
     },
     handleActivityCoverSuccess(res, file, fileList) {
-      this.activityCoverArr.push({ name: file.name, url: res.url })
-      this.lessonForm.activityCover.push({ name: file.name, url: res.url })
       if (res.url !== '') {
         this.$message({
           message: '上传成功',
           type: 'success'
         })
+        this.lessonForm.activityCover.push({ name: file.name, url: res.url })
+        this.activityCoverArr = this.lessonForm.activityCover
       } else {
         this.$message.error('上传失败')
       }
     },
     handleActivityCoverRemove(file, fileList) {
-      // console.log(file, fileList, this.lessonForm.shareCover)
-      this.lessonForm.activityCover = []
       this.activityCoverArr.map((val, index) => {
         if (val.uid === file.uid) {
           this.activityCoverArr.splice(index, 1)
+          this.lessonForm.activityCover.splice(index, 1)
         }
       })
     },
     // banner上传成功函数
     handleBannerSuccess(res, file, fileList) {
-      // console.log(file, fileList)
-      this.lessonForm.actBanner.push({ name: file.name, url: res.url })
-      this.Banner.push({ name: file.name, url: res.url })
       if (res.url !== '') {
         this.$message({
           message: '上传成功',
           type: 'success'
         })
+        this.lessonForm.actBanner.push({ name: file.name, url: res.url })
+        this.Banner.push({ name: file.name, url: res.url })
       } else {
         this.$message.error('上传失败')
       }
     },
     handleBannerRemove(file, fileList) {
-      this.lessonForm.actBanner = []
       this.Banner.map((val, index) => {
         if (val.uid === file.uid) {
           this.Banner.splice(index, 1)
+          this.lessonForm.actBanner.splice(index, 1)
         }
       })
     },
@@ -948,16 +977,11 @@ export default {
     },
     // 数组转字符串
     transfor(arr) {
-      var bannerList = ''
-      arr.map((val, index) => {
-        if (index < arr.length) {
-          bannerList += val.url
-          if (index < arr.length - 1) {
-            bannerList += ','
-          }
-        }
+      var bannerList = []
+      arr.map(val => {
+        bannerList.push(val.url)
       })
-      return bannerList
+      return bannerList.join(',')
     },
     // 时间戳转标准格式
     timeTransfer(date) {
@@ -995,7 +1019,6 @@ export default {
   z-index: 1000;
   width: calc(100% - 150px);
   position: fixed;
-  // margin-left: -20px;
   height: 100%;
   background-color: rgba(255, 255, 255, 1);
   -moz-box-shadow: 2px 2px 5px #333333;
@@ -1009,10 +1032,11 @@ export default {
     // width: calc(100vw - 180px) !important;
     min-height: 40px;
     justify-content: space-between;
-    border-bottom: 1px solid #5d9cec;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
-    padding: 10px 0 10px 0;
+    padding: 20px 0 20px 0;
+    line-height: 28px;
     .top-left {
       display: flex;
       font-size: 16px;
@@ -1030,23 +1054,22 @@ export default {
     display: flex;
     padding-top: 20px;
     width: 100%;
+    height: calc(100vh - 74px);
     overflow: auto;
     .body-left {
-      // width: 50%;
-      // background: #f1f1f1;
-      // display: flex;
-      // justify-content: center;
-      height: calc(100vh - 83px);
-      width: 460px;
-      padding: 0 30px;
-      padding-top: 30px;
+      min-width: 435px;
+      width: 435px;
+      height: calc(100vh - 120px);
+      overflow: auto;
+      padding: 30px 30px 0;
       background: rgba(240, 242, 245, 0.8);
-      // overflow-y: auto;
-      margin-left: 20px;
+
       .body-left-container {
-        width: 100%;
+        width: 375px;
+        height: 667px;
         position: relative;
-        // height: 726px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
       }
       .body-left-header {
         width: 100%;
@@ -1058,10 +1081,14 @@ export default {
         }
       }
       .body-left-cont {
-        background: rgb(240, 241, 243);
-        // height: 480px;
-        height: calc(100vh - 200px);
-        overflow-y: auto;
+        background: rgba(240, 242, 245, 0.6);
+        height: calc(100% - 108px);
+        overflow: auto;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
         img {
           width: 100%;
           height: 150px;
@@ -1122,7 +1149,6 @@ export default {
             margin-right: 5px;
           }
           span {
-            // height: 30px;
             align-items: center;
             font-size: 13px;
             color: #2e5ca8;
@@ -1139,8 +1165,9 @@ export default {
             width: 17%;
             margin: 3px;
             .imgBox {
-              width: 100%;
+              width: 44px;
               height: 44px;
+              margin: 0 auto;
               img {
                 width: 100%;
                 height: 100%;
@@ -1260,14 +1287,13 @@ export default {
       }
     }
     .body-right {
-      height: calc(100vh - 83px);
-      width: 640px;
+      width: calc(100% - 455px);
+      height: calc(100vh - 120px);
+      min-width: 586px;
       margin-left: 20px;
       overflow: auto;
       padding-right: 20px;
-      // padding-left: 20px;
-      // padding-right: 50px;
-      // padding-bottom: 100px;
+
       .tips {
         font-size: 12px;
         color: #999;
@@ -1324,30 +1350,6 @@ export default {
   transform: translateX(1000px);
   opacity: 0;
 }
-.picDetail-container {
-  // width: 100vw;
-  // height: 100vh;
-  // background: rgba(0, 0, 0, 0.5);
-  // z-index: 10000;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-
-  // @keyframes enterAnamation {
-  // 10% {
-  // right: -100%;
-  // }
-  // 100% {
-  // right: 0;
-  // }
-  // }
-  // // .picDetailShow {
-  // // animation: enterAnamation 1s linear;
-  // // }
-  // .picDetail {
-  // animation: enterAnamation 1s linear;
-  // }
-}
 </style>
 <style lang="scss">
 .tanchukuang {
@@ -1376,6 +1378,80 @@ export default {
   .el-dialog__header {
     padding-bottom: 37px;
   }
+}
+</style>
+
+<style>
+.ql-snow .ql-tooltip[data-mode="link"]::before {
+  content: "请输入链接地址:";
+}
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+  border-right: 0px;
+  content: "保存";
+  padding-right: 0px;
+}
+
+.ql-snow .ql-tooltip[data-mode="video"]::before {
+  content: "请输入视频地址:";
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: "14px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
+  content: "10px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
+  content: "18px";
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
+  content: "32px";
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: "文本";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: "标题1";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: "标题2";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: "标题3";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+  content: "标题4";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
+  content: "标题5";
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
+  content: "标题6";
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+  content: "标准字体";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="serif"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="serif"]::before {
+  content: "衬线字体";
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value="monospace"]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="monospace"]::before {
+  content: "等宽字体";
 }
 </style>
 

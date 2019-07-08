@@ -7,7 +7,7 @@
       :size="field.size"
       :disabled="field.disabled"
       :placeholder="field.placeholder"
-      :filterable="field.isFilterable"
+      :filterable="field.isFilterable != undefined ? field.isFilterable : true"
       :clearable="field.clearable !== undefined ? field.clearable : true"
       :style="field.itemStyle"
       :popper-class="popClass"

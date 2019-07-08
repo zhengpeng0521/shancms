@@ -27,6 +27,7 @@
       ref="unselected"
       :data-source="newUnselected"
       :select="newSelected"
+      :is-draggable="false"
       element-loading-text="拼命加载中"
       type="unselected"
       @changeSort="changeUnselect"

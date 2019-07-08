@@ -5,8 +5,10 @@
     element-loading-text="拼命加载中"
     class="home-body-scroll"
   >
+    <Payright/>
     <div class="home-container home-index-box">
       <!-- 机构数据 -->
+
       <OrgData
         v-if="moduleList.indexOf('orgData') > -1"
         :loading="orgLoading"
@@ -79,7 +81,6 @@
           />
           <!-- 最新推荐 -->
           <Recommended
-            v-if="moduleList.indexOf('recommend') > -1"
             :loading="recommendLoading"
             :recommend-list="recommendList"
             class="home-card"
@@ -105,16 +106,21 @@
           />
           <!-- Banner -->
           <Banner
-            v-if="moduleList.indexOf('banner') > -1"
             :loading="bannerLoading"
             :banner-list="bannerList"
             :banner-news="bannerNews"
             class="home-card"
             @didMount="didMount"
           />
+          <!-- 闪闪头条 -->
+          <LeadNews
+            :loading="leadNewsLoading"
+            :lead-news-list="leadNewsList"
+            class="home-card"
+            @didMount="didMount"
+          />
           <!-- 运营妙计 -->
           <Operating
-            v-if="moduleList.indexOf('sucCase') > -1"
             :loading="caseLoading"
             :case-list="caseList"
             class="home-card"
@@ -156,6 +162,8 @@ import Todos from './components/Todos'
 import TodoDialog from './components/Todos/TodoDialog'
 import Banner from './components/Banner'
 import Operating from './components/Operating'
+import LeadNews from './components/LeadNews'
+import Payright from './components/Payright/PayRight'
 import { sortByObj } from '@/utils/arrayUtils'
 
 export default {
@@ -173,7 +181,9 @@ export default {
     Todos,
     TodoDialog,
     Banner,
-    Operating
+    Operating,
+    LeadNews,
+    Payright
   },
 
   data() {
@@ -232,7 +242,11 @@ export default {
 
       /** 运营妙计 */
       'caseLoading',
-      'caseList'
+      'caseList',
+
+      /** 闪闪头条 */
+      'leadNewsLoading',
+      'leadNewsList'
     ]),
 
     // 待办事项设置列表
@@ -274,7 +288,8 @@ export default {
       'getTodos', // 获取待办事项
       'getTodoList',
       'getBanner', // 获取banner
-      'getGoodCase' // 获取运营妙计
+      'getGoodCase', // 获取运营妙计
+      'getLeadNews' // 闪闪头条
     ]),
 
     addKey(arr, bool) {
@@ -327,6 +342,10 @@ export default {
         case 'case':
           // 运营妙计
           this.getGoodCase()
+          break
+        case 'leadNews':
+          // 闪闪头条
+          this.getLeadNews()
           break
         default:
           break
@@ -430,6 +449,7 @@ export default {
 .home-body-scroll {
   height: calc(100vh - 68px);
   overflow: auto;
+  background: rgba(240, 242, 245, 0.8);
 }
 .home-container {
   min-width: 1060px;

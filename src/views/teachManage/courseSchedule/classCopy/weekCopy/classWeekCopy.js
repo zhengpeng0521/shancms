@@ -213,7 +213,6 @@ export default {
             .format('YYYY-MM-DD')
         }
       }
-      console.info('params---->', params)
       this.tableLoading = true
       batchCopyQuery(params).then(res => {
         const data = res.data
@@ -267,8 +266,6 @@ export default {
       this.checkList = val
       this.checkNum = val.length
     },
-    /* 获取列的勾选 */
-    getCheckCol() {},
     /* 清除选中项 */
     clearSelection() {
       this.$refs.tableCommon.clearSelection()

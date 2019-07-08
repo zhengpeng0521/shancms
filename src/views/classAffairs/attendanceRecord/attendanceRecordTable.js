@@ -152,7 +152,7 @@ export default {
         },
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 234px)',
+      tableHeight: 'calc(100vh - 235px)',
       superValue: {}, // 高级搜索的数据
       formValue: {
         date: [
@@ -233,9 +233,6 @@ export default {
       delete params.date
       this.superValue = {}
       this.$refs.tableCommon.getList(params)
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     }
   }
 }

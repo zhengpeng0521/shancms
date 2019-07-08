@@ -1,6 +1,24 @@
 import $ from 'jquery'
+/* 普通搜索 */
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
+/* 高级搜索 */
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
+/* 详情页 */
+import OrderCourseDetail from '../../orderCourseList/orderCourseTable/side/orderCourseDetail'
+/* 取消上课学员 */
+import CancelOrderCourse from '../../orderCourseList/orderCourseTable/dialog/cancelOrderCourse'
+/* 取消试听学员 */
+import CancelTryStudent from '../../orderCourseList/orderCourseTable/dialog/cancelTryStudent'
+/* 单次约课 */
+import OnceOrderCourse from '../../orderCourseList/orderCourseTable/dialog/onceOrderCourse'
+/* 批量约课 */
+import BatchOrderCourse from '../../orderCourseList/orderCourseTable/dialog/batchOrderCourse'
+/* 预约补课 */
+import OrderMissLesson from '../../orderCourseList/orderCourseTable/dialog/orderMissLesson'
+/* 预约试听 */
+import OrderTryCourse from '../../orderCourseList/orderCourseTable/dialog/orderTryCourse'
+// import SchedulePrintByDay from './schedulePrintByDay.vue'
+
 import {
   queryArrageCourseList,
   courseSummaryQuery
@@ -8,7 +26,14 @@ import {
 export default {
   components: {
     CommonSearch,
-    AdvancedSearch
+    AdvancedSearch,
+    OrderCourseDetail,
+    CancelOrderCourse,
+    OnceOrderCourse,
+    BatchOrderCourse,
+    OrderMissLesson,
+    OrderTryCourse,
+    CancelTryStudent
   },
   data() {
     return {
@@ -17,10 +42,6 @@ export default {
         searchMethod: formValue => {
           this.searchHandle(formValue)
         },
-        // modifyTime: [
-        //   this.$moment().format('YYYY-MM-DD'),
-        //   this.$moment().format('YYYY-MM-DD')
-        // ],
         forms: [
           {
             itemType: 'input',
@@ -40,17 +61,6 @@ export default {
             valueKey: 'id',
             apiService: courseSummaryQuery // 是否从接口中获取
           }
-          // {
-          //   itemType: 'datePicker',
-          //   datePickerType: 'daterange',
-          //   startPlaceholder: '开始日期',
-          //   endPlaceholder: '结束日期',
-          //   valueFormat: 'yyyy-MM-dd',
-          //   modelValue: 'modifyTime',
-          //   itemStyle: 'width:231px',
-          //   isClearable: false,
-          //   toChange: 'dateChange'
-          // }
         ]
       },
       superSearch: {
@@ -184,7 +194,7 @@ export default {
     },
     // 查看事件
     getscheduleInfo(event) {
-      console.info('event==>', event)
+      this.toOrderCourseDetail(event)
     },
     getCalendar() {
       $('#calendar').fullCalendar({
@@ -250,6 +260,47 @@ export default {
         },
         eventClick: this.getscheduleInfo
       })
+    },
+
+    /* 上课学员取消 */
+    getCancelData(row, detail) {
+      this.$refs.cancel.show(row, detail)
+    },
+    /* 排队学员取消 */
+    getLineCancelData(row, detail) {
+      this.$refs.cancel.show(row, detail)
+    },
+    /* 试听学员取消 */
+    getTryCancelData(row, detail) {
+      this.$refs.cancelTry.show(row, detail)
+    },
+    /* 单次约课 */
+    getOnceOrderCourse(val, detail) {
+      this.$refs.onceOrderCourse.show(val, detail)
+    },
+    /* 批量约课 */
+    getBatchOrderCourse(val, detail) {
+      this.$refs.batchOrderCourse.show(val, detail)
+    },
+    /* 预约补课 */
+    getOrderMissCourse(val, detail) {
+      this.$refs.orderMissLesson.show(val, detail)
+    },
+    /* 预约试听 */
+    getOrderTryCourse(val, detail) {
+      this.$refs.orderTryCourse.show(val, detail)
+    },
+    /* 单次约课更新 */
+    getUpdateOnceOrder(val) {
+      this.$refs.orderDetail.show(val)
+    },
+    /* 转为上课学员 */
+    getInlineUpdate(detail) {
+      this.$refs.orderDetail.show(detail)
+    },
+    /* 约课详情 */
+    toOrderCourseDetail(row) {
+      this.$refs.orderDetail.show(row)
     }
   },
   mounted() {

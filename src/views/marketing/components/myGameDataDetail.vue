@@ -28,12 +28,6 @@
   </transition>
 </template>
 <script>
-// import { fetchList } from '@/api/marketing'
-// import CommonSearch from '@/components/CommonSearch/CommonSearch'
-// import CommonTable from '@/components/CommonTable/CommonTable'
-// import { findDetail } from '@/api/marketing/microAct.js'
-// import { exportFile } from '@/utils/exportFile.js'
-// import { fetchList } from '@/api/marketing'
 export default {
   props: {
     'visible': {
@@ -48,14 +42,11 @@ export default {
       visible3: false,
       isVisible: this.visible,
       url: ''
-      // isVisible: false
-
     }
   },
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -124,7 +115,7 @@ export default {
   }
   .body {
     width: 100%;
-    height: calc(100vh - 75px);
+    height: calc(100vh - 115px);
     .cont {
       width: 100%;
       height: 100%;
@@ -143,30 +134,6 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(1000px);
   opacity: 0;
-}
-.picDetail-container {
-  // width: 100vw;
-  // height: 100vh;
-  // background: rgba(0, 0, 0, 0.5);
-  // z-index: 10000;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-
-  // @keyframes enterAnamation {
-  //   10% {
-  //     right: -100%;
-  //   }
-  //   100% {
-  //     right: 0;
-  //   }
-  // }
-  // // .picDetailShow {
-  // //   animation: enterAnamation 1s linear;
-  // // }
-  // .picDetail {
-  //   animation: enterAnamation 1s linear;
-  // }
 }
 </style>
 

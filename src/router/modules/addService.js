@@ -17,7 +17,10 @@ const addServiceRouter = {
       path: 'cashierMgr',
       component: () => import('@/views/table/dynamicTable/index'),
       name: 'cashierMgr',
-      meta: { title: '收银宝', meunId: '8010000' }
+      meta: {
+        title: '收银宝',
+        url: process.env.SYB_URL
+      }
     },
     {
       path: 'callSystem',
@@ -46,7 +49,9 @@ const addServiceRouter = {
       path: 'publicPraise',
       component: () => import('@/views/table/dynamicTable/index'),
       name: 'PublicPraise',
-      meta: { title: '口碑', meunId: '8030000' }
+      meta: { title: '口碑',
+        url: process.env.KB_URL
+      }
     }
   ]
 }

@@ -18,6 +18,7 @@
             <el-select
               v-model="ruleForm.fix"
               placeholder="请选择固定位状态"
+              filterable
             >
               <el-option
                 v-for="item in options"
@@ -98,7 +99,6 @@ export default {
             }
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

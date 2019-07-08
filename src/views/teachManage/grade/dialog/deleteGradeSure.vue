@@ -35,7 +35,6 @@ export default {
     show(val) {
       this.newdialogVisible = true
       this.rowInfo = val
-      console.info(val)
     },
     cancel(formName) {
       this.newdialogVisible = false

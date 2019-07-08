@@ -266,7 +266,6 @@ export default {
       const signBySelf = window.signBySelf || {}
       const signBySelfDayObj = signBySelf[dayStr] || {}
       const signBySelfValue = signBySelfDayObj[key]
-      console.info('signBySelfValue', signBySelfValue)
       if (!signBySelfValue || signBySelfValue === '') {
         signBySelfDayObj[key] = '1'
         signBySelf[dayStr] = signBySelfDayObj

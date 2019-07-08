@@ -174,6 +174,7 @@ export default {
           this.fileList = fileList
           self.mgrAccessoryData.id = rowlist.orderNumber
           self.mgrAccessoryData.remark = res.data.remark
+          self.mgrAccessoryData.imgCont = fileList
         } else {
           self.$message.error(res.data.errorMessage)
         }

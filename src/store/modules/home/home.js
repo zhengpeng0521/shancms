@@ -12,7 +12,8 @@ import {
   getInit,
   getTodos,
   getBanner,
-  getGoodCase
+  getGoodCase,
+  getLeadNews
 } from '@/api/home/home'
 import { tenantUserSummaryQuery } from '@/api/teachManage/attendance'
 import { objListSortOfTime } from '@/utils/arrayUtils'
@@ -62,6 +63,7 @@ const home = {
     todoLoading: false,
     todoList: [], // 待办列表
     todoSetList: [], // 待办设置列表
+    contractExpire: 0, // 合同过期天数，合同规则
 
     /** Banner */
     bannerLoading: false,
@@ -70,7 +72,11 @@ const home = {
 
     /** 运营妙计 */
     caseLoading: false,
-    caseList: [] // 运营妙计列表
+    caseList: [], // 运营妙计列表
+
+    /** 闪闪头条 */
+    leadNewsLoading: false,
+    leadNewsList: []
   },
 
   mutations: {
@@ -330,7 +336,7 @@ const home = {
 
       // 获取图片
       const params = {
-        type: '0',
+        type: '5',
         status: '1'
       }
       const { data } = await getBanner(params)
@@ -341,19 +347,20 @@ const home = {
       }
 
       // 获取文案
-      const news = {
-        type: '2',
-        status: '1'
-      }
-      const banner = await getBanner(news)
-      if (banner && banner.data && banner.data.errorCode === 0) {
-        state.bannerNews = banner.data.results
-      } else {
-        Message.error(
-          (banner && banner.data && banner.data.errorMessage) ||
-            '获取新闻失败！'
-        )
-      }
+      // 2019.05.22需求不显示
+      // const news = {
+      //   type: '6',
+      //   status: '1'
+      // }
+      // const banner = await getBanner(news)
+      // if (banner && banner.data && banner.data.errorCode === 0) {
+      //   state.bannerNews = banner.data.results
+      // } else {
+      //   Message.error(
+      //     (banner && banner.data && banner.data.errorMessage) ||
+      //       '获取新闻失败！'
+      //   )
+      // }
 
       commit(UPDATE_STATE, { bannerLoading: false })
     },
@@ -365,7 +372,7 @@ const home = {
       const params = {
         status: '1',
         pageIndex: 0,
-        pageSize: 9
+        pageSize: 3
       }
       const { data } = await getGoodCase(params)
       if (data && data.errorCode === 0) {
@@ -375,6 +382,24 @@ const home = {
       }
 
       commit(UPDATE_STATE, { caseLoading: false })
+    },
+
+    /** 获取闪闪头条 */
+    async getLeadNews({ state, commit }, payload) {
+      commit(UPDATE_STATE, { leadNewsLoading: true })
+
+      const params = {
+        pageIndex: 0,
+        pageSize: 5
+      }
+      const { data } = await getLeadNews(params)
+      if (data && data.errorCode === 9000) {
+        state.leadNewsList = data.results
+      } else {
+        Message.error((data && data.errorMessage) || '获取闪闪头条失败！')
+      }
+
+      commit(UPDATE_STATE, { leadNewsLoading: false })
     }
   }
 }

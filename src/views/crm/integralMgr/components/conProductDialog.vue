@@ -18,6 +18,7 @@
           <el-select
             v-model="accountData.stuId"
             clearable
+            filterable
             placeholder="请选择学员"
             style="width: 85%"
             @change="stuNameChange"
@@ -65,6 +66,7 @@
           <el-select
             v-model="accountData.ruleId"
             clearable
+            filterable
             placeholder="请输入变动原因"
             style="width: 100%"
             @change="changeRuleValue"
@@ -148,7 +150,10 @@ export default {
         ],
         cardId: [{ required: true, message: '', trigger: 'change' }],
         userInter: [{ required: true, message: '', trigger: 'change' }],
-        integralNum: [{ required: true, message: '请输入积分数量', trigger: 'change' }],
+        integralNum: [
+          { required: true, message: '请输入积分数量', trigger: 'change' },
+          { pattern: /^\+?[1-9][0-9]*$/, message: '请正确输入大于零的正整数', trigger: 'change' }
+        ],
         type: [{ required: true, message: '', trigger: 'change' }],
         ruleId: [
           { required: true, message: '请输入变动原因', trigger: 'change' }

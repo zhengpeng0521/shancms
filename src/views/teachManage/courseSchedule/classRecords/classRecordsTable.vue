@@ -96,7 +96,6 @@
         :options="options"
         :operation="operates"
         :table-key="'teachManage_courseSchedule_classRecords_classRecordsTable'"
-        @toChildData="getCheckCol"
         @handleSelectionChange="selectionChange"
       />
       <DelArrange

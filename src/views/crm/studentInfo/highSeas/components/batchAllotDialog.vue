@@ -50,6 +50,7 @@
               v-model="batchAllotData.roles"
               placeholder="请选择角色"
               clearable
+              filterable
               style="width:198px"
               @change="sellerChange"
             >

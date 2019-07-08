@@ -4,7 +4,7 @@
  *   type        Str        图表类型 值:'line' 线图/'histogram' 柱形/'bar' 横向柱形/'pie' 饼图
  *   legend      Bool       是否显示默认图例
  *   custLegend  Bool       是否显示自定义图例（当legend为false）
- *   title       Str        标题
+ *   title       Str        标题, 默认'图表'
  *   extraTitle  Str        标题额外内容
  *   isCard      Bool       是否卡片
  *   exportFile  Func       导出
@@ -222,13 +222,13 @@ export default {
       card: isCard ? {
         container: 'card-contariner',
         header: 'card-header'
-      } : {},
-      showBars: [],
-      showSource: [],
-      allColors: colors,
-      isInit: true,
+      } : {}, // 卡片形式
+      showBars: [], // 柱形自定义图例显示
+      showSource: [], // 柱形堆叠数据
+      allColors: colors, // 颜色列表
+      isInit: true, // 是否首次加载
       isCols: true,
-      showLines: [],
+      showLines: [], // 展示的数据
       showColors: colors
     }
   },
@@ -279,6 +279,7 @@ export default {
   },
 
   methods: {
+    /** 图例选择 */
     colsChange(value) {
       const { allCols, showCols } = this.$props
       const newShow = [showCols[0]]
@@ -314,6 +315,7 @@ export default {
 <style lang="scss" scoped>
 @import "@/styles/mixin.scss";
 
+// ----------- 空数据 start -------------------------
 .data-empty {
   height: 400px;
   @include flex;
@@ -326,6 +328,9 @@ export default {
     margin-top: 10px;
   }
 }
+// ----------- 空数据 end -------------------------
+
+// ----------- 卡片 start -------------------------
 .card-contariner {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -344,6 +349,7 @@ export default {
       top: 11px;
     }
   }
+  // 自定义图例
   .chart-list {
     margin: 20px 15px 0 0;
     padding: 15px;
@@ -365,15 +371,20 @@ export default {
     border-radius: 50%;
   }
 }
+// ----------- 空数据 end -------------------------
+
+// ----------- 图表 start -------------------------
 .chart-box {
   @include flex;
   .chart-left {
     @include flexWidth;
   }
   .chart-right {
-    width: 180px;
+    flex-basis: 180px;
   }
 }
+// ----------- 图表 end -------------------------
+
 .pop-content {
   max-width: 150px;
 }

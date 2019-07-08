@@ -14,6 +14,7 @@
                 v-model="mtids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"
@@ -28,6 +29,7 @@
                 v-model="atids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"

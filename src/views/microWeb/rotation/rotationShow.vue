@@ -18,7 +18,10 @@
         >新建轮播图</el-button>
       </div>
     </div>
-    <div class="warn">最多可添加5张轮播图</div>
+    <div class="warn"><i
+      class="iconfont icon_ym_ts"
+      style="color:#46b6ee;margin-right:8px"
+    />最多可添加5张轮播图</div>
     <CommonTable
       ref="tableCommon"
       :columns="columns"
@@ -142,7 +145,7 @@ export default {
             return h('div', {}, [
               h('span', '排序值'),
               h('el-tooltip', { class: 'item', props: { effect: 'dark', content: '排序值越大排在越前面', placement: 'top' }}, [
-                h('i', { 'class': 'el-icon-warning', style: { marginLeft: '5px' }})
+                h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', color: '#666' }})
               ])
             ])
           },
@@ -160,11 +163,11 @@ export default {
             const obj = JSON.parse(row.uri)
             if (obj.type === '0') {
               return `<div>无</div>`
-            } else if (obj.type === '1') {
+            } else if (obj.type === '3') {
               return `<div>自定义</div>`
             } else if (obj.type === '2') {
               return `<div>活动</div>`
-            } else if (obj.type === '3') {
+            } else if (obj.type === '1') {
               return `<div>课程</div>`
             }
           }
@@ -180,9 +183,9 @@ export default {
             // }
 
             const address = (JSON.parse(params.row.uri)).type === '0' ? '无外链'
-              : (JSON.parse(params.row.uri)).type === '2' ? `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microCourseDetail&tenantId=${params.row.tenantId}&orgId=${params.row.orgId}&actId=${params.row.id}`
-                : (JSON.parse(params.row.uri)).type === '3' ? `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microActivityDetail&tenantId=${params.row.tenantId}&orgId=${params.row.orgId}&actId=${params.row.id}`
-                  : (JSON.parse(params.row.uri)).type === '1' ? (JSON.parse(params.row.uri)).uri : (JSON.parse(params.row.uri)).uri
+              : (JSON.parse(params.row.uri)).type === '2' ? `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microActivityDetail&tenantId=${params.row.tenantId}&orgId=${params.row.orgId}&actId=${params.row.id}`
+                : (JSON.parse(params.row.uri)).type === '1' ? `http://www.ishanshan.com/wx/h5/weixin/webSite?router=microCourseDetail&tenantId=${params.row.tenantId}&orgId=${params.row.orgId}&actId=${params.row.id}`
+                  : (JSON.parse(params.row.uri)).type === '3' ? (JSON.parse(params.row.uri)).uri : (JSON.parse(params.row.uri)).uri
             if (obj.type !== '0') {
               return h('div', {}, [
               // h('img', { style: { width: '40px', height: '40px', 'margin-right': '10px' }, attrs: { src: params.row.icon }}, ''),
@@ -364,8 +367,8 @@ export default {
   .rotation-top {
     width: 100%;
     padding: 20px 0;
-    border-bottom: 1px solid rgb(204, 204, 204);
-    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
     // background: pink;
   }
   .search {
@@ -375,13 +378,14 @@ export default {
     height: 48px;
   }
   .warn {
-    width: calc(100% - 6px);
     height: 28px;
     line-height: 28px;
     background: rgba(70, 182, 238, 0.1);
     margin-bottom: 10px;
     font-size: 14px;
     color: #666;
+    padding-left: 10px;
+    border-radius: 4px;
   }
 }
 </style>
@@ -390,9 +394,6 @@ export default {
   .borderTable {
     .el-table--fit {
       border-left: none;
-    }
-    .el-table__body tbody tr td:first-child {
-      border-left: 1px solid #ebeef5;
     }
   }
   .el-table__row {

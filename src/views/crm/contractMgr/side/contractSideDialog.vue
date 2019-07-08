@@ -59,6 +59,7 @@
                 style="margin-left: 10px;"
               />
               <el-button
+                v-if="normalGiveDialogHidden"
                 class="cancel_btn"
                 style="margin-left: 5px;"
                 @click="printContractFun"
@@ -75,7 +76,7 @@
                 <span>审核状态: </span>
                 <span>{{ contractRowList.orderStateName || '--' }}</span>
               </p>
-              <p>
+              <p v-if="normalGiveDialogHidden">
                 <span>收款状态: </span>
                 <span>{{ contractRowList.receiptStatusName || '--' }}</span>
               </p>
@@ -85,7 +86,7 @@
                 <span>创建人: </span>
                 <span>{{ contractRowList.orderCreatePerson || '--' }}</span>
               </p>
-              <p>
+              <p v-if="normalGiveDialogHidden">
                 <span>套餐类型: </span>
                 <span>{{ contractRowList.orderType && contractRowList.orderType == '2' ? '课时套餐' : '托班套餐' }}</span>
               </p>
@@ -98,6 +99,7 @@
           @tab-click="handleClick(activeName)"
         >
           <el-tab-pane
+            v-if="normalGiveDialogHidden"
             label="收款单"
             name="1"
           >
@@ -182,13 +184,15 @@ export default {
       isMgrFileShow: false, // 管理附件按钮显隐
       isConInvalidShow: false, // 合同作废按钮显隐
       isPaperShow: true, // 合同打印按钮显隐
-      rowList: {}
+      rowList: {},
+      normalGiveDialogHidden: true // 合同详情正式合同显示，但是赠送合同不显示的内容
     }
   },
   methods: {
     /* 打开侧边弹框 */
     showSideDialog(rowlist) {
       this.rowList = rowlist
+      this.normalGiveDialogShowHidden(rowlist) // 正常合同和赠送合同详情弹窗显示不同
       // 待审核 代收款
       if(rowlist.orderState == '1' && rowlist.receiptStatus == '0') { //eslint-disable-line
         this.isEditBtnShow = true
@@ -249,12 +253,40 @@ export default {
         this.isConInvalidShow = false
         this.isPaperShow = false
       }
-      this.contractRowList = rowlist
-      this.activeName = '1'
-      this.$refs.receiptTabCom.options.apiService = payInfoList
-      this.$refs.receiptTabCom.getOpenList(this.contractRowList.orderNumber)
       this.sideDialogShow = true
+      // 包含正式，赠送
+      if (rowlist.purchaseType === '1') { // 弹窗出现后显示的第一个tab
+        this.contractRowList = rowlist
+        this.activeName = '1'
+        this.$refs.receiptTabCom.options.apiService = payInfoList
+        this.$refs.receiptTabCom.getOpenList(this.contractRowList.orderNumber)
+      // 赠送
+      } else if (rowlist.purchaseType === '2') {
+        this.contractRowList = rowlist
+        this.activeName = '2'
+        this.$refs.detailTabCom.getDetailList(this.contractRowList.orderNumber)
+      // 正式合同， 不包含赠送
+      } else {
+        this.$nextTick(() => {
+          this.contractRowList = rowlist
+          this.activeName = '1'
+          this.$refs.receiptTabCom.options.apiService = payInfoList
+          this.$refs.receiptTabCom.getOpenList(this.contractRowList.orderNumber)
+        })
+      }
     },
+
+    // 正常合同和赠送合同打开的详情弹窗不同，进行显隐操作
+    normalGiveDialogShowHidden(rowlist) {
+      if (rowlist.purchaseType === '1') {
+        this.normalGiveDialogHidden = true // 正式合同显示全部
+      } else if (rowlist.purchaseType === '2') {
+        this.normalGiveDialogHidden = false // 赠送合同显示部分
+      } else {
+        this.normalGiveDialogHidden = true // 正式合同和赠送合同显示全部
+      }
+    },
+
     /* 打印合同弹框 */
     printContractFun() {
       this.$refs.printContractDialog.showDialog(this.rowList)

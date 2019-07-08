@@ -147,7 +147,6 @@ export default {
 
   methods: {
     show(row) {
-      console.info(row)
       this.themeVisible = true
       this.currentInfo = row
       this.getCourseTheme()

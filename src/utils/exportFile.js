@@ -7,6 +7,9 @@ export function exportFile(path, params) {
   let payload = ''
   let first = true
   for (const key in params) {
+    if (!params[key]) {
+      continue
+    }
     if (first) {
       payload = `${key}=${params[key]}`
       first = false

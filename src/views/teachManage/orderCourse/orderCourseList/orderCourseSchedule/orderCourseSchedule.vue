@@ -18,6 +18,50 @@
         @click="toSchedule"
       >切换成列表</el-button>
     </div>
+    <OrderCourseDetail
+      ref="orderDetail"
+      @toParent="getCancelData"
+      @toLineStu="getLineCancelData"
+      @toTryStu="getTryCancelData"
+      @toOnceOrderCourse="getOnceOrderCourse"
+      @toBatchOrderCourse="getBatchOrderCourse"
+      @toOrderMissCourse="getOrderMissCourse"
+      @toOrderTryCourse="getOrderTryCourse"
+      @toCancelUpdate="getUpdateOnceOrder"
+      @toInlineUpdate="getInlineUpdate"
+      @toleaveUpdate="getUpdateOnceOrder"
+      @toReturnUpdate="getUpdateOnceOrder"
+    />
+    <!-- 取消 -->
+    <CancelOrderCourse
+      ref="cancel"
+      @toCancelUpdate="getUpdateOnceOrder"
+    />
+    <!-- 取消试听 -->
+    <CancelTryStudent
+      ref="cancelTry"
+      @toCancelUpdate="getUpdateOnceOrder"
+    />
+    <!-- 单次约课 -->
+    <OnceOrderCourse
+      ref="onceOrderCourse"
+      @toUpdateOnceOrder="getUpdateOnceOrder"
+    />
+    <!-- 批量约课 -->
+    <BatchOrderCourse
+      ref="batchOrderCourse"
+      @toUpdateOnceOrder="getUpdateOnceOrder"
+    />
+    <!-- 预约补课 -->
+    <OrderMissLesson
+      ref="orderMissLesson"
+      @toUpdateOnceOrder="getUpdateOnceOrder"
+    />
+    <!-- 预约试听 -->
+    <OrderTryCourse
+      ref="orderTryCourse"
+      @toUpdateOnceOrder="getUpdateOnceOrder"
+    />
     <div id="calendar">
       <div id="popover" />
     </div>

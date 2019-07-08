@@ -6,7 +6,7 @@
     <div class="left-menu">{{ orgName }}</div>
     <div class="right-menu">
       <el-dropdown
-        trigger="click"
+        trigger="hover"
         size="medium"
       >
         <div class="userName">
@@ -31,10 +31,29 @@
       </el-dropdown>
     </div>
     <div class="right-menu">
-      <div class="customer">
-        <img src="https://img.ishanshan.com/gimg/n/20190402/7f9a502a9b4b3aefcdbbfdce485f930c">
-        <span> 帮助中心 </span>
-      </div>
+      <el-popover
+        placement="bottom-end"
+        width="260"
+        trigger="hover"
+        popper-class="popover_help"
+      >
+        <div>
+          <img
+            class="connect_popover_img"
+            src="https://img.ishanshan.com/gimg/user/n///1557308283.png"
+          >
+          <p class="connect_p">微信扫码，获取专属服务顾问</p>
+          <p class="connect_mobile">客服热线：400-660-5733</p>
+        </div>
+
+        <div
+          slot="reference"
+          class="customer"
+        >
+          <img src="https://img.ishanshan.com/gimg/n/20190402/7f9a502a9b4b3aefcdbbfdce485f930c">
+          <span> 帮助中心 </span>
+        </div>
+      </el-popover>
     </div>
     <!-- <div class="upgrade_renew">
       <el-button
@@ -46,6 +65,11 @@
       <span>{{ title }}:</span>
       <span>剩下{{ zsb }}天</span>
     </div> -->
+    <ChangePwd
+      v-if="visible"
+      :visible.sync="visible"
+      @close="close"
+    />
   </div>
 </template>
 
@@ -58,6 +82,7 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import ChangePwd from './ChangePwd/ChangePwd'
 import { queryMealOpening } from '@/api/orgSet/comboMgr'
 export default {
   components: {
@@ -67,14 +92,16 @@ export default {
     Screenfull,
     SizeSelect,
     LangSelect,
-    ThemePicker
+    ThemePicker,
+    ChangePwd
   },
   data() {
     return {
+      visible: false,
       userName: '', // 用户名
       title: '',
-      zsb: '',
-      orgName: '' // 校区名
+      zsb: ''
+      // orgName: '' // 校区名
     }
   },
   computed: {
@@ -83,11 +110,14 @@ export default {
       'name',
       'avatar'
       // 'device'
-    ])
+    ]),
+    orgName() {
+      return this.$store.getters.orgName
+    }
   },
   mounted() {
     this.userName = this.$store.getters.name
-    this.orgName = this.$store.getters.orgName
+    // this.orgName = this.$store.getters.orgName
     // this.getDate()
   },
   methods: {
@@ -106,10 +136,15 @@ export default {
         }
       })
     },
-    /* 修改密码 */
+    /* 打开修改密码弹窗 */
     updatePassFun() {
-
+      this.visible = true
     },
+    /** 关闭 */
+    close() {
+      this.visible = false
+    },
+
     /* 退出登录 */
     logout() {
       this.$store.dispatch('LogOut').then(() => {
@@ -120,7 +155,22 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.popover_help {
+  padding: 20px;
+  text-align: center;
+}
+</style>
+
 <style rel="stylesheet/scss" lang="scss" scoped>
+.connect_p {
+  margin: 14px 0 10px 0;
+  color: #666;
+}
+.connect_mobile {
+  color: #1d9df2;
+}
+
 .navbar {
   height: 40px;
   line-height: 40px;
@@ -142,7 +192,7 @@ export default {
   }
   .left-menu {
     float: left;
-    margin-left: 30px;
+    margin-left: 20px;
     color: #333;
     font-size: 14px;
     font-weight: 500;

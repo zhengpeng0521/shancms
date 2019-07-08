@@ -25,6 +25,7 @@
           <el-select
             v-model="addGiveClassData.cardID"
             clearable
+            filterable
             placeholder="请选择合同编号"
             style="width: 100%"
           >
@@ -56,6 +57,7 @@
             <el-select
               v-model="addGiveClassData.selectClass"
               clearable
+              filterable
               placeholder="请选择课程"
               style="width: 100%"
             >
@@ -80,13 +82,13 @@
           <span class="classNum_input_tip">非负数，可精确到小数点后2位</span>
         </el-form-item>
         <el-form-item
-          label="赠课总成本:"
+          label="赠课成本:"
           prop="givePrice"
         >
           <el-input
             v-model="addGiveClassData.givePrice"
             clearable
-            placeholder="请输入赠课总成本"
+            placeholder="请输入赠课成本"
           />
           <span class="classNum_input_tip">(用于统计赠课消耗的成本，不计入合同总额，也不计入消课统计)</span>
         </el-form-item>
@@ -147,7 +149,7 @@ export default {
         type: '1',
         selectClass: '',
         classNum: '',
-        givePrice: '',
+        givePrice: '0',
         because: ''
       },
       allCourseList: [], // 选择课程下拉列表
@@ -166,6 +168,9 @@ export default {
         ],
         selectClass: [
           { required: true, validator: checkClass, trigger: 'change' }
+        ],
+        givePrice: [
+          { required: true, message: '请输入赠课成本,最多保留两位小数', pattern: /^(([1-9]{1}\d*)|(0{1}))((\.\d{1,2})|((\d*)))$/, trigger: 'change' }
         ]
       },
       isShowInput: false, // 选择课时输入框显隐
@@ -217,7 +222,7 @@ export default {
             purchaseId: this.addGiveClassData.cardID || '',
             periodNum: this.addGiveClassData.classNum || '',
             creatorId: '',
-            extPeriodMoney: this.addGiveClassData.givePrice || '',
+            extPeriodMoney: this.addGiveClassData.givePrice || '0',
             extPeriodReason: this.addGiveClassData.because || '',
             extType: this.addGiveClassData.type || '1',
             courseId: this.addGiveClassData.selectClass || ''

@@ -91,7 +91,7 @@ export default {
           addStuByCardId(params).then(res => {
             if (res.data.errorCode === 0) {
               this.addSuitStuDialogShow = false
-              // this.$refs.suitStudentPage.getCardStuInfoById(this.cardRowData)
+              this.$emit('updateSuiteStudent')
             } else {
               this.$message.error(res.data.errorMessage)
             }

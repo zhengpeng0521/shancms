@@ -20,6 +20,7 @@
               :confirm="close"
               :is-button="true"
               :btn-type="'plain'"
+              style="margin-right:5px;"
             />
             <Confirm
               :text="'保存'"
@@ -28,6 +29,7 @@
               :confirm="()=>{submitForm('campusData')}"
               :is-button="true"
               :btn-type="'primary'"
+              style="margin-right:15px;"
             />
           </div>
         </div>
@@ -35,10 +37,7 @@
           <div class="body-leftBox">
             <div class="body-left">
               <div class="body-left-header">
-                <img
-                  src="https://img.ishanshan.com/gimg/n/20190320/7520a62ea0b5b3eb8af55fefc2a8779c"
-                  alt=""
-                >
+                <img src="https://img.ishanshan.com/gimg/user/n///1557127683.png">
               </div>
               <div class="body-left-cont">
                 <div style="width:100%;height:150px">
@@ -136,21 +135,20 @@
                   </div>
                 </div>
 
-                <div class="orgItem">
+                <div
+                  v-if="radioData.orgFacility === '1'"
+                  class="orgItem"
+                >
                   <div class="tit"><i />机构设施
                   </div>
-                  <div class="facility">
-                    <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/66c0c7c21760e3b9c5f64dd550f03385"></div>
-                    <div class="facilityName">TV</div>
-                  </div>
-                  <div class="facility">
-                    <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/ffafddccb7f855da5292f6a826bb5805"></div>
-                    <div class="facilityName">母婴间</div>
-                  </div>
-                  <div class="facility">
-                    <div class="facilityBacground"><img src="https://img.ishanshan.com/gimg/n/20190320/37af3077e6cc28917c4941bcb78deb9f"></div>
-                    <div class="facilityName">茶水间</div>
-                  </div>
+                  <span
+                    v-for="(item,index) in utilityLabel(campusData.utilityTag)"
+                    :key="index"
+                    class="facility"
+                  >
+                    <div class="facilityBacground"><img :src="item.img"></div>
+                    <div class="facilityName">{{ item.text }}</div>
+                  </span>
                 </div>
 
               </div>
@@ -170,7 +168,7 @@
                 <el-input
                   v-model="campusData.serverTime"
                   clearable
-                  placeholder="限200字"
+                  placeholder="限30字"
                 />
               </el-form-item>
               <el-form-item
@@ -263,89 +261,111 @@
                   <el-radio label="1">显示</el-radio>
                   <el-radio label="0">隐藏</el-radio>
                 </el-radio-group>
-
-                <div
-                  v-for=" (item,index) in campusData.teachers"
-                  :key="index"
-                  class="teach_box"
-                >
-                  <div class="teach_box_title">
-                    <span>老师信息</span>
-                    <el-button
-                      type="text"
-                      class="delete_icon"
-                      @click="deleteTeachData(index)"
-                    >删除</el-button>
-                  </div>
-                  <div class="teach_box_body">
-                    <el-form-item
-                      :prop="'teachers.' + index + '.teacherName'"
-                      :rules="[{
-                        required: true, message: '老师姓名不能为空', trigger: 'change'
-                      },{ max:10, message: '限10字', trigger: 'blur' }]"
-                      label="老师姓名："
-                    >
-                      <el-input
-                        v-model="item.teacherName"
-                        size="mini"
-                      />
-                    </el-form-item>
-                    <el-form-item
-                      :prop="'teachers.' + index + '.teacherIntro'"
-                      :rules="[{
-                        required: true, message: '老师简介不能为空', trigger: 'change'
-                      },{ max:40, message: '限40字', trigger: 'blur' }]"
-                      label="老师简介："
-                    >
-                      <el-input
-                        v-model="item.teacherIntro"
-                        size="mini"
-                      />
-                    </el-form-item>
-                    <el-form-item
-                      :prop="'teachers.' + index + '.teacherImg'"
-                      label="老师图片："
-                    >
-                      <el-upload
-                        :show-file-list="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
-                        class="avatar-uploader"
-                        action="https://imgsrc.ishanshan.com/gimg/upload"
-                        @click="getTeacherIndex(index)"
+                <div v-if="radioData.orgFaculty === '1'">
+                  <div
+                    v-for=" (item,index) in campusData.teachers"
+                    :key="index"
+                    class="teach_box"
+                  >
+                    <div class="teach_box_title">
+                      <span>老师信息</span>
+                      <el-button
+                        type="text"
+                        class="delete_icon"
+                        @click="deleteTeachData(index)"
+                      >删除</el-button>
+                    </div>
+                    <div class="teach_box_body">
+                      <el-form-item
+                        :prop="'teachers.' + index + '.teacherName'"
+                        :rules="[{
+                          required: true, message: '老师姓名不能为空', trigger: 'change'
+                        },{ max:10, message: '限10字', trigger: 'blur' }]"
+                        label="老师姓名："
                       >
-
-                        <img
-                          v-if="item.teacherImg"
-                          :src="item.teacherImg"
-                          class="avatar"
+                        <el-input
+                          v-model="item.teacherName"
+                          size="mini"
+                        />
+                      </el-form-item>
+                      <el-form-item
+                        :prop="'teachers.' + index + '.teacherIntro'"
+                        :rules="[{
+                          required: true, message: '老师简介不能为空', trigger: 'change'
+                        },{ max:40, message: '限40字', trigger: 'blur' }]"
+                        label="老师简介："
+                      >
+                        <el-input
+                          v-model="item.teacherIntro"
+                          size="mini"
+                        />
+                      </el-form-item>
+                      <el-form-item
+                        :prop="'teachers.' + index + '.teacherImg'"
+                        label="老师图片："
+                      >
+                        <el-upload
+                          :show-file-list="false"
+                          :on-success="handleAvatarSuccess"
+                          :before-upload="beforeAvatarUpload"
+                          class="avatar-uploader"
+                          action="https://imgsrc.ishanshan.com/gimg/upload"
                           @click="getTeacherIndex(index)"
                         >
-                        <i
-                          v-else
-                          class="el-icon-plus"
-                          @click="getTeacherIndex(index)"
-                        />
-                        <span
-                          v-if="!item.teacherImg"
-                          style="color:#666"
-                          @click="getTeacherIndex(index)"
-                        >上传图片</span>
-                      </el-upload>
-                      <p>上传老师图片, 支持png、jpeg、gif格式的图片,图片大小小于2M!</p>
-                    </el-form-item>
-                    <!-- <i
+
+                          <img
+                            v-if="item.teacherImg"
+                            :src="item.teacherImg"
+                            class="avatar"
+                            @click="getTeacherIndex(index)"
+                          >
+                          <i
+                            v-else
+                            class="el-icon-plus"
+                            @click="getTeacherIndex(index)"
+                          />
+                          <span
+                            v-if="!item.teacherImg"
+                            style="color:#666"
+                            @click="getTeacherIndex(index)"
+                          >上传图片</span>
+                        </el-upload>
+                        <p>上传老师图片, 支持png、jpeg、gif格式的图片,图片大小小于2M!</p>
+                      </el-form-item>
+                      <!-- <i
                       class="el-icon-remove-outline delete_icon"
                       @click="deleteTeachData(index)"
                     /> -->
+                    </div>
                   </div>
+                  <el-button
+                    type="primary"
+                    class="add_btn"
+                    style="display:block"
+                    @click="addTeachData()"
+                  >添加师资展示</el-button>
                 </div>
-                <el-button
-                  type="primary"
-                  class="add_btn"
-                  style="display:block"
-                  @click="addTeachData()"
-                >添加师资展示</el-button>
+              </el-form-item>
+              <el-form-item
+                label="机构设施:"
+                prop="utilityTag"
+                class="categoryTag"
+                label-width="90px"
+              >
+                <el-radio-group v-model="radioData.orgFacility">
+                  <el-radio label="1">显示</el-radio>
+                  <el-radio label="0">隐藏</el-radio>
+                </el-radio-group>
+                <el-checkbox-group
+                  v-if="radioData.orgFacility === '1'"
+                  v-model="campusData.utilityTag"
+                >
+                  <el-checkbox
+                    v-for="(item,index) in utilityCategory"
+                    :label="item.value"
+                    :key="index"
+                  >{{ item.text }}</el-checkbox>
+                </el-checkbox-group>
               </el-form-item>
               <el-form-item label="机构地址:">
                 <div class="organ_box">
@@ -435,7 +455,8 @@ export default {
         busnessRange: '1',
         orgAlbum: '1',
         orgIntro: '1',
-        orgFaculty: '1'
+        orgFaculty: '1',
+        orgFacility: '1'
       },
 
       lngData: '',
@@ -449,7 +470,8 @@ export default {
       saveLocation: '',
       dialogVisible: false,
       pictureCard: '',
-      organCategory: [],
+      organCategory: [], // 业务范围
+      utilityCategory: [], // 机构设施
       teachersIndex: '',
       imageFileList: [],
       campusData: {
@@ -462,14 +484,17 @@ export default {
         city: '',
         area: '',
         categoryTag: [],
+        utilityTag: [],
         images: [],
         teachers: [],
         intro: ''
 
       },
       rules: {
-        serverTime: [{ max: 200, message: '限200字', trigger: 'blur' },
-          { required: true, message: '请填写营业时间', trigger: 'change' }],
+        serverTime: [
+          { required: true, message: '请填写营业时间' },
+          { max: 30, message: '限制30个字符', trigger: 'change' }
+        ],
         images: [
           { required: true, message: '未上传图片：请上传图片', trigger: 'change' }
         ],
@@ -478,14 +503,15 @@ export default {
         // picDetail: [
         //   { required: true, message: '支持png、jpeg、gif格式的图片，建议宽高 750*400px，图片大小不大于2M！', trigger: 'change' }
         // ],
-        categoryTag: [{ required: true, message: '请勾选业务范围', trigger: 'blur' }],
+        categoryTag: [{ required: true, message: '请勾选业务范围', trigger: ['blur', 'change'] }],
+        utilityTag: [{ required: true, message: '请勾选机构设施', trigger: ['blur', 'change'] }],
         ageTag: [{ max: 40, message: '限40字', trigger: 'change' },
           { required: true, message: '请输入适用年龄', trigger: 'blur' }],
         intro: [{ required: true, max: 2000, message: '不能超过2000字', trigger: 'blur' }],
-        teachers: [{ required: true, trigger: 'change', message: '' }],
+        teachers: [{ required: true, trigger: 'change', message: '请添加师资展示' }],
         tel: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
-          { pattern: /^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1})|166|198|199|(147))+\d{8})$/, message: '手机号格式错误', trigger: 'blur' }
+          { pattern: /^1[3456789]\d{9}$/, message: '手机号格式错误', trigger: 'blur' }
         ]
       }
     }
@@ -510,12 +536,17 @@ export default {
       dictOrgan().then(res => {
         if (res.data.errorCode === 0) {
           let organCategory = []
+          let utilityCategory = []
           res.data.dictItemList.forEach(v => {
             if (v.code === 'organcategory') {
               organCategory = v.items
             }
+            if (v.code === 'utilitytag') {
+              utilityCategory = v.items
+            }
           })
           this.organCategory = organCategory
+          this.utilityCategory = utilityCategory
         } else {
           this.$message.error(res.data.errorMessage)
         }
@@ -526,11 +557,13 @@ export default {
       getOrgan().then(res => {
         if (res.data.errorCode === 0) {
           this.campusData = res.data
+          this.campusData.serverTime = res.data.serverTime || ''
           // this.campusData.teachers = Object.assign([], JSON.parse(res.data.teachers))
           const teacherData = JSON.parse(res.data.teachers)
           this.campusData.teachers = teacherData ? Object.assign([], teacherData) : Object.assign([], [{ teacherName: '', teacherImg: '', teacherIntro: '' }])
           this.campusData.addrColumn = Object.assign([], JSON.parse(res.data.addrColumn))
           this.campusData.categoryTag = res.data.categoryTag ? res.data.categoryTag.split(',') : []
+          this.campusData.utilityTag = res.data.utilityTag ? res.data.utilityTag.split(',') : []
           if (!res.data.images) {
             this.campusData.images = []
           } else {
@@ -593,6 +626,7 @@ export default {
             addr: this.campusData.addr,
             // schoolLogo: this.campusData.schoolLogo,
             categoryTag: this.campusData.categoryTag.join(','),
+            utilityTag: this.campusData.utilityTag.join(','),
             images: this.campusData.images.join(','),
             teachers: JSON.stringify(this.campusData.teachers),
             lng: this.lngData.lng,
@@ -605,7 +639,8 @@ export default {
             if (res.data.errorCode === 0) {
               this.visible3 = false
               this.isVisible = false
-              this.getOrganList()
+              // this.getOrganList()
+              this.$emit('refreshPage')
             } else {
               this.$message.error(res.data.errorMessage)
             }
@@ -703,7 +738,74 @@ export default {
     searchDetailAddress(val) {
       this.choiceLocation = this.saveLocation + val
     },
+    // 机构设施处理处理
+    utilityLabel(values) {
+      const items = []
+      this.utilityCategory.forEach(item => {
+        if (values.indexOf(item.value) > -1) {
+          switch (item.value) {
+            case '101':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/6c1735716d135a51f7d5472c1d3c41c6'
+              break
+            case '102':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/f2e7d2e414bfa11d1619f68799ca39bc'
+              break
+            case '103':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2128bf4b593cd125480ee36728fcf206'
+              break
+            case '104':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2349ceb503ad2256627c0d8ec178bee7'
+              break
+            case '105':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2e93d8aaef852f00c06e7b313f72114d'
+              break
+            case '106':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/cbea5c12d83e76c9393a669f285bcced'
+              break
+            case '107':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/db145dae09819d8c4193f423da1e4cf4'
+              break
+            case '108':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/8584d4c9e5474c212dec463d3c7aaded'
+              break
+            case '109':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/351ebb07a76dc5a8f9200e124af3f70c'
+              break
+            case '110':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/30d13c63d90cd251e992cd0338f8ea16'
+              break
+            case '111':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/2b54b4f601f66d3446cb0a98f68c3e94'
+              break
+            case '112':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/61a60e294b9662b130904123458b5c2c'
+              break
+            case '113':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/cfa4cbbff5a207a9466047a005ad96b6'
+              break
+            case '114':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/04edca4320cf1160a1073ddaea70a391'
+              break
+            case '115':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/085367478a5825d4d0891077f4181727'
+              break
+            case '116':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/8621a39fedc4b245b01fb397227079e3'
+              break
+            case '117':
+              item.img = 'https://img.ishanshan.com/gimg/n/20190531/5fe7a0e7c8928f483a7dcd98490b32cf'
+              break
+            default:
+              item.img = ''
+              break
+          }
 
+          items.push(item)
+        }
+      })
+      return items
+    },
+    // 业务范围label显示处理
     typeLabel(values) {
       const labels = []
       this.organCategory.forEach(item => {
@@ -752,7 +854,7 @@ export default {
     // width: calc(100vw - 180px) !important;
     min-height: 40px;
     justify-content: space-between;
-    border-bottom: 1px solid #5d9cec;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     padding: 20px 0 14px 0;
@@ -778,14 +880,16 @@ export default {
 
     // -------------左侧手机预览 start----------------------------------------
     .body-leftBox {
-      height: 727px;
-      width: 435px;
-      padding: 30px;
+      min-width: 436px;
+      padding: 30px 30px 0;
       background: rgba(240, 242, 245, 0.8);
       margin-left: 20px;
+      overflow-y: auto;
     }
     .body-left {
-      height: 100%;
+      width: 375px;
+      height: 667px;
+      margin-bottom: 30px;
       position: relative;
       box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
 
@@ -799,9 +903,13 @@ export default {
         }
       }
       .body-left-cont {
-        background: rgb(240, 241, 243);
+        background: rgba(240, 242, 245, 0.6);
         height: calc(100% - 64px);
         overflow: auto;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
         .nav {
           width: 100%;
           height: 35px;
@@ -944,14 +1052,15 @@ export default {
           .facility {
             display: inline-block;
             text-align: center;
-            margin-right: 12px;
+            // margin-right: 12px;
+            width: calc(100% / 6);
             .facilityBacground {
               border-radius: 50%;
               background: #c4d4e9;
               overflow: hidden;
               width: 36px;
               height: 36px;
-              margin-bottom: 4px;
+              margin: 0 auto 4px;
               img {
                 width: 100%;
                 height: 100%;
@@ -1042,13 +1151,17 @@ export default {
         }
       }
     }
+    .facilityName {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
     // -------------左侧手机预览 end----------------------------------------
 
     // -------------右侧表单 start----------------------------------------
     .body-right {
-      min-width: 510px;
-      height: 727px;
-      background: #f2f2f2;
+      width: calc(100% - 436px);
+      min-width: 508px;
       margin: 0 20px;
       overflow: auto;
       padding-right: 20px;
@@ -1161,6 +1274,9 @@ export default {
   width: 97px !important;
 }
 .categoryTag .el-form-item__label {
+  width: 90px !important;
+}
+.utilityTag .el-form-item__label {
   width: 90px !important;
 }
 .previewImg {

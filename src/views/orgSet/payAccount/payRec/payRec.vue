@@ -15,7 +15,7 @@
         >立即设置</el-button>
 
       </span>
-      <span v-else-if="hasMobile">安全认证手机号：{{ mobile.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') }}
+      <span v-else-if="hasMobile">安全认证手机号:{{ mobile.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2') }}
         <el-button
           type="text"
           @click="changeMobile('change')"
@@ -56,6 +56,7 @@
             :disabled="isShowSafe === 'edit'"
             placeholder="请选择支付方式"
             clearable
+            filterable
           >
             <el-option
               label="银行卡"
@@ -73,21 +74,54 @@
           </el-select>
 
         </el-form-item>
-
+        <el-form-item
+          prop="name"
+        >
+          <span slot="label">
+            <el-popover
+              placement="top-start"
+              width="300"
+              trigger="hover"
+            >
+              <p> {{ '方式名称: 在选择收付款账号/支付方式时, 更快捷地选择该支付方式。例如：合同收款，账户提现等' }}</p>
+              <i
+                slot="reference"
+                class="iconfont icon_ym_ts"
+                style="font-size: 14px"
+              />
+            </el-popover>
+            <span>名称:</span>
+          </span>
+          <el-input
+            v-model="payRecData.name"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入支付方式名称"
+          />
+        </el-form-item>
         <el-form-item
           v-if="payRecData.paymentkey=='bank'"
-          label="账号名称："
+          label="账户名:"
           prop="accountName"
         >
           <el-input
             :disabled="isShowSafe === 'edit'"
             v-model="payRecData.accountName"
-            placeholder="请输入账号名称"
+            placeholder="请输入账户名"
           />
-
         </el-form-item>
         <el-form-item
-          label="账号/卡号："
+          v-if="payRecData.paymentkey=='alipay'"
+          label="账户名:"
+          prop="mPayAccount"
+        >
+          <el-input
+            :disabled="isShowSafe === 'edit'"
+            v-model="payRecData.mPayAccount"
+            placeholder="请输入支付宝账户名"
+          />
+        </el-form-item>
+        <el-form-item
+          label="账号/卡号:"
           prop="acctNo"
         >
           <el-input
@@ -95,11 +129,10 @@
             v-model="payRecData.acctNo"
             placeholder="请输入账号/卡号"
           />
-
         </el-form-item>
-        <!-- <el-form-item
+        <el-form-item
           v-if="payRecData.paymentkey=='bank'"
-          label="开户行："
+          label="开户行:"
           prop="ourBank"
         >
           <el-input
@@ -107,45 +140,21 @@
             v-model="payRecData.ourBank"
             placeholder="请输入开户行"
           />
-
-        </el-form-item> -->
-        <el-form-item
-          v-if="payRecData.paymentkey=='alipay'"
-          label="账号名称："
-          prop="mPayAccount"
-        >
-          <el-input
-            v-model="payRecData.mPayAccount"
-            placeholder="请输入支付宝账号名称"
-          />
-
         </el-form-item>
         <el-form-item
-          label="费率："
+          label="费率:"
           prop="rate"
         >
           <el-input
             v-model="payRecData.rate"
-            placeholder="费率范围[0,100),可精确到小数点后3位"
+            placeholder="费率范围(0,100),可精确到小数点后3位"
           >
 
             <template slot="append">%</template>
           </el-input>
           <div style="font-size:12px;color:#999999">此费率用于合同订单中计算实际到账金额</div>
         </el-form-item>
-        <el-form-item
-          label="备注："
-          prop="name"
-        >
 
-          <el-input
-            v-model="payRecData.name"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
-            placeholder="请输入备注支付方式名称"
-          />
-
-        </el-form-item>
       </el-form>
       <!-- 新增支付方式bottom按钮 -->
       <span
@@ -294,25 +303,25 @@ export default {
         }]
       },
       rules: {
-        // name: [
-        //   { required: true, message: '请输入备注方式名称', trigger: 'blur' }
-        // ],
+        name: [
+          { required: true, message: '请输入支付方式名称', trigger: 'blur' }
+        ],
         paymentkey: [
-          { required: true, message: '请选中支付方式名称', trigger: 'change' }
+          { required: true, message: '请选择支付方式', trigger: 'change' }
         ],
         accountName: [
-          { required: true, message: '请输入账号名称', trigger: 'blur' }
+          { required: true, message: '请输入账号名', trigger: 'blur' }
         ],
         acctNo: [
           { required: true, message: '请输入账号/卡号', trigger: 'blur' },
 
           { pattern: /^\d+$/, message: '请输入数字' }
         ],
-        // ourBank: [
-        //   { required: true, message: '请输入开户银行', trigger: 'blur' }
-        // ],
+        ourBank: [
+          { required: true, message: '请输入开户银行', trigger: 'blur' }
+        ],
         mPayAccount: [
-          { required: true, message: '请输入账号名称', trigger: 'blur' }
+          { required: true, message: '请输入账号名', trigger: 'blur' }
         ],
         rate: [
           { required: true, message: '请输入费率', trigger: 'blur' },
@@ -327,11 +336,15 @@ export default {
       listQuery: {
         show: true // 是否显示
       },
-      tableHeight: 'calc(100vh - 235px)',
+      tableHeight: 'calc(100vh - 223px)',
       multipleSelection: [],
       isDelete: true,
       columns: [
+        {
+          label: '名称',
+          prop: 'name'
 
+        },
         {
           label: '支付方式',
           prop: 'paymentKeyName'
@@ -368,13 +381,8 @@ export default {
             ])
           },
           render: (h, params) => {
-            return h('span', {}, params.row.rate + '%')
+            return h('span', {}, params.row.rate * 100 + '%')
           }
-
-        },
-        {
-          label: '备注',
-          prop: 'name'
 
         }
       ],
@@ -451,9 +459,9 @@ export default {
 
     formLabel: function() {
       if (this.hasMobile && this.active === 0) {
-        return '原手机：'
+        return '原手机:'
       } else {
-        return '新手机：'
+        return '新手机:'
       }
     }
 
@@ -626,7 +634,16 @@ export default {
       this.isDialog = false
       this.isChangeMessage = false
       this.active = 0
+      this.payRecData = {
+        name: '',
+        acctNo: '',
+        rate: '',
+        accountName: '',
+        paymentkey: '',
+        ourBank: '',
+        mPayAccount: ''
 
+      }
       if (this.addNewPayway) {
         this.$refs.payRecData.resetFields()
       }
@@ -639,7 +656,7 @@ export default {
           const tmp = Object.assign({}, this.payRecData)
           // this.payRecData.paymentkey = tmp.paymentkey
           if (tmp.rate) {
-            this.payRecData.rate = (tmp.rate / 100).toFixed(3)
+            this.payRecData.rate = (tmp.rate / 100).toFixed(5)
           } else {
             this.payRecData.rate = 0
           }
@@ -664,7 +681,6 @@ export default {
             })
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })

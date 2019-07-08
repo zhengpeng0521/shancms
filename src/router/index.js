@@ -22,9 +22,9 @@ import sampleStyle from "./modules/elementUI" //eslint-disable-line
 import marketingRouter from './modules/marketing'
 // 微官网
 import microWebRouter from './modules/microWeb'
+//  机构设置
 import orgSettings from './modules/orgSet'
-
-// 报表
+// 数据中心
 import reportForm from './modules/reportForm'
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -101,6 +101,7 @@ export const asyncRouterMap = [
       }
     ]
   },
+  /** When your routing table is too long, you can split it into small modules**/
   // tableRouter,
   marketingRouter,
   microWebRouter,
@@ -111,7 +112,6 @@ export const asyncRouterMap = [
   addServiceRouter,
   orgSettings,
   // sampleStyle,
-  /** When your routing table is too long, you can split it into small modules**/
   {
     path: '*',
     redirect: '/404',

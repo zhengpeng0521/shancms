@@ -17,6 +17,7 @@
             <el-select
               v-model="ruleForm.reason"
               placeholder="请选择原因"
+              filterable
             >
               <el-option
                 v-for="item in options"

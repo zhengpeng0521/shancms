@@ -22,6 +22,7 @@
  *          isRange         是否时间范围         Bool      当type='timeRangePicker'时使用
  *          itemStyle       样式设置             Str
  *          rangeSeparator  日期范围选择的中间    Str       当type='datePicker/timeSelect/timeRangePicker'使用
+ *          default         默认值              Bool      当为true时,将默认值塞入表单
  *        }]
  *     }
  * methods:
@@ -180,6 +181,7 @@ export default {
       formValue: params
     }
   },
+
   methods: {
     /* 重置 */
     resetForm(formName) {
@@ -238,10 +240,10 @@ export default {
 .commonSearch {
   display: inline-block;
 }
-.commonSearch >>> .el-form-item--mini .el-form-item__content,
+/* .commonSearch >>> .el-form-item--mini .el-form-item__content,
 .el-form-item--mini .el-form-item__label {
-  /* height: 28px; */
-}
+  height: 28px;
+} */
 .commonSearch >>> .el-form-item--mini.el-form-item,
 .el-form-item--small.el-form-item {
   margin-bottom: 20px;

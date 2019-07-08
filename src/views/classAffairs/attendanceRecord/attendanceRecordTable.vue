@@ -17,7 +17,6 @@
       :pagination="listQuery"
       :options="options"
       :table-key="'classAffairs_attendanceRecord_attendanceRecordTable'"
-      @toChildData="getCheckCol"
     />
   </div>
 </template>

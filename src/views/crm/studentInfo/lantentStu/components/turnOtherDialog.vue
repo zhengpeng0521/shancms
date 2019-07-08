@@ -19,6 +19,7 @@
             v-model="turnOtherData.seller"
             placeholder="请选择销售"
             clearable
+            filterable
             style="width:100%"
             @change="turnChange"
           >

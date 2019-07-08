@@ -1,10 +1,8 @@
 <template>
-  <div
-    v-if="!item.hidden&&item.children"
-    class="menu-wrapper"
-  >
-
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
+  <div v-if="!item.hidden&&item.children" class="menu-wrapper">
+    <template
+      v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow"
+    >
       <app-link :to="resolvePath(onlyOneChild.path)">
         <el-menu-item
           :index="resolvePath(onlyOneChild.path)"
@@ -19,17 +17,9 @@
       </app-link>
     </template>
 
-    <el-submenu
-      v-else
-      ref="submenu"
-      :index="resolvePath(item.path)"
-    >
+    <el-submenu v-else ref="submenu" :index="resolvePath(item.path)">
       <template slot="title">
-        <item
-          v-if="item.meta"
-          :icon="item.meta.icon"
-          :title="generateTitle(item.meta.title)"
-        />
+        <item v-if="item.meta" :icon="item.meta.icon" :title="generateTitle(item.meta.title)"/>
       </template>
 
       <template v-for="child in item.children">
@@ -44,6 +34,7 @@
           />
 
           <app-link
+            v-log="{ compName:'二级菜单模块',eventName:`${child.meta.title}`}"
             v-else
             :to="resolvePath(child.path)"
             :key="child.name"
@@ -54,7 +45,7 @@
                 :icon="child.meta.icon"
                 :title="generateTitle(child.meta.title)"
               />
-              <div class="arrow-left" />
+              <div class="arrow-left"/>
             </el-menu-item>
           </app-link>
         </template>
@@ -114,7 +105,7 @@ export default {
 
       // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
-        this.onlyOneChild = { ... parent, path: '', noShowingChildren: true }
+        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return true
       }
 

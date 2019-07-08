@@ -30,6 +30,7 @@
             <el-select
               v-model="ruleForm.groupName"
               placeholder="请选择课系"
+              filterable
             >
               <el-option
                 v-for="item of groupList"
@@ -134,7 +135,8 @@
               </div>
               <i
                 slot="reference"
-                class="el-icon-question"
+                class="iconfont icon_ym_ts"
+                style="color:#666;"
               />
             </el-popover>
             <div class="explain">一旦保存不可修改</div>

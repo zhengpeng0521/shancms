@@ -128,7 +128,7 @@ export default {
         apiService: transferPeriodList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 242px)',
+      tableHeight: 'calc(100vh - 227px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)

@@ -1,57 +1,5 @@
 <template>
   <div class="dns_mgr">
-    <div class="page_title_text">
-      域名管理
-      <div
-        v-if="active===3"
-        style="float:right"
-      >
-        <el-popover
-          v-model="visible2"
-          placement="bottom"
-          width="368"
-        >
-          <p><i class="el-icon-warning confirm-icon" />
-            即将恢复为闪闪背景图，logo图与品牌名称，是否继续</p>
-          <div style="text-align: right; margin: 0">
-            <el-button
-              class="cancel_btn"
-              @click="visible2 = false"
-            >取消</el-button>
-            <el-button
-              type="primary"
-              size="mini"
-              @click="saveSet('reset')"
-            >确定</el-button>
-          </div>
-          <el-button
-            slot="reference"
-            class="cancel_btn"
-          >
-            还原默认设置</el-button>
-        </el-popover>
-
-        <el-button
-          style="float:right;margin-left:10px"
-          type="primary"
-          @click="saveSet"
-        >
-          保存
-        </el-button>
-      </div>
-      <div
-        v-if="active===0"
-        style="float:right"
-      >
-        <el-button
-          :disabled="!isAgree"
-          type="primary"
-          @click="apply"
-        >
-          申请使用
-        </el-button>
-      </div>
-    </div>
     <el-steps
       :active="active"
       finish-status="success"
@@ -61,7 +9,7 @@
       <el-step title="审核通过" />
       <el-step title="设置" />
     </el-steps>
-    <div class="dns_content">
+    <div :class="contentClass">
       <div v-if="firstStep">
         <div
           class="dns_title"
@@ -132,9 +80,26 @@
             <div>4.免责声明</div>
             <div class="text_indent_2___yXJdt">因用户申请及使用闪闪子域名违反国家法律、法规、国家政策或侵犯他人合法权益（包括但不限于知识产权）的，用户应当独立承担全部法律责任，因此导致闪闪及其关联公司利益受损的，用户应当全额赔偿。</div>
           </div>
-          <p style="margin-bottom: 20px;">
-            <el-checkbox v-model="isAgree">同意以上规则</el-checkbox>
-          </p>
+          <div class="first_bottom_agree">
+            <el-checkbox
+              v-model="isAgree"
+              class="agree_check"
+            >同意以上规则</el-checkbox>
+            <div class="first_step_btn">
+              <div v-if="active===0">
+                <!-- 产品要大按钮 -->
+                <el-button
+                  :disabled="!isAgree"
+                  type="primary"
+                  size="medium"
+                  style="height:36px;"
+                  @click="apply"
+                >
+                  申请使用
+                </el-button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -360,9 +325,44 @@
                   style="width:198px"
                 />
               </el-form-item>
+
             </div>
           </div>
         </el-form>
+        <div v-if="active===3">
+          <el-popover
+            v-model="visible2"
+            placement="bottom"
+            width="368"
+          >
+            <p><i class="el-icon-warning confirm-icon" />
+              即将恢复为默认背景图，logo图与品牌名称，是否继续</p>
+            <div style="text-align: right; margin: 0">
+              <el-button
+                class="cancel_btn"
+                @click="visible2 = false"
+              >取消</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="saveSet('reset')"
+              >确定</el-button>
+            </div>
+            <el-button
+              slot="reference"
+              class="cancel_btn"
+            >
+              还原默认设置</el-button>
+          </el-popover>
+
+          <el-button
+            style="margin-left:10px"
+            type="primary"
+            @click="saveSet"
+          >
+            保存
+          </el-button>
+        </div>
       </div>
     </div>
   </div>
@@ -393,7 +393,7 @@ export default {
         title: '',
         dec: ''
       },
-      isAgree: false,
+      isAgree: true,
       rule: {
         name: [
           { required: true, message: '域名不能为空, 域名中不能包含空格', trigger: 'blur' },
@@ -420,8 +420,11 @@ export default {
     },
     fourthStep: function() {
       return this.active === 3
+    },
+    contentClass() {
+      const className = this.active === 0 ? 'dns_content' : 'dns_content_next'
+      return className
     }
-
   },
   mounted() {
     this.queryDnsStatus()
@@ -605,14 +608,28 @@ export default {
 .dns_mgr /deep/ {
   margin: 20px;
   .dns_content {
-    height: calc(100vh - 212px);
+    height: calc(100vh - 316px);
+    overflow: auto;
+    border-bottom: 1px solid #ddd;
+  }
+  .dns_content_next {
+    height: calc(100vh - 240px);
     overflow: auto;
   }
-  .page_title_text {
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(238, 238, 238, 1);
-    margin: 20px 0;
-    line-height: 28px;
+  .first_bottom_agree {
+    width: calc(100% - 247px);
+    text-align: center;
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 0;
+  }
+  .agree_check /deep/ {
+    .el-checkbox__label {
+      font-size: 12px;
+    }
+  }
+  .first_step_btn {
+    margin-top: 10px;
   }
   .dns_title {
     font-size: 14px;

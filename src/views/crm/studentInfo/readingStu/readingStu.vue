@@ -3,27 +3,39 @@
     <!-- 搜索栏 -->
     <div class="search">
       <div>
+        <div class="subUserSelect">
+          <SubUserSelect
+            :options="userBranchOptions"
+            v-model="userBranchSelected"
+            width="120"
+          />
+        </div>
         <CommonSearch
           :is-inline="true"
           :params="formInline"
           :forms="formInline"
           @toParent="resetFieldHanle"
         />
-        <advanced-search v-bind="superSearch" />
+        <advanced-search
+          ref="superSearch"
+          v-bind="superSearch" />
       </div>
       <div>
         <el-button
+          v-log="{compName:'在读学员',eventName:'web-【学员CRM】-学员信息-在读学员-家长绑定'}"
           type="primary"
           size="mini"
           @click="parentBindWX"
         >家长绑定</el-button>
         <el-button
+          v-log="{compName:'在读学员',eventName:'web-【学员CRM】-学员信息-在读学员-导入'}"
           v-if="hasBtn('402000004')"
           class="cancel_btn"
           size="mini"
           @click="nameImportDialog"
         >导入</el-button>
         <el-button
+          v-log="{compName:'在读学员',eventName:'web-【学员CRM】-学员信息-在读学员-导出'}"
           v-if="hasBtn('402000005')"
           class="cancel_btn"
           size="mini"
@@ -41,17 +53,26 @@
     <div class="checked_data">
       <span class="checked_text">已选<i>{{ checkedData || '0' }}</i>条数据</span>
       <el-button
+        v-log="{compName:'在读学员',eventName:'web-【学员CRM】-学员信息-在读学员-分配销售'}"
         size="mini"
         class="cancel_btn edit_btn"
         style="margin-right:5px"
         @click="distributeDialog(checkedData)"
       >分配销售</el-button>
       <el-button
+        v-log="{compName:'在读学员',eventName:'web-【学员CRM】-学员信息-在读学员-分配老师'}"
         size="mini"
         class="cancel_btn edit_btn"
         style="margin-left:0px"
         @click="teachDistributeDialog(checkedData)"
       >分配老师</el-button>
+      <el-button
+        v-log="{compName:'在读学员',eventName:'分配客服'}"
+        size="mini"
+        class="cancel_btn edit_btn"
+        style="margin-left:0px"
+        @click="serviceDistributeDialog(checkedData)"
+      >分配客服</el-button>
     </div>
     <!-- 表格 -->
     <CommonTable
@@ -72,9 +93,9 @@
       :params="idObj"
       :header-data="headerData"
       :base-data="baseData"
-      @toUpdateLeadsTable="getUpdateTable"
+      @toUpdateLeadsTable="detailUpdateTable"
     />
-    <!-- 分配转给他人弹框 -->
+    <!-- 分配转给其他销售弹框 -->
     <DistributeDialog
       ref="distributeDialog"
       @toReadingStuPage="getReadingStuList"
@@ -82,6 +103,13 @@
     />
     <!-- 家长绑定微信弹框 -->
     <ParentBindWX ref="parentBindWX" />
+
+    <!-- 绑定人脸弹窗 -->
+    <bindingFace
+      ref="bindingFace"
+      @toUpdateTableFace="getUpdateTable"
+    />
+
     <!-- 到访弹框 -->
     <VisitDialog
       ref="visitDialog"
@@ -105,6 +133,13 @@
     <!-- 教师分配在读学员 -->
     <TeachDistributeDialog
       ref="teachDistribute"
+      @toParent="getClearData"
+      @toUpdateTable="getUpdateTable"
+    />
+
+    <!-- 分配客服弹窗 -->
+    <serviceDistributeDialog
+      ref="serviceDistributeDialog"
       @toParent="getClearData"
       @toUpdateTable="getUpdateTable"
     />
@@ -145,10 +180,16 @@
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     // max-width: 80px;
     &:hover {
       color: #56c0f5;
     }
+  }
+  .subUserSelect {
+    vertical-align: top;
+    float: left;
+    margin-right: 10px;
   }
 }
 </style>

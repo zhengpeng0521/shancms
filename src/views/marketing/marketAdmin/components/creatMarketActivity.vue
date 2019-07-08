@@ -7,7 +7,7 @@
       width="700px"
       @close="cancelDialog('productForm')"
     >
-      <div class="formBox">
+      <div>
         <el-form
           ref="productForm"
           :model="productData"
@@ -50,6 +50,7 @@
               multiple
               placeholder="请选择采单人员"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -68,6 +69,7 @@
               v-model="productData.place"
               placeholder="请选择采集地点"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -114,12 +116,18 @@
               >联系方式</el-checkbox>
               <el-checkbox label="vcode">验证码</el-checkbox>
               <el-checkbox label="babySex">学员性别</el-checkbox>
-              <el-checkbox label="parentRelate">家长关系</el-checkbox>
+              <el-checkbox
+                label="parentRelate"
+                style="margin-left:0"
+              >家长关系</el-checkbox>
               <el-checkbox label="parentName">家长姓名</el-checkbox>
               <el-checkbox label="address">联系地址</el-checkbox>
               <el-checkbox label="neighbourhood">居住小区</el-checkbox>
               <el-checkbox label="school">学校</el-checkbox>
-              <el-checkbox label="isVip">是否会员</el-checkbox>
+              <el-checkbox
+                label="isVip"
+                style="margin-left:0"
+              >是否会员</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item
@@ -233,7 +241,10 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="footer">
+      <div
+        slot="footer"
+        class="footer"
+      >
         <el-button @click="cancelDialog('productForm')">取消</el-button>
         <el-button
           v-if="changeFlag"
@@ -426,7 +437,6 @@ export default {
       if (val === 'add') {
         this.marketActivityDialogtitle = '新增市场活动'
         this.changeFlag = true
-        console.log(this.$refs.productForm, '111111111')
         // this.$refs.productForm.resetFields()
         this.productData = {
           name: '',
@@ -584,8 +594,6 @@ export default {
       queryFormConfig(params).then(res => {
         if (res.data.errorCode === 0) {
           this.defaultArr = JSON.parse(res.data.results.base_form)
-          // console.log('queryFormConfig', this.defaultArr)
-          // this.list = res.data.results
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -616,16 +624,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.formBox {
-  height: 400px;
-  overflow: auto;
-}
 .footer {
   display: flex;
   justify-content: flex-end;
   // flex: 1;
-  margin-top: 20px;
-  margin-bottom: 14px;
 }
 .creatMarketActivityBox p {
   margin-top: 0px;
@@ -636,12 +638,7 @@ export default {
 <style lang="scss" >
 .creatMarketActivityBox .el-dialog {
   width: 700px !important;
-  // max-height: 708px !important;
   max-width: 708px !important;
-  .el-dialog__body {
-    // height: 80vh;
-    // overflow-y: auto;
-  }
 }
 .creatMarketActivityBox .imgDialog .el-dialog {
   width: 520px !important;

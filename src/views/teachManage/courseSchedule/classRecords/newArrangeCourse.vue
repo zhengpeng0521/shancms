@@ -45,13 +45,9 @@
                   v-model="ruleForm.defaultOrgName"
                   placeholder="请选择所属校区"
                   disabled
+                  filterable
                   style="width:300px"
-                >
-                  <el-option
-                    :label="weekOption.label"
-                    :value="weekOption.value"
-                  />
-                </el-select>
+                />
               </el-form-item>
               <div style="min-width:600px;display:flex">
                 <el-form-item
@@ -62,6 +58,7 @@
                     v-model="ruleForm.courseId"
                     placeholder="请选择课程名称"
                     style="width:300px"
+                    filterable
                     @change="courseNameChange"
                   >
                     <el-option
@@ -97,6 +94,7 @@
                   v-model="ruleForm.mainTeacherIds"
                   :class="mtidsStatus ? 'errorStyle' : ''"
                   multiple
+                  filterable
                   placeholder="请选择主教"
                   style="width:300px"
                   @change="mtidsStatusChange"
@@ -117,6 +115,7 @@
                   v-model="ruleForm.assistanTeacherIds"
                   :class="atidStatus ? 'errorStyle' : ''"
                   multiple
+                  filterable
                   placeholder="请选择助教"
                   style="width:300px"
                   @change="atidStatusChange"
@@ -139,6 +138,7 @@
                   placeholder="请选择教室"
                   style="width:300px"
                   clearable
+                  filterable
                   @change="clsRoomStatusChange"
                 >
                   <el-option
@@ -327,6 +327,7 @@
                         <el-select
                           v-model="child.week"
                           placeholder="请选择星期"
+                          filterable
                           @change="weekChange"
                         >
                           <el-option
@@ -477,6 +478,7 @@
                     placeholder="请选择上课主题"
                     style="width:300px"
                     clearable
+                    filterable
                   >
                     <el-option
                       v-for="(item, index) of schoolThemeList"
@@ -668,7 +670,8 @@ export default {
       mainArrangeInfo: {}, // 排课信息
       mtidsStatus: false, // 主教的状态
       atidStatus: false, // 助教状态
-      clsRoomStatus: false // 教室状态
+      clsRoomStatus: false, // 教室状态
+      createList: {} // 排课创建的信息
     }
   },
   computed: {

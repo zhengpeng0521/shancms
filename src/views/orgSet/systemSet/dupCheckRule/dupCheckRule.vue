@@ -1,116 +1,118 @@
 <template>
   <div>
 
-    <p style="margin-bottom:14px;">
+    <div :class="noScroll ? 'dup_container_scroll' : 'dup_container'">
+      <OrgSetBlock class="title">潜在学员</OrgSetBlock>
+      <div class="table_box">
 
-      <span class="form_txt" />
-      潜在学员
-
-    </p>
-    <div class="table_box">
-
-      <table
-        border="1"
-        width="700"
-      >
-        <!-- <tr>
+        <table
+          border="1"
+          width="700"
+        >
+          <!-- <tr>
         <th>模块名称</th>
         <th>状态</th>
       </tr> -->
-        <tr>
-          <td width="300"> 查重范围</td>
-          <td width="400">查重规则</td>
-        </tr>
-        <tr>
-          <td width="300">
-            <div>
-              <span class="label_title">
-                单条添加 :
-              </span>
-              <el-radio-group v-model="singRadio">
-                <el-radio :label="0">校区</el-radio>
-                <el-radio :label="1">商户</el-radio>
-              </el-radio-group>
+          <tr>
+            <td width="300"> 查重范围</td>
+            <td width="400">查重规则</td>
+          </tr>
+          <tr>
+            <td width="300">
+              <div>
+                <span class="label_title">
+                  单条添加 :
+                </span>
+                <el-radio-group v-model="singRadio">
+                  <el-radio :label="0">校区</el-radio>
+                  <el-radio :label="1">商户</el-radio>
+                </el-radio-group>
 
-            </div>
-          </td>
-          <td
-            width="400"
-            rowspan="2"
-          >
-            <el-checkbox
-              :checked="true"
-              class="multipleSelect"
-              disabled
-            >手机号和姓名都不重复，则导入该学员信息（默认）</el-checkbox>
-            <div style="text-align:left">
-              <el-radio-group
-                v-model="multipleRadio"
-                class="dupCheckBox"
-              >
-                <el-radio
-                  label="any"
-                  class="first"
-                >姓名、手机号任一不重复，则导入该学员信息（推荐）</el-radio>
-                <el-radio
-                  style="line-height:32px"
-                  label="mobile"
-                >手机号不重复，则导入该学员信息</el-radio>
-                <el-radio label="name">姓名不重复，则导入该学员信息</el-radio>
-              </el-radio-group>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td width="300">
-            <div>
-              <span class="label_title">
-                手动导入 :
-              </span>
-              <el-radio-group v-model="manualRadio">
-                <el-radio label="0">校区</el-radio>
-                <el-radio label="1">商户</el-radio>
-              </el-radio-group>
+              </div>
+            </td>
+            <td
+              width="400"
+              rowspan="2"
+            >
+              <el-checkbox
+                :checked="true"
+                class="multipleSelect"
+                disabled
+              >手机号和姓名都不重复，则导入该学员信息（默认）</el-checkbox>
+              <div style="text-align:left">
+                <el-radio-group
+                  v-model="multipleRadio"
+                  class="dupCheckBox"
+                >
+                  <el-radio
+                    label="any"
+                    class="first"
+                  >姓名、手机号任一不重复，则导入该学员信息（推荐）</el-radio>
+                  <el-radio
+                    style="line-height:32px"
+                    label="mobile"
+                  >手机号不重复，则导入该学员信息</el-radio>
+                  <el-radio label="name">姓名不重复，则导入该学员信息</el-radio>
+                </el-radio-group>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td width="300">
+              <div>
+                <span class="label_title">
+                  手动导入 :
+                </span>
+                <el-radio-group v-model="manualRadio">
+                  <el-radio label="0">校区</el-radio>
+                  <el-radio label="1">商户</el-radio>
+                </el-radio-group>
 
-            </div>
-          </td>
-        </tr>
+              </div>
+            </td>
+          </tr>
 
-      </table>
+        </table>
 
-    </div>
-    <p style="margin: 20px 0 14px 0;">
-
-      <span class="form_txt" />
-      在读学员
-
-      <el-popover
-        placement="right"
-        width="400"
-        trigger="hover"
+      </div>
+      <p
+        style="margin: 20px 0 14px 0;"
+        class="title_two"
       >
-        <div>
-          <p>Q: 如何学员界定已存在？</p>
-          <p>A: 姓名、电话号码都一致</p>
-          <p> Q: 一个学员绑定多个电话号码的如何处理？</p>
-          <p> A: 姓名一致、电话号码任一 一致即可定义为学员已存在"</p>
-        </div>
-        <i
-          slot="reference"
-          class="el-icon-question"
-        />
-      </el-popover>
 
-    </p>
-    <div class="SeatedStuBox">
-      <p>1. 潜在学员不存在，在读学员不存在——创建在读学员，并导入合同信息</p>
-      <p>2. 潜在学员不存在，在读学员已存在——只导入合同信息</p>
-      <p>3. 潜在学员已存在，在读学员不存在——将潜在学员转为在读学员，并导入合同信息</p>
+        <span class="form_txt" />
+        <span>在读学员</span>
+
+        <el-popover
+          placement="right"
+          width="400"
+          trigger="hover"
+        >
+          <div>
+            <p>Q: 如何界定学员已存在？</p>
+            <p>A: 姓名、电话号码都一致</p>
+            <p> Q: 一个学员绑定多个电话号码的如何处理？</p>
+            <p> A: 姓名一致、电话号码任一 一致即可定义为学员已存在</p>
+          </div>
+          <i
+            slot="reference"
+            class="iconfont icon_ym_ts"
+            style="color:#666"
+          />
+        </el-popover>
+
+      </p>
+      <div class="SeatedStuBox">
+        <p>1. 潜在学员不存在，在读学员不存在——创建在读学员，并导入合同信息</p>
+        <p>2. 潜在学员不存在，在读学员已存在——只导入合同信息</p>
+        <p>3. 潜在学员已存在，在读学员不存在——将潜在学员转为在读学员，并导入合同信息</p>
+      </div>
     </div>
-    <div style="margin-top:20px">
+    <div class="save_btn">
 
       <el-button
         type="primary"
+        class="save_btn_content"
         @click="saveRules"
       >
         保存
@@ -120,9 +122,16 @@
 </template>
 
 <script>
+import OrgSetBlock from '@/components/MiniCommon/OrgSetBlock'
 import { clueDupCheckInfo, saveDupCheckInfo } from '@/api/orgSet/systemSet'
 export default {
-
+  components: { OrgSetBlock },
+  props: {
+    noScroll: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       singRadio: '',
@@ -165,6 +174,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.title {
+  margin-bottom: 14px;
+}
+.title_two {
+  display: flex;
+  align-items: center;
+  span {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+}
+.form_txt {
+  margin-right: 6px;
+}
+
 table {
   border-collapse: collapse;
 }
@@ -205,6 +229,26 @@ td {
 .label_title {
   display: inline-block;
   margin-left: -45px;
+}
+
+.dup_container {
+  height: calc(100vh - 324px);
+  overflow: auto;
+}
+.dup_container_scroll {
+  height: calc(100vh - 324px);
+}
+
+.save_btn {
+  width: calc(100% - 230px);
+  height: 28px;
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+
+  // .save_btn_content {
+  // float: right;
+  // }
 }
 </style>
 <style lang="scss">

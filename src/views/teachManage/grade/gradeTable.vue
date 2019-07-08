@@ -18,6 +18,7 @@
           @click="addNewGrade"
         >新增班级</el-button>
       </div>
+
       <common-table
         ref="tableCommon"
         :columns="columns"
@@ -26,7 +27,6 @@
         :options="options"
         :operation="operates"
         :table-key="'teachManage_grade_gradeTable'"
-        @toChildData="getCheckCol"
       />
       <!-- 新增班级 -->
       <NewGrade
@@ -54,6 +54,7 @@
       @toUpdateInfo="getUpdateInfo"
       @toDeleteSchedule="getDeleteSchedule"
       @toAddNewStu="getAddNewStu"
+      @toUpdateStuList="getUpdateStuList"
     />
     <DeleteGrade
       ref="delGrade"
@@ -218,7 +219,7 @@ export default {
           }
         }
       ],
-      tableHeight: 'calc(100vh - 233px)', // 表格高度
+      tableHeight: 'calc(100vh - 235px)', // 表格高度
       pagination: {
         show: true,
         sizes: true
@@ -346,10 +347,6 @@ export default {
     getEditGrade(row) {
       this.$refs.tableCommon.getList()
       this.$refs.side.show(row)
-    },
-    /* 获取表头的选择 */
-    getCheckCol(val) {
-      console.info(val, '111')
     },
     /* 删除*/
     deleteHandle(row) {

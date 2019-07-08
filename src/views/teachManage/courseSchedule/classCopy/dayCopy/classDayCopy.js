@@ -242,8 +242,6 @@ export default {
       this.checkList = val
       this.checkNum = val.length
     },
-    /* 获取列的勾选 */
-    getCheckCol() {},
     /* 清除选中项 */
     clearSelection() {
       this.$refs.tableCommon.clearSelection()

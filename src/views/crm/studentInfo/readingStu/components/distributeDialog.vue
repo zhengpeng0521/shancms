@@ -26,6 +26,7 @@
             v-model="distributeDialogData.worker"
             placeholder="请选择分配对象"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option

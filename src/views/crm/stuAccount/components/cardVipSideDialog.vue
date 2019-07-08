@@ -13,15 +13,18 @@
             </div>
             <div class="top_right">
               <el-button
+                v-log="{compName:'学员账户',eventName:'web-【学员CRM】-学员账户-学员账户号-添加适用学员'}"
                 type="primary"
                 @click="addSuitDialog()"
               >添加适用学员</el-button>
               <el-button
+                v-log="{compName:'学员账户',eventName:'web-【学员CRM】-学员账户-学员账户号-转课'}"
                 v-if="hasBtn('408000003')"
                 type="primary"
                 @click="returnClassDialog"
               >转课</el-button>
               <el-button
+                v-log="{compName:'学员账户',eventName:'web-【学员CRM】-学员账户-学员账户号-转校'}"
                 v-if="hasBtn('408000004')"
                 class="cancel_btn"
                 @click="returnSchoolDialog"
@@ -81,7 +84,7 @@
       </div>
     </side-dialog>
     <!-- 添加适用学员弹框组件 -->
-    <AddSuitStuDialog ref="addSuitStuDialog" />
+    <AddSuitStuDialog ref="addSuitStuDialog" @updateSuiteStudent="updateSuiteStudent" />
     <!-- 转移课时弹框组件 -->
     <ReturnClassDialog ref="returnClassDialog" />
     <!-- 转校弹框组件 -->
@@ -163,6 +166,10 @@ export default {
         this.$refs.hourChangePage.options.apiService = cardPeriodInfoById
         this.$refs.hourChangePage.getOpenList(this.cardInfoData)
       }
+    },
+    /** 适用学员更新 */
+    updateSuiteStudent() {
+      this.$refs.suitStudentPage.getCardStuInfoById(this.cardInfoData)
     },
     /* 添加适用学员弹框 */
     addSuitDialog(cardInfoData) {

@@ -11,6 +11,7 @@
         />
         <div>
           <el-button
+            v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-库存管理-新增报损'}"
             class="green_btn"
             @click="addNewDialog()"
           >新增</el-button>
@@ -42,6 +43,7 @@
               >确定</el-button>
             </div>
             <el-button
+              v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-库存管理-删除报损'}"
               slot="reference"
               class="cancel_btn edit_btn"
               size="mini"
@@ -109,6 +111,7 @@
                     value-key="id"
                     size="small"
                     placeholder="物品名称"
+                    filterable
                     @change="(value) => {nameChange(scope.$index, value)}"
                   >
                     <el-option

@@ -30,6 +30,7 @@
             v-model="ruleForm.clsFrom"
             placeholder="请选择班级"
             style="width:100%"
+            filterable
           >
             <el-option
               v-for="item in classNameList"
@@ -60,6 +61,7 @@
             v-model="ruleForm.clsTo"
             placeholder="请选择班级"
             style="width:100%"
+            filterable
           >
             <el-option
               v-for="item in classNameList"
@@ -106,6 +108,7 @@
             v-model="ruleForm.clsFrom"
             placeholder="请选择班级"
             style="width:100%"
+            filterable
           >
             <el-option
               v-for="item in classNameList"
@@ -136,6 +139,7 @@
             v-model="ruleForm.clsTo"
             placeholder="请选择班级"
             style="width:100%"
+            filterable
           >
             <el-option
               v-for="item in classNameList"

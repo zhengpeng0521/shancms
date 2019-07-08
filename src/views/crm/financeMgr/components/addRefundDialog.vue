@@ -19,6 +19,7 @@
             v-model="addRefundData.refundType"
             placeholder="请选择退款类型"
             style="width:100%"
+            filterable
             @change="refundTypeValue(addRefundData.refundType)"
           >
             <el-option
@@ -38,6 +39,7 @@
             v-model="addRefundData.student"
             placeholder="请选择学员"
             clearable
+            filterable
             style="width:100%"
             @change="selectStuChange(addRefundData.student)"
           >
@@ -61,6 +63,7 @@
             v-model="addRefundData.cardNum"
             placeholder="请选择会员卡号"
             clearable
+            filterable
             style="width:100%"
             @change="cardIdChange(addRefundData.cardNum)"
           >
@@ -81,6 +84,7 @@
             v-model="addRefundData.number"
             placeholder="请选择合同编号"
             clearable
+            filterable
             style="width:100%"
             @change="contractIdChange(addRefundData.number)"
           >
@@ -105,6 +109,7 @@
               multiple
               placeholder="请选择退课"
               clearable
+              filterable
               style="width:100%"
               @change="selectClassChange"
             >
@@ -338,6 +343,16 @@ export default {
       this.isMoveInput = false
       this.isClassNumInfo = false
       this.isClassTimeShow = false
+      this.addRefundData = {
+        refundType: '', // 退款类型
+        student: '', // 学员id
+        cardNum: '', // 会员卡号
+        number: '', // 合同编号
+        classRefund: [], // 选择退课
+        detail: '', // 备注
+        dataTime: '', // 退款周期
+        defundPrice: '0.00' // 退款金额
+      }
       this.addRefundDialogShow = !this.addRefundDialogShow
       this.summaryQueryFun()
     },
@@ -345,6 +360,16 @@ export default {
     cancelDialog(formName) {
       this.addRefundDialogShow = false
       this.$refs[formName].resetFields()
+      this.addRefundData = {
+        refundType: '', // 退款类型
+        student: '', // 学员id
+        cardNum: '', // 会员卡号
+        number: '', // 合同编号
+        classRefund: [], // 选择退课
+        detail: '', // 备注
+        dataTime: '', // 退款周期
+        defundPrice: '0.00' // 退款金额
+      }
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
@@ -352,7 +377,7 @@ export default {
         if (valid) {
           const periodInfo = []
           this.selectClassList.map((item, index) => {
-            periodInfo.push({ courceId: item, periodNum: this.addRefundData[item] })
+            periodInfo.push({ courseId: item, periodNum: this.addRefundData[item] })
           })
           let params = {}
           if(this.addRefundData.refundType && this.addRefundData.refundType == '3') {//eslint-disable-line
@@ -361,9 +386,11 @@ export default {
               stuId: this.addRefundData.student,
               purchaseId: this.addRefundData.number,
               startTime: this.addRefundData.dataTime,
+              endTime: this.allSetDetailList.realEndTime,
               money: this.addRefundData.defundPrice,
               days: this.days | '0',
-              months: this.months || '0'
+              months: this.months || '0',
+              remark: this.addRefundData.detail
             }
           }
           if(this.addRefundData.refundType && this.addRefundData.refundType == '2') {//eslint-disable-line
@@ -372,7 +399,8 @@ export default {
               stuId: this.addRefundData.student,
               cardId: this.addRefundData.cardNum,
               purchaseId: this.addRefundData.number,
-              periodInfo: JSON.stringify(periodInfo)
+              periodInfo: JSON.stringify(periodInfo),
+              remark: this.addRefundData.detail
             }
           }
           createRefundOrder(params).then(res => {
@@ -575,9 +603,12 @@ export default {
       })
     },
     /* 当今日期 */
-    disabledDate(date) {
-      const dateEnd = new Date(this.allSetDetailList.realEndTime)
-      return date.getTime() < Date.now() - 8.64e7 || date.getTime() > dateEnd.valueOf()
+    disabledDate(current) {
+      if (!!current && !!this.allSetDetailList.realEndTime && !!this.allSetDetailList.startTime) {
+        return moment(this.allSetDetailList.realEndTime).isBefore(current, 'day') || moment(this.allSetDetailList.startTime).isAfter(current, 'day')
+      } else {
+        return false
+      }
     },
     /* 退款周期值改变 */
     selectDataInput(value) {

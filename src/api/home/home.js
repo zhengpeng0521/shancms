@@ -39,7 +39,7 @@ export async function getSign(params) {
 // 今日签到-学员下拉
 export async function getStuList(params) {
   return request({
-    url: `${window.SS_CRM}/crm/stuInfo/stu/summaryQuery`,
+    url: `${window.SS_CRM}/crm/stuInfo/stu/summaryQueryAll`,
     method: 'post',
     data: params
   })
@@ -99,6 +99,15 @@ export async function getTodos(params) {
   })
 }
 
+// 根据key获取系统配置
+export async function getSysConfByKey(params) {
+  return request({
+    url: `${window.HOME_URL}/sysBase/sysConf/queryByKey`,
+    method: 'post',
+    data: params
+  })
+}
+
 // 获取banner
 export async function getBanner(params) {
   return request({
@@ -114,5 +123,23 @@ export async function getGoodCase(params) {
     url: `${window.HOME_URL}/sysServer/homeScheme/sucSchemeList`,
     method: 'post',
     data: params
+  })
+}
+
+// 获取闪闪头条
+export async function getLeadNews(params) {
+  return request({
+    url: `/web-node-server/thinknode/web/offical/excludePath/newReport/query`,
+    method: 'post',
+    data: params
+  })
+}
+
+// 获取判断套餐时间
+export async function getInfoList(query) {
+  return request({
+    url: `${window.HOME_URL}/sysPack/mealZsb/queryMealOpening`,
+    method: 'post',
+    params: query
   })
 }

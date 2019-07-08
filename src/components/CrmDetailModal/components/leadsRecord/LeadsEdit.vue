@@ -138,7 +138,7 @@ export default {
         key: 'stuName',
         placeholder: '请选择名单姓名',
         disabled: true,
-        isAsync: true,
+        // isAsync: true,
         optionValue: 'stuId',
         optionLabel: 'stuName'
       },

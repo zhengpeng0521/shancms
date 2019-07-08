@@ -350,6 +350,8 @@ export default {
 <style lang="scss" scoped>
 .holiday-content {
   display: flex;
+  height: calc(100vh - 156px);
+  overflow: auto;
 }
 .holiday-content-left {
   max-width: 600px;

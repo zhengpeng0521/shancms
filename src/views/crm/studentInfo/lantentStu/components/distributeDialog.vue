@@ -20,6 +20,7 @@
             v-model="distributeDialogData.worker"
             placeholder="请选择销售"
             clearable
+            filterable
             style="width:100%"
             @change="selectChange"
           >
@@ -44,7 +45,7 @@
           您还能捞取名单数：{{ parseInt(leadsFollowMax) - parseInt(currentNum) }}
         </div>
         <div>
-          已超出{{ parseInt(checkNum) + parseInt(currentNum) - parseInt(leadsFollowMax) }}个，请重新捞取！
+          已超出{{ parseInt(checkNum) + parseInt(currentNum) - parseInt(leadsFollowMax) }}个，请重新分配！
         </div>
       </div>
       <span

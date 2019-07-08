@@ -2,9 +2,10 @@
 <template>
   <div class="integral_rule">
 
-    <div style="text-align:end;margin-bottom: 14px;margin-right: 7px;">
+    <div style="text-align:end;margin-bottom: 20px;">
 
       <el-button
+        v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-积分规则-新增规则'}"
         type="primary"
         @click="openDialog"
       >新增规则</el-button>
@@ -319,7 +320,7 @@ export default {
           prop: 'type',
           isShowTooltip: true,
           formatter: (row, column, cellValue) => {
-            return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.type === '1' ? '系统规则' : '自定义规则'}</div>`
+            return `<div style="text-overflow:ellipsis;overflow:hidden">${row.type === '1' ? '系统规则' : '自定义规则'}</div>`
           }
         },
 
@@ -366,7 +367,7 @@ export default {
         ]
       },
 
-      tableHeight: 'calc(100vh - 232px)'
+      tableHeight: 'calc(100vh - 228px)'
 
     }
   },

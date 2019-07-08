@@ -44,7 +44,6 @@
       :operation="operates"
       :table-key="'teachManage_homeSchoolConnection_stuProduction_stuProductTable'"
       @handleSelectionChange="selectionChange"
-      @toChildData="getCheckCol"
     />
     <!-- 管理分类 -->
     <ManageProType

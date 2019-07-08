@@ -309,7 +309,6 @@ export default {
     },
     // 删除详情
     deleteDetailCont(val) {
-      console.log('index', val)
       if (val === 0) {
         // alert('教师消息至少保留一条')
       } else {

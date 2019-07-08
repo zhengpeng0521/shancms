@@ -69,7 +69,7 @@ export default {
         isSettingShow: true, // 是否出现设置
         params: { type: '1' }
       },
-      tableHeight: 'calc(100vh - 277px)',
+      tableHeight: 'calc(100vh - 266px)',
       formInline: {
         searchMethod: formValue => {
           this.searchHandle(formValue)

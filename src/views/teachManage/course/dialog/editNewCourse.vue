@@ -29,6 +29,7 @@
             <el-select
               v-model="ruleForm.groupName"
               placeholder="请选择课系"
+              filterable
             >
               <el-option
                 v-for="item of groupList"
@@ -187,7 +188,6 @@ export default {
       if (!/^(0|[1-9][0-9]*)$/.test(value)) {
         callback('请输入整数')
       } else if (Number(value) <= Number(this.ruleForm.minMonth)) {
-        console.info('1111')
         callback('最大月龄不能小于或等于最小月龄')
       } else {
         callback()
@@ -198,7 +198,6 @@ export default {
       if (!/^(0|[1-9][0-9]*)$/.test(value)) {
         callback('请输入整数')
       } else if (Number(value) <= Number(this.ruleForm.minYear)) {
-        console.info('222')
         callback('最大年龄不能小于或等于最小年龄')
       } else {
         callback()

@@ -104,7 +104,6 @@ export default {
   methods: {
     show(val) {
       this.rowInfo = val
-      console.info('this.rowInfo', this.rowInfo, val)
       if (this.rowInfo) {
         this.getList()
       }

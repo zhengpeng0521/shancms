@@ -5,7 +5,7 @@ export function queryPaymentAccountList(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPaymentAccountList',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -14,7 +14,7 @@ export function getPaymentAccount(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/getPaymentAccount',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -23,7 +23,7 @@ export function addPaymentAccount(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/addPaymentAccount',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -32,7 +32,7 @@ export function updatePaymentAccount(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/updatePaymentAccount',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -41,7 +41,7 @@ export function updateStatus(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/updateStatus',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -50,7 +50,7 @@ export function deletePaymentAccount(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/deletePaymentAccount',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -59,7 +59,7 @@ export function queryPayHistoryAccountList(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPayHistoryAccountList',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -68,7 +68,7 @@ export function queryPayOrderMsgList(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPayOrderMsgList',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -77,7 +77,7 @@ export function queryPayOrderTotal(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPayOrderTotal',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -86,7 +86,7 @@ export function queryPayAccountMsg(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPayAccountMsg',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -95,7 +95,7 @@ export function queryPaySetRecordList(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPaySetRecordList',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -105,7 +105,7 @@ export function queryPayTelBankMsg(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/queryPayTelBankMsg',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -115,7 +115,7 @@ export function querySecurtyMobile(query) {
   return request({
     url: '/ss-sys-provider/sysBase/security/querySecurtyMobile',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -125,7 +125,7 @@ export function genVerifyCodeM(query) {
   return request({
     url: '/ss-sys-provider/sysServer/sms/genVerifyCodeM',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -135,7 +135,7 @@ export function setSecurtyMobile(query) {
   return request({
     url: '/ss-sys-provider/sysBase/security/setSecurtyMobile',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -145,7 +145,7 @@ export function turnIn(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/turnIn',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -154,7 +154,7 @@ export function getHqOrgan(query) {
   return request({
     url: '/ss-sys-provider/sysBase/org/getHqOrgan',
     method: 'post',
-    params: query
+    data: query
   })
 }
 
@@ -163,6 +163,6 @@ export function addSett(query) {
   return request({
     url: '/ss-sys-provider/sysBase/payment/addSett',
     method: 'post',
-    params: query
+    data: query
   })
 }

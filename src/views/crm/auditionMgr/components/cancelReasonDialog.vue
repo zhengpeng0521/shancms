@@ -18,6 +18,7 @@
             v-model="cancelReasonData.reason"
             placeholder="请选择原因"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option

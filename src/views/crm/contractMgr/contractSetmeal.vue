@@ -15,7 +15,7 @@
           class="green_btn"
           size="mini"
           @click="addSetmealDialog()"
-        >新增产品</el-button>
+        >新增套餐</el-button>
       </div>
     </div>
     <!-- 表格 -->
@@ -135,7 +135,7 @@ export default {
         apiService: queryContractProduct, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 228px)',
       operates: {
         width: '120',
         fixed: 'right',
@@ -279,6 +279,7 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

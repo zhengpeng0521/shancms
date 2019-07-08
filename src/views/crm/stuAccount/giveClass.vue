@@ -3,6 +3,7 @@
     <!-- 搜索栏 -->
     <div class="search">
       <CommonSearch
+        ref="commonSearch"
         :is-inline="true"
         :params="formInline"
         :forms="formInline"
@@ -17,6 +18,7 @@
       </span>
       <span>
         <el-button
+          v-log="{compName:'学员账户',eventName:'web-【学员CRM】-学员账户-赠课记录-赠课审核   '}"
           slot="reference"
           class="cancel_btn edit_btn"
           size="mini"
@@ -190,12 +192,13 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         mutiSelect: true, // 是否多选
         apiService: givePeriodList, // 表格的数据请求接口
         isSettingShow: true, // 是否出现设置
         selectableFunc: this.checkedSelectRow // 审核判断条件
       },
-      tableHeight: 'calc(100vh - 280px)',
+      tableHeight: 'calc(100vh - 266px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -254,6 +257,18 @@ export default {
       formValue: {},
       checkedSelectList: [] // 选择数据列表数组
     }
+  },
+  mounted() {
+    const route = this.$router.history.current.params
+    let params = {}
+    console.log('route', route)
+    if (route.activeTab === 'giveClass') {
+      if (route.action === 'classGive') {
+        params = { status: '0' }
+        this.$refs.commonSearch.formValue.status = '0'
+      }
+    }
+    this.$refs.tableCommon.getList(params)
   },
   methods: {
     /* 审核条件选中判断是否可选 */

@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { getSysConfByKey } from '@/api/home/home'
+import { mapMutations } from 'vuex'
 export default {
 
   props: {
@@ -41,7 +43,6 @@ export default {
       required: true
     }
   },
-
   data() {
     return {
 
@@ -50,9 +51,26 @@ export default {
 
   mounted() {
     this.$emit('didMount', 'todo')
+    this.queryContractExpire()
   },
 
   methods: {
+    ...mapMutations('home', [
+      'UPDATE_STATE'
+    ]),
+    queryContractExpire() {
+      getSysConfByKey({ confKey: 'purExpireRemind' }).then(res => {
+        console.log('res:', res)
+        if (res.data.errorCode === 0) {
+          const results = res.data.data.results
+          let key = 0
+          if (results && results.length >= 0) {
+            key = results[0].key
+          }
+          this.UPDATE_STATE({ contractExpire: key })
+        }
+      })
+    },
     renderType(type) {
       if (type === 'game_num' || type === 'market_num') {
         return '招生'
@@ -89,8 +107,10 @@ export default {
     goPage(link) {
       const linkList = link.split('?')
       if (linkList.length === 3) {
+        console.log(linkList)
         this.$router.push({ name: linkList[0], params: { activeTab: linkList[1], action: linkList[2] }})
       } else if (linkList.length === 2) {
+        console.log(linkList)
         this.$router.push({ name: linkList[0], params: { activeTab: linkList[1] }})
       } else if (linkList.length === 1) {
         this.$router.push({ name: linkList[0] })

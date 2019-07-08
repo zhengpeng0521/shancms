@@ -12,10 +12,7 @@
         :label="item.meta.title"
         :name="item.name"
       >
-        <tm-view
-          v-if="item.name === activeName"
-          :info="item"
-        />
+        <tm-view v-if="item.name === activeName" :info="item"/>
       </el-tab-pane>
     </el-tabs>
   </section>
@@ -37,9 +34,7 @@ export default {
   },
 
   computed: {
-    ...mapState('changeThirdMain', [
-      'tabsName', 'isChange'
-    ])
+    ...mapState('changeThirdMain', ['tabsName', 'isChange'])
   },
   watch: {
     tabsName(nweval, oldval) {
@@ -50,7 +45,6 @@ export default {
         }, 1000)
       }
     }
-
   },
 
   // updated() {
@@ -66,7 +60,10 @@ export default {
       this.tabPosition = 'top'
     }
     // 跳转路由后跳转三级菜单
-    if (this.$router.history.current.params && this.$router.history.current.params.activeTab) {
+    if (
+      this.$router.history.current.params &&
+      this.$router.history.current.params.activeTab
+    ) {
       this.changeTabs(this.$router.history.current.params.activeTab)
     }
 
@@ -80,16 +77,15 @@ export default {
     this.CHANGE_SWITCH()
   },
   methods: {
-    ...mapActions('changeThirdMain', [
-      'changeTabs'
-    ]),
+    ...mapActions('changeThirdMain', ['changeTabs']),
 
-    ...mapMutations('changeThirdMain', [
-      'CHANGE_SWITCH'
-    ]),
+    ...mapMutations('changeThirdMain', ['CHANGE_SWITCH']),
 
     handleClick(tab, event) {
       this.changeTabs(this.activeName)
+      window.__ml &&
+        window.__ml.api &&
+        window.__ml.api(tab.label, true, 0, 200, '三级菜单模块')
     }
   }
 }
@@ -102,7 +98,7 @@ export default {
   height: calc(100vh - 67px);
   position: relative;
   overflow: auto;
-  padding: 20px 0 0 20px;
+  padding: 8px 0 0 20px;
   .el-tabs__header {
     padding-right: 20px;
     margin: 0;

@@ -246,7 +246,7 @@ export default {
             this.$nextTick(() => {
               this.getRolesDetail(res.data.results[0], 0)
             })
-          }, 1000)
+          }, 100)
         } else {
           this.$message.error(res.data.errorMessage)
         }
@@ -262,6 +262,8 @@ export default {
         }
       })
     },
+
+    /** 权限树选择 */
     handleNodeClick(data, checked, indeterminate) {
       this.operateDatas = []
       if (checked.level === 2) {
@@ -287,10 +289,11 @@ export default {
 
     // 保存已选择checked
     saveCheckedKeys() {
+      const checkedKeys = this.$refs.tree.getHalfCheckedKeys().concat(this.$refs.tree.getCheckedKeys())
       const data = {
         id: this.saveRole.id,
         name: this.saveRole.name,
-        resIds: this.$refs.tree.getCheckedKeys().join(',')
+        resIds: checkedKeys.join(',')
 
       }
       if (this.saveOperateIds.length > 0) {

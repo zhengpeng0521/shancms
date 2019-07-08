@@ -1,5 +1,9 @@
+/**
+ * 自定义图表组件
+ *
+ */
 <template>
-  <div>
+  <div style="width:100%;">
     <!-- 饼 -->
     <ve-pie
       v-if="type === 'pie'"
@@ -17,6 +21,7 @@
     />
     <ve-chart
       v-else
+      ref="chart"
       :data="chartData"
       :settings="chartSettings"
       :colors="showColors"
@@ -34,54 +39,67 @@
 <script>
 export default {
   props: {
+    // 图表类型
     type: {
       type: String,
       required: true
     },
+    // 图表图例
     legend: {
       type: Boolean,
       default: true
     },
+    // 是否自定义图例
     custLegend: {
       type: Boolean,
       default: false
     },
+    // 所有图例
     allCols: {
       type: Array,
       required: true
     },
+    // 当前勾选图例
     showCols: {
       type: Array,
       required: true
     },
+    // 图表数据
     dataSource: {
       type: Array,
       required: true
     },
+    // 柱形堆叠图数据
     showSource: {
       type: Array,
       default: () => []
     },
+    // 自定义图例时显示的曲线或者柱形
     showLines: {
       type: Array,
       default: () => []
     },
+    // 显示的颜色
     showColors: {
       type: Array,
       required: true
     },
+    // 自定义提示框
     formatter: {
       type: Function,
       default: undefined
     },
+    // 柱形图堆叠
     stack: {
       type: Object,
       default: undefined
     },
+    // 高度
     height: {
       type: String,
       default: '400px'
     },
+    // 是否有标题
     hasTitle: {
       type: Boolean,
       required: true
@@ -318,9 +336,16 @@ export default {
     } else if ((this.type === 'line' || (this.type === 'histogram' && this.stack)) && this.custLegend) {
       this.chartData.columns = this.showLines
     }
+    // 解决容器宽度初始化未获取问题
+    if (this.type !== 'pie' && this.type !== 'bar') {
+      this.$nextTick(() => {
+        this.$refs.chart.echarts.resize()
+      })
+    }
   },
 
   methods: {
+    /** 对生成好的echarts配置进行额外的处理 */
     afterConfig(options) {
       options.legend.show = this.legend
       options.legend.selectedMode = !this.legend
@@ -329,6 +354,7 @@ export default {
       return options
     },
 
+    /** 饼图label显示 */
     pieLabel(params) {
       return `${params.name}: ${params.value} (${params.percent}%)`
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="drap-list-box">
+  <div v-if="isDraggable" class="drap-list-box">
     <draggable
       v-if="dataSource.length > 0"
       v-model="list"
@@ -42,6 +42,25 @@
       style="height:300px"
     />
   </div>
+  <div v-else class="drap-list-box">
+    <ul class="list-group" style="display: flex; flex-wrap: wrap;">
+      <li
+        v-for="(element, index) in list"
+        :key="'drap' + index"
+        class="list-group-item"
+        style="cursor: default"
+      >
+        <div class="list-pic">
+          <img :src="element.icon">
+          <i
+            :class="action"
+            @click="() => {otherAction(index)}"
+          />
+        </div>
+        <p :style="{marginTop: '6px'}">{{ element.name }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -66,6 +85,10 @@ export default {
     select: {
       type: Array,
       default: () => ([])
+    },
+    isDraggable: {
+      type: Boolean,
+      default: true
     }
   },
 

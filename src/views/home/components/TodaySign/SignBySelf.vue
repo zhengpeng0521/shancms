@@ -94,7 +94,7 @@
           <el-input
             ref="qrcodeScanInput"
             v-model="qrUrl"
-            autofocus="true"
+            :autofocus="true"
             placeholder="请扫描二维码进行自主签到"
             @input="(value) => qrcodeInputChange(value)"
             @blur="onQrcodeInputBlur"
@@ -136,6 +136,9 @@ export default {
     }
   },
   mounted() {
+    this.$nextTick(() => {
+      this.$refs.qrcodeScanInput.$el.querySelector('input').focus()
+    })
   },
   methods: {
     ...mapMutations('signBySelf', [
@@ -150,6 +153,7 @@ export default {
     close() {
       this.UPDATE_STATE({ stuSignList: [], visible: false })
       window.query_sign_self = false// 关闭自助扫码签到扫描
+      this.$parent.isShow = false
     },
 
     /** change事件 */

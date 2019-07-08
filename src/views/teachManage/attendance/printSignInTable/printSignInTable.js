@@ -229,7 +229,6 @@ export default {
               delete params[key]
             }
           }
-          console.info(params)
           if (this.totalCount > 0) {
             exportFile(`${window.SS_CRM}/cerp/cp/exportSignTable`, params)
           } else {

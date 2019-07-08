@@ -13,12 +13,14 @@
       </div>
       <div>
         <el-button
+          v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-新建名单'}"
           v-if="hasBtn('402000001')"
           type="primary"
           size="mini"
           @click="addLantentDialog()"
         >新建名单</el-button>
         <el-button
+          v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-批量分配'}"
           class="cancel_btn"
           size="mini"
           @click="openBatchAllotDialog()"
@@ -29,17 +31,20 @@
     <div class="checked_data">
       <span class="checked_text">已选<i>{{ checkNum || '0' }}</i>条数据</span>
       <el-button
+        v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-分配'}"
         size="mini"
         class="cancel_btn edit_btn"
         @click="openDistributeDialog(checkedData)"
       >分配</el-button>
       <el-button
+        v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-捞取'}"
         size="mini"
         class="cancel_btn edit_btn"
         style="margin:0 5px"
         @click="openFetchNameDialog(checkedData)"
       >捞取</el-button>
       <Confirm
+        v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-放入回收站'}"
         :text="'放入回收站'"
         :placement="'top'"
         :content="'确定要放入回收站吗'"
@@ -50,6 +55,7 @@
         :btn-class="'cancel_btn edit_btn'"
       />
       <Confirm
+        v-log="{compName:'公海池',eventName:'web-【学员CRM】-学员信息-公海池-退回总部'}"
         :text="'退回总部'"
         :placement="'top'"
         :content="'确定要退回总部吗'"
@@ -356,7 +362,7 @@ export default {
         },
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 280px)',
+      tableHeight: 'calc(100vh - 265px)',
       formInline: {
         searchMethod: formValue => {
           this.searchHandle(formValue)
@@ -521,6 +527,7 @@ export default {
           { label: '年级', key: 'grade' },
           { label: '特长', key: 'speciality' },
           { label: '血型', key: 'bloodType' },
+          { label: '学校', key: 'schaddress' },
           { label: '社保号码', key: 'socialSecurityNum' },
           { label: '备注', key: 'remark' },
           { label: '联系地址', key: 'conaddress' },
@@ -599,6 +606,7 @@ export default {
             grade: this.detail.grade,
             speciality: this.detail.speciality,
             bloodType: this.detail.bloodType,
+            schaddress: this.detail.schaddress,
             socialSecurityNum: this.detail.socialSecurityNum,
             remark: this.detail.remark,
             conaddress: this.detail.conaddress,
@@ -847,6 +855,7 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

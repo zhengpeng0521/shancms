@@ -54,12 +54,10 @@
   </transition>
 </template>
 <script>
-// import { fetchList } from '@/api/marketing'
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import CommonTable from '@/components/CommonTable/CommonTable'
 import { findDetail, activityRefound } from '@/api/marketing/microAct.js'
 import { exportFile } from '@/utils/exportFile.js'
-// import { fetchList } from '@/api/marketing'
 export default {
   components: {
     CommonSearch,
@@ -83,18 +81,10 @@ export default {
       default: true
     }
   },
-  // props: {
-  //   id: {
-  //     type: String,
-  //     required: true
-  //   }
-
-  // },
   data() {
     return {
       visible2: false,
       visible3: false,
-      // isVisible: this.visible,
       isVisible: false,
       formInline: {
         searchMethod: (formValue) => {
@@ -205,7 +195,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -318,9 +307,6 @@ export default {
     display: flex;
     justify-content: space-between;
   }
-  // .main {
-  // padding: 0 20px;
-  // }
 }
 
 .slide-fade-enter-active {

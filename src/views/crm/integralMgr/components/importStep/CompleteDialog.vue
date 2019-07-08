@@ -19,7 +19,7 @@
       <el-button
         v-else
         type="primary"
-        @click="$emit('closeComplete')"
+        @click="$emit('closeDialogAll')"
       >确 定</el-button>
     </span>
   </el-dialog>

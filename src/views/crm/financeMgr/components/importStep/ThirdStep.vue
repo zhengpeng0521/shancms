@@ -1,0 +1,73 @@
+<template>
+  <div class="third">
+    <CommonTable
+      ref="tableCommon"
+      :columns="columns"
+      :table-height="tableHeight"
+      :table-loading="loading"
+      :data-source="dataSource"
+    />
+  </div>
+</template>
+
+<script>
+import CommonTable from '@/components/CommonTable/CommonTable'
+
+export default {
+  components: {
+    CommonTable
+  },
+
+  props: {
+    loading: {
+      type: Boolean,
+      required: true
+    },
+    cols: {
+      type: Array,
+      required: true
+    },
+    dataSource: {
+      type: Array,
+      required: true
+    }
+  },
+
+  data() {
+    return {
+      tableHeight: '40vh'
+    }
+  },
+
+  computed: {
+    columns() {
+      const newCols = []
+      this.cols.forEach(item => {
+        if (item.key == 'payMoney') { //eslint-disable-line
+          newCols.push({
+            label: item.value,
+            prop: item.key,
+            isShowTooltip: true,
+            width: '230'
+          })
+        } else {
+          newCols.push({
+            label: item.value,
+            prop: item.key,
+            isShowTooltip: true,
+            width: '100'
+          })
+        }
+      })
+      return newCols
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.third {
+  margin-top: 20px;
+  border: 1px solid rgba(221, 221, 221, 0.6);
+}
+</style>

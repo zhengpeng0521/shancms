@@ -20,6 +20,7 @@
               :confirm="close"
               :is-button="true"
               :btn-type="'plain'"
+              style="margin-right:5px"
             />
             <Confirm
               :text="'保存'"
@@ -28,67 +29,15 @@
               :confirm="()=>{submitForm('addLesson')}"
               :is-button="true"
               :btn-type="'primary'"
+              style="margin-right:-5px"
             />
-            <!-- <el-popover
-              v-model="visible2"
-              placement="bottom-end"
-              width="160"
-              popper-class="tanchukuang"
-            >
-              <p><span>图标</span>确定要关闭窗口吗？</p>
-              <div style="text-align: right; margin: 0;">
-                <el-button
-                  size="mini"
-                  class="edit_btn"
-                  plain
-                  @click="visible2 = false"
-                >取消</el-button>
-                <el-button
-                  type="primary"
-                  class="edit_btn"
-                  @click="close"
-                >确定</el-button>
-              </div>
-              <el-button
-                slot="reference"
-                plain
-              >关闭</el-button>
-            </el-popover>
-            <el-popover
-              v-model="visible3"
-              placement="bottom-end"
-              popper-class="tanchukuang"
-              width="160"
-            >
-              <p><span>图标</span>确定要保存吗？</p>
-              <div style="text-align: right; margin: 0;">
-                <el-button
-                  size="mini"
-                  class="edit_btn"
-                  plain
-                  @click="visible3 = false"
-                >取消</el-button>
-                <el-button
-                  type="primary"
-                  class="edit_btn"
-                  @click="submitForm('addLesson')"
-                >确定</el-button>
-              </div>
-              <el-button
-                slot="reference"
-                type="primary"
-              >保存</el-button>
-            </el-popover> -->
           </div>
         </div>
         <div class="body">
           <div class="body-left-box">
             <div class="body-left">
               <div class="body-left-header">
-                <img
-                  src="https://img.ishanshan.com/gimg/n/20190320/7520a62ea0b5b3eb8af55fefc2a8779c"
-                  alt=""
-                >
+                <img src="https://img.ishanshan.com/gimg/user/n///1557127683.png">
               </div>
               <div class="body-left-cont">
                 <span style="display:inline-block;width:100%;height:150px">
@@ -155,17 +104,19 @@
                       <div class="detailCont-item-title">
                         <span class="dian" />{{ data.title }}
                       </div>
-                      <div class="detailCont-item-cont">{{ data.content[0].contentDetail }}</div>
+                      <div
+                        v-for="(itminput,indexArea) in data.content"
+                        :key="indexArea"
+                        class="detailCont-item-cont"
+                      >
+                        {{ itminput.contentDetail }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="body-left-footer">
                 <div class="yuyue">预约试听</div>
-                <!-- <div class="btn">
-                <i class="el-icon-arrow-left" />
-                <i class="el-icon-arrow-right" />
-              </div> -->
               </div>
             </div>
           </div>
@@ -200,6 +151,7 @@
                   :on-remove="handleCourseCoverRemove"
                   :before-upload="beforeAvatarUpload"
                   :file-list="courseCoverArr"
+                  :limit="1"
                   class="activityCover"
                   action="https://imgsrc.ishanshan.com/gimg/upload"
                   list-type="picture-card"
@@ -232,6 +184,7 @@
                   :on-remove="handleBannerRemove"
                   :before-upload="beforeAvatarUpload"
                   :file-list="detailPicArr"
+                  :limit="5"
                   class="banner"
                   action="https://imgsrc.ishanshan.com/gimg/upload"
                   list-type="picture-card"
@@ -277,7 +230,7 @@
                   placeholder="0-9999"
                 />
               </el-form-item>
-              <div class="body-right-foot">
+              <div class="body-right-header">
                 <span class="tubiao" />
                 课程详情
               </div>
@@ -305,6 +258,7 @@
               >
                 <el-input
                   v-model="lessonForm.adAge"
+                  :maxlength="20"
                   clearable
                   placeholder="限20字"
                 />
@@ -319,60 +273,90 @@
                   placeholder="限20字"
                 />
               </el-form-item>
+
               <el-form-item
                 label="详情内容:"
                 prop="detailContent"
               >
+
                 <div
                   v-for="(itm,index) in lessonForm.detailContent"
                   :key="index"
                   class="box-container"
                 >
                   <div class="box">
+                    <!-- 请输入标题 -->
                     <el-form-item
                       :prop="'detailContent.' + index + '.title'"
+                      :rules="[
+                        { required: true, max:15, message: '不能超过15个字符', trigger: 'blur'}
+                      ]"
                       label="标题"
                     >
                       <el-input
                         v-model="itm.title"
-                        :rules="[
-                          { max:15, message: '不能超过15个字符', trigger: 'blur'}
-                        ]"
                         clearable
                         placeholder="限15字"
                       />
                     </el-form-item>
-                    <el-form-item
-                      :prop="'detailContent.' + index + '.content'"
-                      label="内容"
-                    >
-                      <el-input
-                        v-model="itm.content[0].contentDetail"
-                        :rules="[
-                          { max:500, message: '请输入内容，不能超过500个字符', trigger: 'blur'}
-                        ]"
-                        type="textarea"
-                        placeholder="限500字"
-                      />
+                    <!-- 请输入内容 -->
+                    <el-form-item label="内容">
+                      <div
+                        v-for="(itminput,indexArea) in itm.content"
+                        :key="indexArea"
+                      >
+                        <template>
+                          <el-form-item
+                            :prop="'detailContent.' + index + '.content.'+indexArea+'.contentDetail'"
+                            :rules="[
+                              {required: true, max:500, message: '字符范围1-500', trigger: 'blur' }
+                            ]"
+                          >
+                            <div class="elInput">
+                              <el-input
+                                v-model="itminput.contentDetail"
+                                type="textarea"
+                                maxlength="500"
+                                placeholder="限500字"
+                              />
+                              <div class="box_elInput_textarea">
+                                <!-- 删除详情框 -->
+                                <i
+                                  class="el-icon-remove-outline"
+                                  @click="deleteDetailContArea(index,indexArea)"
+                                />
+                                <!-- 增加详情框 -->
+                                <i
+                                  v-if="lessonForm.detailContent[index].content && lessonForm.detailContent[index].content.length <= 9"
+                                  class="el-icon-circle-plus-outline"
+                                  @click="addDetailContArea(index,indexArea)"
+                                />
+                              </div>
+
+                            </div>
+                          </el-form-item>
+                        </template>
+                      </div>
+
                     </el-form-item>
+
                   </div>
                   <i
+                    v-if="lessonForm.detailContent && lessonForm.detailContent.length > 1"
                     class="el-icon-remove-outline delete_icon"
                     @click="deleteDetailCont(index)"
                   />
-
                 </div>
 
                 <el-button
-                  plain
+                  v-if="lessonForm.detailContent && lessonForm.detailContent.length <= 9"
                   style="margin-top:10px"
-                  class="add_btn"
+                  class="cancel_btn"
                   @click="addDetailCont"
                 >添加详情</el-button>
-
               </el-form-item>
-            </el-form>
 
+            </el-form>
           </div>
         </div>
       </div>
@@ -446,7 +430,7 @@ export default {
           { validator: validatePass1, trigger: 'blur' }
         ],
         courseType: [{ required: true, message: '请选择类型', trigger: 'change' }],
-        adAge: [{ max: 20, message: '不能超过20字', trigger: 'blur' },
+        adAge: [{ max: 20, message: '不能超过20字', trigger: ['blur', 'change'] },
           { required: true, message: '请填写适合年龄,限20字', trigger: 'change' }],
         perTime: [{ max: 20, message: '不能超过20字', trigger: 'blur' },
           { required: true, message: '请填写内容,限20字', trigger: 'change' }],
@@ -457,7 +441,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      // console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -480,7 +463,6 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.editObj,'editObj')
   },
   methods: {
     typeLabel(values) {
@@ -494,25 +476,29 @@ export default {
       return labels
     },
     close() {
-      this.$refs.addLesson.resetFields()
       this.courseCoverArr = []
-      this.lessonForm.courseCover = []
-      this.lessonForm.detailPic = []
       this.detailPicArr = []
-      this.detailContent = [{ title: '', content: [{ contentDetail: '' }] }]
       this.isVisible = false
       this.visible2 = false
       this.visible3 = false
-      // console.log('1111')
+      this.id = undefined
+      this.$parent.id = undefined
+      this.lessonForm = {
+        courseName: '',
+        courseCover: [],
+        detailPic: [],
+        sort: 1000,
+        courseType: [],
+        adAge: '',
+        perTime: '',
+        detailContent: [{ title: '', content: [{ contentDetail: '' }] }]
+      }
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
-      console.log('formName', this.lessonForm.courseType)
       this.$refs.addLesson.validate((valid, obj) => {
         this.visible3 = false
-        console.log(valid, obj)
         if (valid) {
-          console.log(this.lessonForm, 'lessonForm')
           var courseCoverStr = ''
           var detailPicStr = ''
           var courseTypeStr = ''
@@ -545,7 +531,6 @@ export default {
           })
           params.detailContent = JSON.stringify(res)
           // this.lessonForm.detailContent = JSON.parse(this.lessonForm.detailContent)
-          console.log(res, this.lessonForm)
           const loading = this.$loading({
             lock: true,
             text: '拼命加载中。。。',
@@ -559,12 +544,8 @@ export default {
               loading.close()
               this.isVisible = false
               this.$parent.resetFieldHanle()
-              this.$refs[formName].resetFields()
-              this.courseCoverArr = []
-              this.lessonForm.courseCover = []
-              this.lessonForm.detailPic = []
-              this.detailPicArr = []
-              this.detailContent = [{ title: '', content: [{ contentDetail: '' }] }]
+              this.close()
+              // this.$refs[formName].resetFields()
             } else {
               this.$message.error(res.errorMessage)
             }
@@ -590,20 +571,17 @@ export default {
       this.courseCoverDialogVisible = true
     },
     handleCourseCoverSuccess(res, file, fileList) {
-      this.courseCoverArr.push({ name: file.name, url: res.url })
-      this.lessonForm.courseCover.push({ name: file.name, url: res.url })
       if (res.url !== '') {
         this.$message({
           message: '上传成功',
           type: 'success'
         })
+        this.lessonForm.courseCover.push({ name: file.name, url: res.url })
       } else {
         this.$message.error('上传失败')
       }
     },
     handleCourseCoverRemove(file, fileList) {
-      // console.log(file, fileList, this.lessonForm.shareCover)
-      this.lessonForm.courseCover = []
       this.courseCoverArr.map((val, index) => {
         if (val.uid === file.uid) {
           this.courseCoverArr.splice(index, 1)
@@ -612,23 +590,21 @@ export default {
     },
     // banner上传成功函数
     handleBannerSuccess(res, file, fileList) {
-      // console.log(file, fileList)
-      this.lessonForm.detailPic.push({ name: file.name, url: res.url })
-      this.detailPicArr.push({ name: file.name, url: res.url })
       if (res.url !== '') {
         this.$message({
           message: '上传成功',
           type: 'success'
         })
+        this.lessonForm.detailPic.push({ name: file.name, url: res.url })
+        // this.detailPicArr.push({ name: file.name, url: res.url })
       } else {
         this.$message.error('上传失败')
       }
     },
     handleBannerRemove(file, fileList) {
-      this.lessonForm.detailPic = []
       this.detailPicArr.map((val, index) => {
         if (val.uid === file.uid) {
-          this.detailPicArr.splice(index, 1)
+          this.lessonForm.detailPic.splice(index, 1)
         }
       })
     },
@@ -638,45 +614,35 @@ export default {
     },
     // 删除详情
     deleteDetailCont(val) {
-      console.log('index', val)
-      const addBtn = document.querySelector('.add_btn')
-      addBtn.style.display = 'block'
-      if (val === 0) {
-        const deleBtn = document.querySelector('.delete_icon')
-        deleBtn.style.display = 'none'
-        // alert('教师消息至少保留一条')
-      } else {
-        this.lessonForm.detailContent.splice(val, 1)
-      }
+      this.lessonForm.detailContent.splice(val, 1)
     },
     // 添加详情
     addDetailCont() {
-      const addBtn = document.querySelector('.add_btn')
-      const deleBtnArr = document.querySelectorAll('.delete_icon')
-      // deleBtnArr.map((val) => {
-      deleBtnArr[0].style.display = 'inline-block'
-      // })
-      console.log(this.lessonForm.detailContent.length, '----------', deleBtnArr)
-      if (this.lessonForm.detailContent.length > 9) {
-        addBtn.style.display = 'none'
-      } else {
-        addBtn.style.display = 'block'
-        const data = {
-          title: '', content: [{ contentDetail: '' }]
-        }
-        this.lessonForm.detailContent.push(data)
+      const data = {
+        title: '', content: [{ contentDetail: '' }]
       }
-      // if (this.lessonForm.detailContent.length < 10) {
-      //   const data = {
-      //     title: '', content: [{ contentDetail: '' }]
-      //   }
-      //   this.lessonForm.detailContent.push(data)
-      // }
+      this.lessonForm.detailContent.push(data)
+    },
+    // 添加详细内容
+    addDetailContArea(index, indexArea) {
+      const data = {
+        contentDetail: ''
+      }
+      if (indexArea < 9) {
+        this.lessonForm.detailContent[index].content.splice(indexArea + 1, 0, data)
+      }
+    },
+    // 删除详细内容
+    deleteDetailContArea(index, indexArea) {
+      if (indexArea > 0) {
+        this.lessonForm.detailContent[index].content.splice(indexArea, 1)
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+@import "@/styles/mixin.scss";
 .side-zhezhao {
   width: 100vw;
   height: 100vh;
@@ -693,27 +659,24 @@ export default {
   z-index: 1000;
   width: calc(100% - 150px);
   position: fixed;
-  // margin-left: -20px;
   height: 100%;
   background-color: rgba(255, 255, 255, 1);
   -moz-box-shadow: 2px 2px 5px #333333;
   -webkit-box-shadow: 2px 2px 5px #333333;
   box-shadow: 2px 2px 5px #333333;
-  // padding: 0 20px;
-  // overflow-x: hidden;
-  // overflow-y: auto;
+  padding: 0 20px;
+
   .top {
-    // width: calc(100vw - 180px) !important;
     min-height: 40px;
     justify-content: space-between;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
-    // padding: 20px 0 14px 0;
-    padding: 20px;
+    padding: 20px 0;
     .top-left {
       display: flex;
       font-size: 16px;
+      line-height: 27px;
       // margin-top: 10px;
     }
     .top-right {
@@ -727,22 +690,24 @@ export default {
   .body {
     display: flex;
     padding-top: 20px;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 82px);
     overflow-y: auto;
     .body-left-box {
-      // min-height: calc(100vh - 83px);
-      height: calc(100vh - 83px);
-      width: 460px;
-      padding: 0 30px;
-      padding-top: 30px;
+      height: calc(100vh - 120px);
+      min-width: 435px;
+      width: 435px;
+      padding: 30px 30px 0;
       background: rgba(240, 242, 245, 0.8);
-      margin-left: 20px;
       overflow-y: auto;
     }
     .body-left {
-      width: 100%;
-      // border: 1px solid #000;
+      width: 375px;
+      height: 667px;
       position: relative;
+      box-shadow: 0 2px 7px rgba(0, 0, 0, 0.2);
+      margin-bottom: 30px;
+      overflow: hidden;
+
       .body-left-header {
         width: 100%;
         height: 64px;
@@ -753,10 +718,13 @@ export default {
         }
       }
       .body-left-cont {
-        background: rgb(240, 241, 243);
-        height: 662px;
-        // overflow-x: hidden;
-        // overflow-y: auto;
+        background: rgba(240, 242, 245, 0.6);
+        height: calc(100% - 114px);
+        overflow: auto;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar {
+          display: none;
+        }
 
         img {
           width: 100%;
@@ -764,11 +732,10 @@ export default {
         }
         .tubiao {
           display: inline-block;
-          width: 10px;
-          height: 18px;
+          width: 8px;
+          height: 14px;
           background: #3b72b7;
           margin-right: 3px;
-          // margin-top: 5px;
         }
         .course-title {
           // display: flex;
@@ -876,26 +843,25 @@ export default {
       }
     }
     .body-right {
-      // height: 756px;
-      // min-height: calc(100vh - 83px);
-      height: calc(100vh - 83px);
-      width: 640px;
-      // background: rgb(242, 242, 242);
+      width: calc(100% - 455px);
+      height: calc(100vh - 120px);
+      min-width: 520px;
       margin-left: 20px;
       overflow: auto;
       padding-right: 20px;
-      // padding-top: 20px;
       .tubiao {
         display: inline-block;
-        vertical-align: middle;
-        width: 14px;
-        height: 20px;
+        width: 8px;
+        height: 14px;
         background: rgba(70, 182, 238, 1);
         border-radius: 3px;
-        margin: 20px 10px 20px 20px;
+        margin-right: 10px;
       }
       .body-right-header {
-        font-size: 14px;
+        @include flex();
+        @include itemCenter(center);
+        font-size: 16px;
+        height: 60px;
       }
       .el-form-item__content .el-checkbox {
         margin-left: 0px !important;
@@ -905,7 +871,7 @@ export default {
         margin-top: 10px;
         display: flex;
         align-items: center;
-        .el-icon-remove-outline {
+        .delete_icon {
           margin-left: 10px;
           font-size: 20px;
           color: #ccc;
@@ -916,6 +882,17 @@ export default {
         width: 500px;
         border: 1px solid #ddd;
         padding: 20px 20px 20px 0px;
+        .elInput {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          .box_elInput_textarea {
+            margin-left: 10px;
+            font-size: 18px;
+            color: #ccc;
+            cursor: pointer;
+          }
+        }
       }
       .tips {
         font-size: 12px;
@@ -937,30 +914,6 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(1000px);
   opacity: 0;
-}
-.picDetail-container {
-  // width: 100vw;
-  // height: 100vh;
-  // background: rgba(0, 0, 0, 0.5);
-  // z-index: 10000;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-
-  // @keyframes enterAnamation {
-  // 10% {
-  // right: -100%;
-  // }
-  // 100% {
-  // right: 0;
-  // }
-  // }
-  // // .picDetailShow {
-  // // animation: enterAnamation 1s linear;
-  // // }
-  // .picDetail {
-  // animation: enterAnamation 1s linear;
-  // }
 }
 </style>
 <style lang="scss">

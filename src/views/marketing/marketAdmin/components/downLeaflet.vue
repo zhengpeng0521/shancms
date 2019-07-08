@@ -1,3 +1,4 @@
+/** 市场传单下载组件, 使用编辑传单增加download参数, 不适用本组件 */
 <template>
   <div class="leafletDialog">
     <el-dialog
@@ -46,14 +47,7 @@
 
 import { queryMembers } from '@/api/marketing/marketAdmin.js'
 import { getInstMsg } from '@/api/marketing/offlineLeaflet.js'
-// import { exportFile } from '@/utils/exportFile.js'
 export default {
-  // props: {
-  //   id: {
-  //     type: String,
-  //     required: true
-  //   }
-  // },
   data() {
     return {
 
@@ -64,7 +58,6 @@ export default {
   },
   methods: {
     queryMembers(id) {
-      // if (this.id) {
       const params = {
         activityId: id
       }
@@ -81,11 +74,8 @@ export default {
           this.$message.error(res.errorMessage)
         }
       })
-      // }
     },
     upload() {
-      // const params = {}
-      // path =
 
     },
     getInstMsg(id) {
@@ -94,9 +84,7 @@ export default {
       }
       getInstMsg(params).then((res) => {
         if (res.data.errorCode === 0) {
-          console.log(JSON.parse(res.data.detailData))
           this.imgObj = JSON.parse(res.data.pageImgs)
-          console.log(this.imgObj)
         } else {
           this.$message.error(res.errorMessage)
         }
@@ -109,14 +97,9 @@ export default {
 .leafletDialog {
   .cont .imgBox {
     display: flex;
-    // justify-content: center;
-    // .cover {
-    //   margin-left: 30px;
-    // }
     .cover,
     .oppositeCover {
       margin-left: 20px;
-      // width: 223px;
       height: 318px;
       text-align: center;
       img {
@@ -130,19 +113,11 @@ export default {
     margin-left: 20px;
     p {
       margin-top: 10px;
-      // clear: both;
-      // position: relative;
-      // top: 10px;
-      // margin-bottom: 40px;
       font-size: 14px;
       line-height: 14px;
       color: rgba(230, 67, 64, 1);
     }
   }
-  // .dialog-footer {
-  //   border-top: 1px #ddd solid;
-  //   margin-top: 20px;
-  // }
 }
 </style>
 <style lang="scss">

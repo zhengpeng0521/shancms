@@ -96,6 +96,7 @@
                       v-model="ruleForm.mtids"
                       :class="mtidsStatus ? 'errorStyle' : ''"
                       multiple
+                      filterable
                       placeholder="请选择主教"
                       style="width:150px"
                       @change="mtidsStatusChange"
@@ -116,6 +117,7 @@
                       v-model="ruleForm.atids"
                       :class="atidStatus ? 'errorStyle' : ''"
                       multiple
+                      filterable
                       placeholder="请选择助教"
                       style="width:150px"
                       @change="atidStatusChange"
@@ -136,6 +138,7 @@
                       v-model="ruleForm.week"
                       placeholder="请选择星期"
                       style="width:150px"
+                      filterable
                     >
                       <el-option
                         v-for="item in weekOption"
@@ -193,6 +196,7 @@
                       :class="clsRoomStatus ? 'errorStyle' : ''"
                       placeholder="请选择教室"
                       style="width:150px"
+                      filterable
                       @change="clsRoomStatusChange"
                     >
                       <el-option
@@ -243,6 +247,7 @@
                       placeholder="请选择上课主题"
                       style="width:150px"
                       clearable
+                      filterable
                     >
                       <el-option
                         v-for="(item, index) of schoolThemeList"

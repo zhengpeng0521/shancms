@@ -21,17 +21,17 @@
   position: relative;
 
   .block-title-blue {
-    width: 6px;
+    width: 8px;
     height: 14px;
     background: #46b6ee;
-    border-radius: 2px;
+    border-radius: 4px;
     margin-right: 6px;
   }
 
   .block-title-text {
     font-size: 16px;
     width: 100%;
-    line-height: 14px;
+    line-height: 16px;
     color: #333;
   }
 }

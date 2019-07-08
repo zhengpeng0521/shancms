@@ -25,13 +25,17 @@
               >
                 <el-popover
                   placement="top-start"
-                  width="200"
+                  width="300"
                   trigger="hover"
                 >
-                  <p> {{ i.typeName }}</p>
-                  <i
+                  <p> {{ i.annotation }}</p>
+                  <!-- <i
                     slot="reference"
                     class="el-icon-info"
+                  /> -->
+                  <i
+                    slot="reference"
+                    class="iconfont icon_ym_ts"
                   />
                 </el-popover>
                 <span :class="{active:i.isClick}">
@@ -340,7 +344,7 @@ export default {
           addItem(newObj).then(res => {
             if (res.data.errorCode === 0) {
               this.$message.success(res.data.errorMessage)
-              this.getDictList()
+              // this.getDictList()
             } else {
               this.$message.error(res.data.errorMessage)
             }
@@ -380,8 +384,12 @@ export default {
 
       updateDictItem(data).then(res => {
         if (res.data.errorCode === 0) {
-          // this.rightItems.splice(index, 1)
-          this.getDictList()
+          this.rightItems.items.splice(index, 1)
+
+          this.$nextTick(() => {
+            this.rightItems = Object.assign({}, this.rightItems)
+          })
+          // this.getDictList()
         } else {
           this.$message.error(res.data.errorMessage)
         }
@@ -401,7 +409,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .role_content {
-  overflow: hidden;
+  height: calc(100vh - 156px);
+  overflow: auto;
   margin-bottom: 20px;
 }
 .active {

@@ -15,6 +15,7 @@
       </div>
       <div>
         <el-button
+          v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-库存明细-导出库存明细'}"
           class="green_btn"
           @click="exportStock"
         >导出</el-button>
@@ -131,7 +132,7 @@ export default {
         isSettingShow: true, // 是否出现设置
         apiService: getStockDetail // 表格的数据请求接口
       },
-      tableHeight: 'calc(100vh - 242px)',
+      tableHeight: 'calc(100vh - 228px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)

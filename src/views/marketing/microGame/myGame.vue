@@ -26,6 +26,11 @@
       <creatMyGame
         v-if="picDetailShow"
         :visible.sync="picDetailShow"
+        :is-edit="isEdit"
+        :edit-url="editUrl"
+        :reset-edit="GET_EDIT_URL"
+        @openPreviewDialog="openPreviewDialog"
+        @reloadList="reloadList"
       />
       <!-- 查看数据弹框 -->
       <dataDetail
@@ -38,10 +43,10 @@
         :visible.sync="dialogVisible"
         :append-to-body="true"
         custom-class="erweimaBox"
-        width="335px"
+        width="400px"
       >
         <qrcode
-          :options="{ width: 300,height:300,padding:0,margin:0 }"
+          :options="{ width: 360,height:360,padding:0,margin:0 }"
           :value="message"
           class="erweima"
         />
@@ -63,21 +68,59 @@
         </div>
       </el-dialog>
     </div>
+    <!-- 游戏保存成功后的弹框 -->
+    <el-dialog
+      :visible.sync="previewDialogVisible"
+      title="保存成功"
+      width="400px"
+      append-to-body
+      @close="closePreviewDialog"
+    >
+      <div>
+        <p class="game_top"><i class="el-icon-circle-check icon_success" />微游戏已保存成功</p>
+        <div class="game_qrcode">
+          <transition name="el-zoom-in-bottom">
+            <Qrcode
+              v-if="previewDialogData.qrcodeUrl"
+              :value="previewDialogData.qrcodeUrl"
+              :options="{ width: 190,height:190,margin: 0 }"
+            />
+          </transition>
+        </div>
+        <div class="copy_box">
+          <el-input
+            ref="url"
+            v-model="previewDialogData.qrcodeUrl"
+            :readonly="true"
+            :style="{marginRight: '20px'}"
+          />
+          <el-button
+            v-clipboard:copy="previewDialogData.qrcodeUrl"
+            v-clipboard:success="previewCopy"
+            v-clipboard:error="previewError"
+            type="primary"
+          >复制</el-button>
+        </div>
+      </div>
+      <span slot="footer">
+        <el-button @click="goMyGame('edit')">再次编辑</el-button>
+        <el-button @click="closePreviewDialog">关闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
+import { mapMutations, mapState, mapActions } from 'vuex'
+
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import Table from '@/components/CommonTable/CommonTable'
-// import { fetchList } from '@/api/marketing'
 import { queryGameInsts, getOrgName, queryGameInfos, updateStatus } from '@/api/marketing/microGame.js'
-// import { updateStatus } from '@/api/marketing/microAct.js'
 // 调用slideDetail
 import creatMyGame from '../components/creatMyGame'
 import dataDetail from '../components/myGameDataDetail'
 // 二维码装换插件
 import Vue from 'vue'
-import VueQrcode from '@chenfengyuan/vue-qrcode'
-Vue.component(VueQrcode.name, VueQrcode)
+import Qrcode from '@chenfengyuan/vue-qrcode'
 // 复制插件
 import VueClipboard from 'vue-clipboard2'
 Vue.use(VueClipboard)
@@ -86,19 +129,17 @@ export default {
     CommonSearch,
     Table,
     creatMyGame,
-    dataDetail
+    dataDetail,
+    Qrcode
   },
   data() {
     return {
       obj: {},
       dataObj: {},
       formObj: {},
-      // 搜索框参数
-      // select: false,
       list: [],
       orgList: [],
       formInline: {
-        // status: '1',
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
         },
@@ -114,11 +155,10 @@ export default {
             placeholder: '游戏类型',
             modelValue: 'gameCode',
             isClearable: true,
-            // selectOption: this.list
             apiService: queryGameInfos,
             labelKey: 'gameTitle',
             valueKey: 'gameCode',
-            params: { status: 1 }
+            params: { status: 1, pageSize: 10000 }
           },
           {
             itemType: 'select',
@@ -168,23 +208,12 @@ export default {
               ]
             )
           }
-          // formatter: (row, column, cellValue) => {
-          //   return `<div style="display:flex">
-          //   <img style="width:40px;height:40px;margin-right:10px" src=${row.icon} />
-          //   <div style="overflow: hidden; text-overflow: ellipsis; color: rgba(24,145,237,1);
-          //       white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; width: 230px;
-          //       line-height: 20px; font-size: 14px; -webkit-box-orient: vertical;">${row.dataTitle}</div>
-          //   </div>`
-          // },
-          // methods: (row) => {
-          //   this.picDetailBtn(row)
-          // }
         }, {
           label: '二维码',
           prop: 'demoUrl',
           isShowSet: true,
           formatter: (row) => {
-            return `<img src="https://img.ishanshan.com/gimg/n/20190326/bc5f6357fa2726cb764b85d533dadf46"/>`
+            return `<i class="iconfont icon_ym_ewm iconfont_code"/>`
           },
           methods: (row) => {
             this.showDialog(row)
@@ -244,25 +273,6 @@ export default {
               )
             }
           }
-          // formatter: (row) => {
-          //   if (this.hasBtn('202000002')) {
-          //     return `<div style="display:flex;flex-direction:column;">
-          //             <div style="line-height:12px;font-size:12px;margin-top:5px;">有效用户：${row.amount || 0}</div>
-          //             <div style="line-height:12px;font-size:12px;margin-top:5px;">浏览数：${row.views || 0}</div>
-          //             <div style="color:rgba(70,182,238,1);line-height:12px;font-size:12px;margin-top:5px;">查看</div>
-          //           </div>`
-          //   } else {
-          //     return `<div style="display:flex;flex-direction:column;">
-          //             <div style="line-height:12px;font-size:12px;margin-top:5px;">有效用户：${row.amount || 0}</div>
-          //             <div style="line-height:12px;font-size:12px;margin-top:5px;">浏览数：${row.views || 0}</div>
-          //           </div>`
-          //   }
-          // },
-          // methods: (row) => {
-          //   if (this.hasBtn('202000002')) {
-          //     this.dataDetailBtn(row)
-          //   }
-          // }
         }, {
           label: '游戏时间',
           width: 200,
@@ -289,7 +299,7 @@ export default {
           isShowTooltip: true
         }
       ],
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 231px)',
       listQuery: {
         show: true // 是否显示
       },
@@ -310,14 +320,7 @@ export default {
             label_2: '下架',
             type: 'unnormal',
             method: (row) => {
-              // console.log(row, '2222222')
-              // this.deleteHandle(row)
               var status = ''
-              // if (row.status === '1') {
-              //   status = '2'
-              // } else if (row.status === '2') {
-              //   status = '1'
-              // }
               row.status === '1' ? status = '2' : status = '1'
               const params = {
                 m: 'update_status',
@@ -329,18 +332,15 @@ export default {
               updateStatus(params).then(res => {
                 if (res.data.errorCode === 9000) {
                   row.status === '1' ? row.status = '2' : row.status = '1'
-                  console.log(this.formObj.status, 'this.formObj')
                   if (this.formObj.status) {
-                    console.log('不是空')
                     this.$refs.tableCommon.getList({
                       'status': this.formObj.status
-                      // 'type': 2
                     })
                   } else {
                     this.resetFieldHanle()
                   }
                 } else {
-                  this.$message.error(res.data.errorMsg)
+                  this.$message.error(res.data && res.data.errorMsg || '上下架失败')
                 }
               })
             },
@@ -372,20 +372,65 @@ export default {
 
       },
       tableShow: false,
-      searchShow: false
+      searchShow: false,
+      previewDialogVisible: false, // 游戏保存后预览弹框显示
+      previewDialogData: {} // 游戏保存后预览弹框显示数据
     }
   },
+
+  computed: {
+    ...mapState('microGame', ['isEdit', 'editUrl'])
+  },
+
   mounted() {
-    // this.tihuan()
     this.getOrgName()
+    if (this.isEdit) {
+      this.obj = { isGameEdit: true }
+      this.picDetailShow = true
+    }
   },
   methods: {
+    ...mapMutations('microGame', ['GET_EDIT_URL']),
+    // 打开游戏保存后的预览弹框, gameUrl: 游戏链接, data: iframe传递的信息
+    openPreviewDialog(data) {
+      this.previewDialogVisible = true
+      this.previewDialogData = {
+        qrcodeUrl: data.instH5Url
+      }
+      this.obj = {
+        ...this.obj,
+        dataId: data.instId
+      }
+    },
+    // 关闭游戏保存后的预览弹框
+    closePreviewDialog() {
+      this.previewDialogVisible = false
+    },
+    previewCopy: function(e) {
+      this.$message({
+        message: '复制成功',
+        type: 'success'
+      })
+    },
+    previewError: function(e) {
+      this.$message.error('复制失败')
+    },
+    ...mapActions('changeThirdMain', [
+      'changeTabs'
+    ]),
+    /** 刷新表格数据 */
+    reloadList() {
+      this.searchHandle(this.formValue)
+    },
+    /** 跳转我的 */
+    goMyGame(type) {
+      this.previewDialogVisible = false
+      this.picDetailShow = true
+    },
     /* 搜索框搜索重置 */
     resetFieldHanle(formName) {
       // 重置的入参
       const params = {
-        // 'dataTitle': '',
-        // 'gameCode': '',
         status: 1
       }
       this.$refs.tableCommon.getList(params)
@@ -396,13 +441,7 @@ export default {
       this.formObj = formValue
       const params = {
         ...this.formValue
-        // 'orgId': this.GLOBAL.orgId,
-        // 'tenantId': this.GLOBAL.tenantId,
-        // dataTitle: this.formInline.gameName,
-        // gameCode: this.formInline.activityStyle,
-        // status: this.formInline.statu
       }
-      console.log(params)
       this.$refs.tableCommon.getList(params)
     },
     // 表格方法
@@ -414,12 +453,10 @@ export default {
     },
     dataDetailBtn(row) {
       this.dataObj = row
-      // console.log(this.dataDetailShow, '111')
       this.dataDetailShow = true
     },
     //  二维码弹框方法
     showDialog(row) {
-      // console.info("row value--->", row)
       this.dialogVisible = true
       const params = {
         m: 'h5',
@@ -430,10 +467,8 @@ export default {
       }
       const loading = this.$loading({
         lock: true,
-        text: '拼命加载中。。。',
-        spinner: 'el-icon-loading',
+        text: '拼命加载中',
         fullscreen: true,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.myGame-container')
       })
       updateStatus(params).then(res => {
@@ -448,7 +483,7 @@ export default {
           }
           this.message = qrurl
         } else {
-          this.$message.error(res.errorMessage)
+          this.$message.error(res.data.errorMessage)
         }
         loading.close()
       })
@@ -458,7 +493,6 @@ export default {
         message: '复制成功',
         type: 'success'
       })
-      // console.log(this.$refs.url)
       this.$refs.url.style.background = 'rgba(51,141,233,1)'
       this.$refs.url.style.color = '#fff'
     },
@@ -468,17 +502,12 @@ export default {
     getOrgName() {
       const params = {
         type: 1
-        // 'tenantId': this.GLOBAL.tenantId,
-        // 'orgId': this.GLOBAL.orgId
       }
       getOrgName(params).then(res => {
-        // console.log('res', res)
-        // this.list = rorgIdes.data.results
         if (res.data.errorCode === 0) {
           this.orgList = res.data.results
-          // console.log(res.data.results, '111111111')
         } else {
-          this.$message.error(res.errorMessage)
+          this.$message.error(res.data.errorMessage)
         }
       })
     }
@@ -488,15 +517,7 @@ export default {
 <style lang="scss" scoped>
 .myGame-container {
   .myGame-top {
-    // width: calc(100% - 30px);
     min-width: 920px;
-    // .search {
-    //   border-radius: 10px;
-    //   padding: 10px 20px 5px 10px;
-    //   overflow: hidden;
-    //   background: #f8f8f8;
-    //   border: 1px solid #d9d9d9;
-    // }
   }
 }
 </style>
@@ -507,33 +528,27 @@ export default {
   .cell {
     height: 70px !important;
   }
-  td {
-    // border-bottom: 0.3px solid rgb(238, 238, 238);
-  }
 }
-.myGame-container .el-table td {
-  // border-bottom: 0.3px solid rgb(238, 238, 238) !important;
-}
-// .myGame-cont {
+
 .erweimaBox {
-  width: 335px;
-  height: 435px;
-  .el-dialog__header {
-    border-bottom: 0;
+  .el-dialog__header .el-dialog__title {
+    height: 21px;
+    display: block;
   }
   .el-dialog__body {
-    padding: 10px 0 0 17px !important;
+    padding: 20px !important;
+    text-align: center;
     p {
       margin-top: 20px;
       margin-bottom: 10px;
-      font-size: 15px;
+      font-size: 16px;
       text-align: center;
     }
     .erweima-footer {
       display: flex;
       justify-content: space-around;
       .ipt {
-        width: 220px;
+        width: 262px;
         border-radius: 4px;
         transition: all 0.3s;
         line-height: 28px;
@@ -548,7 +563,9 @@ export default {
     }
   }
 }
-// }
+.iconfont_code {
+  color: #46b6ee;
+}
 </style>
 <style lang="scss">
 .myGame-container {
@@ -563,9 +580,32 @@ export default {
     line-height: 20px;
     font-size: 14px;
     -webkit-box-orient: vertical;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }
   }
+
+  //---------------------- 保存成功 start---------------------------
+  .game_top {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    .icon_success {
+      color: #87d068;
+      margin-right: 5px;
+    }
+  }
+
+  .game_qrcode {
+    text-align: center;
+  }
+
+  .copy_box {
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 14px;
+  }
+  //---------------------- 保存成功 end---------------------------
 }
 </style>

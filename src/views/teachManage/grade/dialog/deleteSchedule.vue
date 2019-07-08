@@ -9,7 +9,7 @@
       <div class="text">删除日程会自动取消这些学员的预约</div>
       <div>
         <span>选择原因：</span>
-        <el-select v-model="reason">
+        <el-select v-model="reason" filterable>
           <el-option
             value="1"
             label="操作有误"

@@ -45,6 +45,7 @@
                   v-model="ruleForm.defaultOrgId"
                   placeholder="请选择所属校区"
                   disabled
+                  filterable
                   style="width:300px"
                 >
                   <el-option
@@ -62,6 +63,7 @@
                     v-model="ruleForm.courseId"
                     placeholder="请选择课程名称"
                     style="width:300px"
+                    filterable
                     @change="courseNameChange"
                   >
                     <el-option
@@ -97,6 +99,7 @@
                   v-model="ruleForm.mainTeacherIds"
                   :class="mtidsStatus ? 'errorStyle' : ''"
                   multiple
+                  filterable
                   placeholder="请选择主教"
                   style="width:300px"
                   @change="mtidsStatusChange"
@@ -117,6 +120,7 @@
                   v-model="ruleForm.assistanTeacherIds"
                   :class="atidStatus ? 'errorStyle' : ''"
                   multiple
+                  filterable
                   placeholder="请选择助教"
                   style="width:300px"
                   @change="atidStatusChange"
@@ -140,6 +144,7 @@
                   placeholder="请选择教室"
                   style="width:300px"
                   clearable
+                  filterable
                   @change="clsRoomStatusChange"
                 >
                   <el-option
@@ -328,6 +333,7 @@
                         <el-select
                           v-model="child.week"
                           placeholder="请选择星期"
+                          filterable
                           @change="weekChange"
                         >
                           <el-option
@@ -478,6 +484,7 @@
                     placeholder="请选择上课主题"
                     style="width:300px"
                     clearable
+                    filterable
                   >
                     <el-option
                       v-for="(item, index) of schoolThemeList"

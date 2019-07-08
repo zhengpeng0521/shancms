@@ -89,7 +89,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -100,7 +99,6 @@ export default {
       this.isVisible = false
       this.visible2 = false
       this.visible3 = false
-      console.log('1111')
     }
   }
 }

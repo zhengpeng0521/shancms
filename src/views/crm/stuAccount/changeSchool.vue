@@ -3,6 +3,7 @@
     <!-- 搜索栏 -->
     <div class="search">
       <CommonSearch
+        ref= "CommonSearch"
         :is-inline="true"
         :params="formInline"
         :forms="formInline"
@@ -94,7 +95,7 @@ export default {
               h(
                 'el-popover',
                 {
-                  props: { placement: 'top', trigger: 'click' }
+                  props: { placement: 'top', trigger: 'hover' }
                 },
                 [
                   h('div',
@@ -184,6 +185,7 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         apiService: queryTransList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
@@ -194,13 +196,16 @@ export default {
           {
             label: '审核',
             type: 'normal',
+            prop: 'status',
+            class: 'disabled',
+            text: '1',
             method: row => {
               this.auditDialog(row)
             }
           }
         ]
       },
-      tableHeight: 'calc(100vh - 242px)',
+      tableHeight: 'calc(100vh - 227px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -246,6 +251,18 @@ export default {
       },
       formValue: {}
     }
+  },
+  mounted() {
+    const route = this.$router.history.current.params
+    let params = {}
+    console.log('route', route)
+    if (route.activeTab === 'changeSchool') {
+      if (route.action === 'transferAudit') {
+        params = { status: '1' }
+        this.$refs.CommonSearch.formValue.status = '1'
+      }
+    }
+    this.$refs.tableCommon.getList(params)
   },
   methods: {
     /* 搜索 */
@@ -299,12 +316,17 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }
   }
   .search {
     height: 48px;
+  }
+  .disabled {
+    color: #999 !important;
+    cursor: default !important;
   }
 }
 </style>

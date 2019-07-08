@@ -28,6 +28,7 @@
             v-model="ruleForm.belongType"
             placeholder="请选择分类"
             style="width:450px"
+            filterable
           >
             <el-option
               v-for="item in productionList"
@@ -45,6 +46,7 @@
             v-model="ruleForm.belongStu"
             placeholder="请选择学员"
             style="width:450px"
+            filterable
             @change="stuChange"
           >
             <el-option

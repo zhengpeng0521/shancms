@@ -321,7 +321,6 @@ export default {
               // console.log('activateText----obj--->',obj);
               // add new text on cavas
               if (obj.type === 'new') {
-                console.log('--activateText--new-->', obj)
                 this.fp.addText('双击编辑', {
                   styles: {
                     fill: this.state.text.color,

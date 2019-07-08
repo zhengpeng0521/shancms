@@ -109,30 +109,6 @@ export default {
   transform: translateX(1000px);
   opacity: 0;
 }
-.picDetail-container {
-  // width: 100vw;
-  // height: 100vh;
-  // background: rgba(0, 0, 0, 0.5);
-  // z-index: 10000;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-
-  // @keyframes enterAnamation {
-  //   10% {
-  //     right: -100%;
-  //   }
-  //   100% {
-  //     right: 0;
-  //   }
-  // }
-  // // .picDetailShow {
-  // //   animation: enterAnamation 1s linear;
-  // // }
-  // .picDetail {
-  //   animation: enterAnamation 1s linear;
-  // }
-}
 </style>
 <style lang="scss" >
 .tanchukuang {

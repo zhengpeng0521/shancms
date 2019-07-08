@@ -123,6 +123,11 @@ const crmRouter = {
             component: () => import('@/views/crm/financeMgr/refundMgr.vue'),
             name: 'refundMgr',
             meta: { title: '退款管理', meunId: '4070300' }
+          },
+          {
+            component: () => import('@/views/crm/financeMgr/expend.vue'),
+            name: 'expend',
+            meta: { title: '支出管理', meunId: '4070400' }
           }
         ]
       }
@@ -158,7 +163,7 @@ const crmRouter = {
           {
             component: () => import('@/views/crm/stuAccount/cancelClass.vue'),
             name: 'cancelClass',
-            meta: { title: '消课记录', meunId: '4080500' }
+            meta: { title: '手动消课记录', meunId: '4080500' }
           }
         ]
       }
@@ -185,7 +190,13 @@ const crmRouter = {
             component: () =>
               import('@/views/crm/integralMgr/integralChange.vue'),
             name: 'accountMgr',
-            meta: { title: '积分变动', meunId: '4090300' }
+            meta: { title: '积分记录', meunId: '4090300' }
+          },
+          {
+            component: () =>
+              import('@/views/orgSet/systemSet/integralRule/integralRule'),
+            name: 'integralRule',
+            meta: { title: '积分规则', meunId: '4090400' }
           }
         ]
       }

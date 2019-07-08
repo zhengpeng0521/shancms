@@ -25,6 +25,7 @@
           <el-select
             v-model="cancelClassData.selectInput"
             clearable
+            filterable
             placeholder="请选择学员"
             style="width: 100%"
             @change="cancelStuChange(cancelClassData.selectInput,cancelStuList)"
@@ -46,6 +47,7 @@
             :loading="loading"
             clearable
             multiple
+            filterable
             placeholder="请选择消课课程"
             style="width: 100%"
             @change="cancelClassValue"
@@ -65,11 +67,10 @@
           <el-form-item
             v-for="(child, index) in selectClassList"
             :key="index + 'selectClass'"
-            :show-message="false"
             :label="renderProp(child)"
-            :prop="cancelClassData[child]"
+            :prop="'item_'+child"
             :rules="{
-              required: true, message: '可精确到小数点后2位，不能超过可消课数', trigger: 'change'
+              validator: (rule, value, callback) => { periodValidator(rule, value, callback) }, trigger: ['blur']
             }"
           >
             <el-input
@@ -78,10 +79,10 @@
               clearable
               @change="userInputChange"
             />
-            <span
+            <!-- <span
               ref="userInput"
               class="user_class_tip"
-            >可精确到小数点后2位, 不能超过可消课时数</span>
+            >可精确到小数点后2位, 不能超过可消课时数</span> -->
           </el-form-item>
         </div>
         <el-form-item
@@ -161,7 +162,7 @@ export default {
         stuId: ''
       }
       this.cancelStuList.map((item, index) => {
-        if(value == item.stuId){ //eslint-disable-line
+        if (value == item.stuId) { //eslint-disable-line
           params.cardId = item.cardId
           params.stuId = item.stuId
           this.cancelClassData.reviewer = item.stuId // 学员账户号
@@ -257,6 +258,25 @@ export default {
       })
 
       this.isShowUserInput = true
+    },
+    // 自定义课时框校验
+    periodValidator(rule, value, callback) {
+      const ruleField = rule.field + ''
+      const courseId = ruleField.substring('item_'.length)
+      let maxClassNum = '' // 可消课的最大值
+      value = this.cancelClassData[courseId] // 用户输入的取消课程数量
+      this.allClassList.forEach(item => {
+        if (item.courseId === courseId) {
+          maxClassNum = item.periodLeft
+        }
+      })
+      if (!/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
+        callback(new Error('请输入数字,最多保留2位小数'))
+      } else if (value > maxClassNum) {
+        callback(new Error(`最大可消课时不能超过${maxClassNum}`))
+      } else {
+        callback()
+      }
     }
   }
 }

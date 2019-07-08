@@ -23,7 +23,7 @@
           :key="'entry-' + index"
           class="entry-item"
         >
-          <div @click="() => {goPage(item.link)}">
+          <div v-log="{compName:'快捷入口',eventName:`${item.name||''}点击`}" @click="() => {goPage(item.link)}">
             <img :src="item.icon">
             <p>{{ item.name }}</p>
           </div>
@@ -36,7 +36,7 @@
           :key="'entry-' + index"
           class="entry-item"
         >
-          <div @click="() => {goPage(item.link)}">
+          <div v-log="{compName:'快捷入口',eventName:`${item.name||''}点击`}" @click="() => {goPage(item.link)}">
             <img :src="item.icon">
             <p>{{ item.name }}</p>
           </div>
@@ -53,7 +53,7 @@
         :key="'entry-' + index"
         class="entry-item"
       >
-        <div @click="() => {goPage(item.link)}">
+        <div v-log="{compName:'快捷入口',eventName:`${item.name||''}点击`}" @click="() => {goPage(item.link)}">
           <img :src="item.icon">
           <p>{{ item.name }}</p>
         </div>

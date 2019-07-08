@@ -9,6 +9,7 @@
         @toParent="resetFieldHanle"
       />
       <el-button
+        v-log="{compName:'进销存管理',eventName:'web-【学员CRM】-进销存管理-物资管理-新增物资'}"
         class="green_btn"
         @click="materialDialog('materialForm')"
       >新增物资</el-button>
@@ -97,6 +98,7 @@
             v-model="materialData.status"
             placeholder="请选择状态"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -281,7 +283,7 @@ export default {
         //   }
         // }
       ],
-      tableHeight: 'calc(100vh - 239px)',
+      tableHeight: 'calc(100vh - 228px)',
       options: {
         apiService: getMaterialsMgr, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
@@ -480,6 +482,7 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

@@ -20,7 +20,6 @@
   </transition>
 </template>
 <script>
-// import { micActivityRequest, sysHostRequest } from '@/api/marketing/microAct.js'
 export default {
   props: {
     'visible': {
@@ -29,7 +28,6 @@ export default {
     }
   },
   data() {
-    // const iframeUrl = 'http://192.168.1.65/activityhtml/?moduleId=199&moduleCode=132201712221552&moduleInstId=&orgId=3536&orgName=' + encodeURI(encodeURI('更丰富'))
     return {
       visible2: false,
       visible3: false,
@@ -40,7 +38,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -49,11 +46,9 @@ export default {
   mounted() {
     const side = this.$refs.sideModal
     document.body.appendChild(side)
-    console.log(this.$parent.obj, '-------------this.$parent.obj')
     this.url = `${process.env.CONTENT_PATH}/micOffline/index.html?defId=${this.$parent.obj.id || ''}&id=&orgId=${this.$parent.obj.orgId || ''}&orgName=${encodeURI(this.$store.getters.orgName)}`
     const self = this
     window.addEventListener('message', function(e) {
-      // console.log(e.data)
       if (e.data === 'close') {
         self.close()
       }
@@ -110,30 +105,6 @@ export default {
 .slide-fade-leave-to {
   transform: translateX(1000px);
   opacity: 0;
-}
-.picDetail-container {
-  // width: 100vw;
-  // height: 100vh;
-  // background: rgba(0, 0, 0, 0.5);
-  // z-index: 10000;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
-
-  // @keyframes enterAnamation {
-  //   10% {
-  //     right: -100%;
-  //   }
-  //   100% {
-  //     right: 0;
-  //   }
-  // }
-  // // .picDetailShow {
-  // //   animation: enterAnamation 1s linear;
-  // // }
-  // .picDetail {
-  //   animation: enterAnamation 1s linear;
-  // }
 }
 </style>
 <style lang="scss" >

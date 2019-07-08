@@ -194,7 +194,7 @@ export default {
           },
           {
             label: '已预约班级成员',
-            width: '150',
+            width: '150px',
             prop: 'stuNum',
             formatter: (row, column, cellValue) => {
               return `<div style="color:#1D9DF2;text-overflow:ellipsis;overflow:hidden">${row.stuNum}</div>`
@@ -205,7 +205,29 @@ export default {
           },
           {
             label: '出勤率',
-            prop: 'checkRate'
+            width: '120px',
+            prop: 'checkRate',
+            renderHeader: (h, { column, $index }) => {
+              return h('div', { 'class': 'stu_attence', style: { lineHeight: '23px' }}, [
+                h('span', '出勤率'),
+                h('el-tooltip', { props: { effect: 'dark', content: '已统计试听和补课人员', placement: 'top' }}, [
+                  h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', cursor: 'pointer', color: '#666', fontSize: '16px', verticalAlign: 'middle' }})
+                ])
+              ])
+            }
+          },
+          {
+            label: '正常出勤率',
+            width: '150px',
+            prop: 'checkRateR',
+            renderHeader: (h, { column, $index }) => {
+              return h('div', { 'class': 'stu_attence', style: { lineHeight: '23px' }}, [
+                h('span', '正常出勤率'),
+                h('el-tooltip', { props: { effect: 'dark', content: '未统计试听和补课人员', placement: 'top' }}, [
+                  h('i', { 'class': 'iconfont icon_ym_ts', style: { marginLeft: '5px', cursor: 'pointer', color: '#666', fontSize: '16px', verticalAlign: 'middle' }})
+                ])
+              ])
+            }
           }
         ],
         tableHeight: 'calc(100vh - 306px)',
@@ -322,6 +344,7 @@ export default {
         if (data.errorCode === 0) {
           this.$message.success(data.errorMessage)
           this.$refs.stuTable.getList({ clsId: this.clsId })
+          this.$emit('toUpdateStuList', this.rowInfo)
         } else {
           this.$message.error(data.errorMessage || '移除学员失败')
         }
@@ -431,7 +454,16 @@ export default {
   .info_detail /deep/ .el-tabs__nav-wrap::after {
     background: transparent;
   }
-  .detail_inner {
+  .info_detail /deep/ {
+    .el-tabs__header {
+      border-bottom: 1px solid #ddd;
+    }
   }
+}
+</style>
+
+<style lang="scss">
+.stu_attence {
+  padding: 0 !important;
 }
 </style>

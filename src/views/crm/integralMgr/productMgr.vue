@@ -10,6 +10,7 @@
       />
       <div>
         <el-button
+          v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-商品管理-新增商品'}"
           class="green_btn"
           @click="productDialog()"
         >新增商品</el-button>
@@ -41,6 +42,7 @@
             >确定</el-button>
           </div>
           <el-button
+            v-log="{compName:'积分账户',eventName:'web-【学员CRM】-积分账户-商品管理-删除商品'}"
             slot="reference"
             class="cancel_btn edit_btn"
             size="mini"
@@ -131,7 +133,7 @@ export default {
         apiService: queryIntegralGoods, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 271px)',
+      tableHeight: 'calc(100vh - 260px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -237,6 +239,7 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

@@ -20,6 +20,7 @@
           v-model="ruleForm.clsId"
           placeholder="请选择班级"
           style="width:100%"
+          filterable
         >
           <el-option
             v-for="item in classNameList"
@@ -131,6 +132,7 @@
                 <el-select
                   v-model="child.week"
                   placeholder="请选择星期"
+                  filterable
                 >
                   <el-option
                     v-for="item in weekOption"

@@ -82,6 +82,16 @@ export default {
           prop: 'orderMoney',
           align: 'right'
         }, {
+          label: '已消总金额',
+          width: '120px',
+          prop: 'balanceConsume',
+          align: 'right'
+        }, {
+          label: '未消总金额',
+          width: '120px',
+          prop: 'balanceLeft',
+          align: 'right'
+        }, {
           label: '审核状态',
           prop: 'orderStateName',
           isShowTooltip: true,

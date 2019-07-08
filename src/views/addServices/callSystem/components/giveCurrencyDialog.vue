@@ -87,7 +87,6 @@ export default {
     },
     /* 确定提交弹框表单内容 */
     submitForm(formName) {
-      console.log('formName', formName)
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.giveCurrencyDialogShow = false

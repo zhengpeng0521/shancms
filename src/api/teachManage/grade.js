@@ -75,7 +75,7 @@ export function removeClassStu(data) {
 // 获取在读学员列表
 export function stuSummaryQuery(data) {
   return request({
-    url: `${window.SS_CRM}/crm/stuInfo/stu/summaryQuery`,
+    url: `${window.SS_CRM}/crm/stuInfo/stu/summaryQueryAll`,
     method: 'post',
     data
   })

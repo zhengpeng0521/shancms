@@ -28,6 +28,7 @@
             :disabled="productDisabled"
             placeholder="请选择商品"
             clearable
+            filterable
             style="width:100%"
             @change="shopValueChange"
           >

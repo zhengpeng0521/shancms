@@ -39,7 +39,6 @@ export default {
   watch: {
     'visible'(val) {
       this.isVisible = val
-      console.log(val)
     },
     'isVisible'(val) {
       this.$emit('update:visible', val)
@@ -48,13 +47,10 @@ export default {
   mounted() {
     const side = this.$refs.sideModal
     document.body.appendChild(side)
-    // console.log(this.$parent.obj, 'obj')
     this.url = `${process.env.CONTENT_PATH}/micOffline/index.html?defId=${this.$parent.obj.actId}&id=${this.$parent.obj.id}&orgId=${this.$parent.obj.orgId}&orgName=${encodeURI(this.$store.getters.orgName)}`
     // this.url = `/micActivity/index.html?moduleId=${this.$parent.obj.id}&moduleCode=${this.$parent.obj.code}&moduleInstId=&orgId=3536&orgName=encodeURI(encodeURI('52测试账号（校区）'))`
-    console.log('creat', this.url)
     const self = this
     window.addEventListener('message', function(e) {
-      // console.log(e.data)
       if (e.data === 'close') {
         self.close()
       }

@@ -91,7 +91,6 @@
             :pagination="listQuery"
             :options="options"
             :table-key="'teachManage_orderCourse_orderCourseList_orderCourseTable_orderCourseTable'"
-            @toChildData="getCheckCol"
           />
           <OrderCourseDetail
             ref="orderDetail"
@@ -212,6 +211,7 @@
 .orderCourse {
   .studyDate {
     color: #1d9df2;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

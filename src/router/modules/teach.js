@@ -71,7 +71,7 @@ const teachRouter = {
       component: ThirdMain,
       name: 'orderCourse',
       meta: {
-        title: '约课记录',
+        title: '约课管理',
         meunId: '5050000',
         cn: [
           {

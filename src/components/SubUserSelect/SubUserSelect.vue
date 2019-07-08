@@ -15,6 +15,7 @@
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
       :default-expand-all="false"
+      :placeholder="placeholder"
       class="select-tree"
       highlight-current
       @node-click="onClickNode"

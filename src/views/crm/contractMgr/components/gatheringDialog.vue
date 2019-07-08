@@ -5,13 +5,14 @@
   >
     <el-dialog
       :visible.sync="gatheringDialogShow"
+      :close-on-click-modal="false"
       title="合同收款"
       @close="cancelDialog('gatheringForm')"
     >
       <el-form
         ref="gatheringForm"
         :model="gatheringData"
-        label-width="90px"
+        :rules="rules"
         class="form_wrap"
       >
         <div class="right_box">
@@ -184,18 +185,20 @@
                     v-for="(item, index) of allPayMoneyList"
                     :key="index + '_paymoney'"
                   >
-                    <span style="margin-right: 15px;">
-                      金额: {{ item.money }}元
-                    </span>
-                    <span style="margin-right: 15px;">
-                      方式: {{ item.paymentName }}
-                    </span>
-                    <span style="margin-right: 15px;">
-                      收款状态: {{ item.statusName }}
-                    </span>
-                    <span>
-                      时间: {{ item.createTime }}
-                    </span>
+                    <div v-if="item.status !== '3'">
+                      <span style="margin-right: 15px;">
+                        金额: {{ item.money }}元
+                      </span>
+                      <span style="margin-right: 15px;">
+                        方式: {{ item.paymentName }}
+                      </span>
+                      <span style="margin-right: 15px;">
+                        收款状态: {{ item.statusName }}
+                      </span>
+                      <span>
+                        时间: {{ item.createTime }}
+                      </span>
+                    </div>
                   </div>
                 </el-collapse-item>
               </el-collapse>
@@ -241,41 +244,74 @@
                   <div class="from_fourth_img">
                     <img src="https://img.ishanshan.com/gimg/img/f4033ff0ece7e09ee302c7927d84edc3">
                   </div>
+
+                  <!-- 收款方式 -->
                   <div style="width: 85%">
-                    <el-select
-                      v-model="gatheringData.payType"
-                      clearable
-                      placeholder="请选择收款方式"
-                      style="width: 42%"
-                      @change="payTypeChange(gatheringData.payType)"
+                    <el-form-item
+                      label=""
+                      prop="payType"
+                      class="payItemStyle"
+                      style="width:40%"
                     >
-                      <el-option
-                        v-for="item in allPaymentList"
-                        :key="item.id"
-                        :label="item.paymentKeyName + '-' + item.name + (!!item.acctNo ? '-' + item.acctNo : '')"
-                        :value="item.id"
+                      <el-select
+                        v-model="gatheringData.payType"
+                        clearable
+                        placeholder="请选择收款方式"
+                        filterable
+                        @change="payTypeChange(gatheringData.payType)"
+                      >
+                        <el-option
+                          v-for="item in allPaymentList"
+                          :key="item.id"
+                          :label="item.paymentKey === 'xianjin' ? item.paymentKeyName : (item.paymentKeyName + '-' + item.name + '-' + item.acctNo)"
+                          :value="item.id"
+                        />
+                      </el-select>
+                    </el-form-item>
+
+                    <!-- 待收金额 -->
+                    <el-form-item
+                      label=""
+                      prop="perMoney"
+                      class="payItemStyle"
+                      style="width: 25%;"
+                    >
+                      <el-input
+                        v-model="gatheringData.perMoney"
+                        clearable
+                        @input="perMoneyChange"
                       />
-                    </el-select>
-                    <el-input
-                      v-model="gatheringData.perMoney"
-                      clearable
-                      style="width:20%;margin: 0 5px;"
-                      @input="perMoneyChange"
-                    />
-                    <el-input
-                      v-model="gatheringData.rate"
-                      clearable
-                      placeholder="手续费率:0.00%"
-                      class="rateInput"
-                      style="width:33%;padding-right: 10px;"
-                      disabled
-                    />
-                    <el-input
-                      v-model="gatheringData.orderId"
-                      clearable
-                      placeholder="支付宝流水号"
-                      style="width:100%;margin-top: 10px;"
-                    />
+                    </el-form-item>
+
+                    <!-- 手续费率 -->
+                    <el-form-item
+                      label=""
+                      prop="rate"
+                      class="payItemStyle"
+                      style="width:29%; margin-left: 19px"
+                    >
+                      <el-input
+                        v-model="gatheringData.rate"
+                        clearable
+                        placeholder="手续费率:0.00%"
+                        class="rateInput"
+                        disabled
+                      />
+                    </el-form-item>
+
+                    <!-- 支付宝流水号 -->
+                    <el-form-item
+                      label=""
+                      prop="orderId"
+                      class="payItemStyle"
+                      style="width:100%;margin-top: 5px;"
+                    >
+                      <el-input
+                        v-model="gatheringData.orderId"
+                        clearable
+                        placeholder="支付宝流水号"
+                      />
+                    </el-form-item>
                   </div>
                 </div>
                 <div class="from_fourth_bottom">
@@ -291,7 +327,7 @@
                     <el-button
                       type="primary"
                       size="mini"
-                      @click="payOrderSure()"
+                      @click="payOrderSure('gatheringForm')"
                     >确认</el-button>
                   </div>
                 </div>
@@ -362,6 +398,16 @@ export default {
         orderId: '', // 交易流水号
         realMoney: '' // 实际到账
       },
+
+      rules: {
+        payType: [
+          { required: true, message: '请选择收款方式', trigger: 'change' }
+        ],
+        perMoney: [
+          { required: true, message: '请正确输入待收金额', trigger: 'change' },
+          { pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/, message: '正数,2位小数', trigger: 'change' }
+        ]
+      },
       depositList: [], // 定金详情数据
       depositSelect: {}, // 定金选中的选项
       depositChecked: false, // 定金是否已经关联
@@ -410,6 +456,8 @@ export default {
       this.getOrderDetailByIdFun(rowlist)
       this.payInfoListFun(rowlist)
       this.queryPaymentAccountListFun()
+      this.depositSelect = {}
+      this.depositChecked = false
       this.gatheringDialogShow = !this.gatheringDialogShow
     },
     /* 关闭弹框 */
@@ -533,7 +581,9 @@ export default {
           let allMoneyNum = 0
           if (this.allPayMoneyList && this.allPayMoneyList.length > 0) {
             this.allPayMoneyList.map(item => {
-              allMoneyNum += Number(item.money)
+              if (item.status !== '3') {
+                allMoneyNum += Number(item.money)
+              }
             })
             this.allPayMoneyList.allMoneyNum = allMoneyNum
           }
@@ -630,10 +680,19 @@ export default {
       this.gatheringData.payType = ''
       this.gatheringData.perMoney = this.gatheringData.needPayMoney
     },
+
     /* 确定支付合同 */
-    payOrderSure() {
-      this.payOrderFun()
+    payOrderSure(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.payOrderFun()
+          this.$emit('toContractList')
+        } else {
+          return false
+        }
+      })
     },
+
     /** 待收款金额判断 */
     perMoneyChange(value) {
       if (value < 0) {
@@ -781,6 +840,10 @@ export default {
             /deep/ .el-form-item__label {
               width: auto !important;
               font-weight: 400;
+              width: 0px;
+            }
+            /deep/ .el-form-item__content {
+              margin-left: 0px;
             }
           }
           .con_third_right {
@@ -819,6 +882,15 @@ export default {
                   width: 100%;
                   height: 100%;
                 }
+              }
+              .el-form-item__label /deep/ {
+                width: auto !important;
+                font-weight: 400;
+                width: 0px;
+              }
+              .payItemStyle {
+                display: inline-block;
+                margin: 5px 0;
               }
             }
             .from_fourth_bottom {
@@ -867,12 +939,6 @@ export default {
         right: 20px;
         bottom: 10px;
       }
-    }
-  }
-  .rateInput {
-    padding-right: 10px;
-    .el-input__inner {
-      padding-right: 10px;
     }
   }
 }

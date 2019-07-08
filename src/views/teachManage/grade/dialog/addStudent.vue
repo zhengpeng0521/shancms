@@ -44,6 +44,7 @@
           @click="cancel()"
         >取消</el-button>
         <el-button
+          :loading="submitLoading"
           type="primary"
           @click="submit()"
         >确定</el-button>
@@ -77,10 +78,12 @@ export default {
         ]
       },
       newStuList: [], // 在读学员列表
+      clsStuIdArr: [], // 班级中的学员ID数组
       rowInfo: {},
       selectList: [],
       stuTableData: [], // 学员表格的数据
-      isShow: false
+      isShow: false,
+      submitLoading: false // 保存时loading
     }
   },
   mounted() {
@@ -95,19 +98,22 @@ export default {
       }
       stuSummaryQuery(params).then(res => {
         const data = res.data
+        this.clsStuIdArr = []
         if (data.errorCode === 0) {
-          const stuList = data.results
-          stuList.map((item, index) => {
+          const stuList = []
+          data.results.map((item, index) => {
             const stuObj = {}
             const name = item.stuName + ' (' + item.month + '月)'
             stuObj.stuName = name
             stuObj.stuId = item.stuId
-            this.newStuList.push(stuObj)
+            stuList.push(stuObj)
           })
+          this.newStuList = stuList
           for (const i in list) {
             for (const j in this.newStuList) {
               if (list[i].stuId == this.newStuList[j].stuId) { //eslint-disable-line
                 this.newStuList[j].display = true
+                this.clsStuIdArr.push(this.newStuList[j].stuId)
                 break
               }
             }
@@ -123,7 +129,7 @@ export default {
       this.$refs['ruleForm'].resetFields()
     },
     submit() {
-      console.info(this.ruleForm)
+      this.submitLoading = true
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           const stuStr = this.ruleForm.stuId && this.ruleForm.stuId.join(',')
@@ -140,8 +146,10 @@ export default {
             } else {
               this.$message.error(data.errorMessage || '添加学员失败')
             }
+            this.submitLoading = false
           })
         } else {
+          this.submitLoading = false
           return false
         }
       })
@@ -150,7 +158,7 @@ export default {
     accurateSearch() {
       this.isShow = true
       this.$nextTick(() => {
-        this.$refs.selectStu.show(this.ruleForm.stuId)
+        this.$refs.selectStu.show(this.ruleForm.stuId, this.clsStuIdArr)
       })
     },
     close(val) {
@@ -158,10 +166,8 @@ export default {
     },
     /* 获取精确查找的数据 */
     getSelectData(val) {
-      console.info('val===>', val)
       if (this.ruleForm.stuId) {
         this.ruleForm.stuId = val
-        console.info(this.ruleForm.stuId, 'this.ruleForm.stuId')
       } else {
         this.ruleForm.stuId = val
       }

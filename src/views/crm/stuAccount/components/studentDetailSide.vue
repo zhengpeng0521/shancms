@@ -115,7 +115,18 @@
                 </p>
                 <p>
                   <span>手机号:</span>
-                  <span style="color:#1D9DF2;">查看</span>
+                  <el-popover
+                    ref="popover1"
+                    placement="top-start"
+                    width="120"
+                    trigger="hover"
+                  >
+                    <p>{{ stuDetailData.mobile }}</p>
+                  </el-popover>
+                  <span
+                    v-popover:popover1
+                    style="color:#1D9DF2;"
+                  >查看</span>
                 </p>
                 <p>
                   <span>学员类型:</span>

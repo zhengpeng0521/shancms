@@ -3,6 +3,7 @@
     <el-dialog
       :visible.sync="aaddSetmealDialogShow"
       title="合同套餐"
+      width="600px"
       @close="cancelDialog('aaddSetmealForm')"
     >
       <el-form
@@ -48,7 +49,7 @@
             prop="amount"
           >
             <el-input
-              v-model="addSermealData.amount"
+              v-model.number="addSermealData.amount"
               clearable
               placeholder="正数，可精确到小数点后2位"
             />
@@ -78,6 +79,7 @@
                 v-model="item.courseName"
                 placeholder="请选择课程"
                 clearable
+                filterable
                 style="width:40%"
                 @change="classArrayChange(item.courseName)"
               >
@@ -121,6 +123,7 @@
               v-model="addSermealData.nurseryType"
               placeholder="请选择托班类型"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -139,6 +142,7 @@
               v-model="addSermealData.unitType"
               placeholder="请选择托班周期"
               clearable
+              filterable
               style="width:100%"
             >
               <el-option
@@ -176,7 +180,7 @@
           prop="price"
         >
           <el-input
-            v-model="addSermealData.price"
+            v-model.number="addSermealData.price"
             clearable
             placeholder="正数，可精确到小数点后2位"
           />
@@ -187,7 +191,7 @@
           prop="realPrice"
         >
           <el-input
-            v-model="addSermealData.realPrice"
+            v-model.number="addSermealData.realPrice"
             clearable
             placeholder="正数，可精确到小数点后2位"
           />
@@ -201,6 +205,7 @@
             v-model="addSermealData.status"
             placeholder="请选择状态"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -242,6 +247,18 @@ export default {
 
   },
   data() {
+    const vaildAmount = (rule, value, callback) => {
+      if (value === '' || value === undefined) {
+        callback()
+      } else {
+        const reg = /^(\d+|\d+\.\d{1,2})$/
+        if (!reg.test(value)) {
+          callback(new Error('正数，可精确到小数点后2'))
+        } else {
+          callback()
+        }
+      }
+    }
     return {
       aaddSetmealDialogShow: false,
       radioTypeDis: false, // 套餐类型是否禁用
@@ -311,16 +328,19 @@ export default {
           { required: true, message: '请输入产品名称', trigger: 'change' }
         ],
         price: [
-          { required: true, message: '正数，可精确到小数点后2位', trigger: 'change' }
+          { required: true, type: 'number', min: 0, message: '正数，可精确到小数点后2位', trigger: 'change' },
+          { validator: vaildAmount, trigger: 'change' }
         ],
         realPrice: [
-          { required: true, message: '正数，可精确到小数点后2位', trigger: 'change' }
+          { required: true, type: 'number', min: 0, message: '正数，可精确到小数点后2位', trigger: 'change' },
+          { validator: vaildAmount, trigger: 'change' }
         ],
         status: [
           { required: true, message: '请选择状态', trigger: 'change' }
         ],
         amount: [
-          { required: true, message: '请输入课时数量', trigger: 'change' }
+          { required: true, type: 'number', min: 0, message: '请输入课时数量', trigger: 'change' },
+          { validator: vaildAmount, trigger: 'change' }
         ],
         cType: [
           { required: true, message: '请输入课时类型', trigger: 'change' }
@@ -369,7 +389,7 @@ export default {
             id: res.data.id,
             type: res.data.type == '课时包' ? '1' : '3', //eslint-disable-line
             name: res.data.name, // 名称
-            amount: res.data.amount, // 数量
+            amount: Number(res.data.amount), // 数量
             cType: res.data.ctype == '通用课时' ? '1' : '2', //eslint-disable-line
             scope: [
               {
@@ -379,8 +399,8 @@ export default {
               }
             ], // 课时范围
             intro: res.data.intro, // 描述
-            price: res.data.price, // 原价
-            realPrice: res.data.realPrice, // 售卖价格
+            price: Number(res.data.price), // 原价
+            realPrice: Number(res.data.realPrice), // 售卖价格
             present: res.data.present, // 赠送金额
             startTime: res.data.startTime, // 开始时间
             endTime: res.data.endTime, // 结束时间
@@ -495,6 +515,7 @@ export default {
     updateContractProductFun(params) {
       updateContractProduct(params).then(res => {
         if (res.data.errorCode === 0) {
+          this.$message.success('编辑成功')
           this.$emit('toSetmealPage')
           this.cancelDialog('aaddSetmealForm')
         } else {
@@ -507,6 +528,17 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let params = {}
+          let timeCount = 0
+          if (this.addSermealData.cType === '2') {
+            this.addSermealData.scope.forEach((item) => {
+              timeCount += Number(item.courseCount)
+            })
+            if (timeCount !== Number(this.addSermealData.amount)) {
+              this.$message.error('分配课时数一定要等于总课时数！')
+              return
+            }
+          }
+
           if(this.addSermealData.type == '1') { //eslint-disable-line
             params = {
               id: this.addSermealData.id,
@@ -537,6 +569,7 @@ export default {
           if(this.rowIsEdit == '1'){ //eslint-disable-line
             addContractProduct(params).then(res => {
               if (res.data.errorCode === 0) {
+                this.$message.success('保存成功')
                 this.$emit('toSetmealPage')
                 this.cancelDialog('aaddSetmealForm')
                 this.$emit('toClose')
@@ -573,4 +606,3 @@ export default {
   }
 }
 </style>
-

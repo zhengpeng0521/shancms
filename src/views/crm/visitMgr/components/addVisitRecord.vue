@@ -19,14 +19,15 @@
           <span>{{ addVisitData.sellerId }}</span>
         </el-form-item>
         <el-form-item
-          label="跟进学员:"
+          label="到访学员:"
           prop="stuId"
         >
           <el-select
             v-model="addVisitData.stuId"
             :disabled="isDisabled"
-            placeholder="请选择跟进学员"
+            placeholder="请选择到访学员"
             clearable
+            filterable
             style="width:100%"
           >
             <el-option
@@ -73,6 +74,7 @@
           @click="cancelDialog('addVisitForm')"
         >取 消</el-button>
         <el-button
+          v-log="{compName:'到访管理',eventName:'web-【学员CRM】-到访管理-学员详情-添加到访记录'}"
           type="primary"
           @click="submitForm('addVisitForm')"
         >确 定</el-button>

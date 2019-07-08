@@ -205,7 +205,7 @@ export default {
 
             return h('span', {}, [
               h('el-popover', {
-                props: { placement: 'top', trigger: 'click' }
+                props: { placement: 'top', trigger: 'hover' }
               }, [
                 ...mobiles,
                 h('a', { slot: 'reference' }, '查看')

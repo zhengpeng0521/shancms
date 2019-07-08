@@ -24,7 +24,10 @@ import materials from './modules/market/materials'
 import stock from './modules/market/stock'
 import lantentStu from './modules/crm/stuInfo/lantentStu'
 import readStu from './modules/crm/stuInfo/readStu'
+import expendInfo from './modules/crm/expendInfo/expendInfo'
 import integral from './modules/crm/integral/integral'
+import microGame from './modules/zsb/microGame'
+import navbar from './modules/layout/navbar'
 import getters from './getters'
 
 Vue.use(Vuex)
@@ -37,6 +40,7 @@ const store = new Vuex.Store({
     tagsView,
     user,
     commonTable,
+    navbar, // 导航栏
 
     home, // 首页
     signBySelf, // 签到
@@ -47,6 +51,7 @@ const store = new Vuex.Store({
     lantentStu, // 潜在学员
     readStu, // 在读学员
     integral, // 积分导入
+    expendInfo, // 支出管理
 
     /** 销售报表 */
     leadsSource, // 来源报表
@@ -62,6 +67,8 @@ const store = new Vuex.Store({
     stuAttence, // 学员考勤表
     teaching, // 老师授课表
     classMonth, // 课时月结表
+
+    microGame, // 微游戏
 
     /** 三级菜单*/
     changeThirdMain

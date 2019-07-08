@@ -36,10 +36,10 @@
       <el-dialog
         :visible.sync="dialogVisible"
         custom-class="erweimaBox"
-        center
+        width="400px"
       >
         <qrcode
-          :options="{ width: 300,height:300,padding:0,margin:0 }"
+          :options="{ width: 360,height:360,padding:0,margin:0 }"
           :value="message"
           class="erweima"
         />
@@ -68,8 +68,7 @@
 
 import CommonSearch from '@/components/CommonSearch/CommonSearch'
 import Table from '@/components/CommonTable/CommonTable'
-// import { fetchList } from '@/api/marketing'
-import { myMarketingActivity, findDetail, updateStatus } from '@/api/marketing/microAct.js'
+import { myMarketingActivity, updateStatus } from '@/api/marketing/microAct.js'
 // 调用slideDetail
 import PicDetail from '../components/editPicDetail'
 import DataDetail from '../components/dataDetail'
@@ -93,14 +92,12 @@ export default {
       dialogVisible: false,
       message: '',
       picDetailShow: false,
-      // dataDetailShow: false,
       bianhao: '',
       activityName: '',
       activityType: '',
       obj: {},
       formObj: {},
       formValue: { status: '1' },
-      // select: false,
       options: {
         apiService: myMarketingActivity, // 表格的数据请求接口
         isSettingShow: true,
@@ -133,22 +130,15 @@ export default {
               const loading = this.$loading({
                 lock: true,
                 text: '拼命加载中',
-                // spinner: 'el-icon-loading',
                 fullscreen: false,
-                // background: 'rgba(0, 0, 0, 0.7)',
                 target: document.querySelector('.myActivity-container')
               })
               const params = {
                 'id': row.id,
                 'status': statu
-                // 'tenantId': 27
               }
               updateStatus(params).then(res => {
-                // console.log('updateStatus', res)
-                // this.list = res.data.results
                 if (res.data.errorCode === 0) {
-                  // console.log('111111111111')
-                  console.log(this.formValue, '111', row.status)
                   if (this.formValue !== {}) {
                     this.$refs.tableCommon.getList({ 'name': '',
                       'title': '',
@@ -178,7 +168,7 @@ export default {
       listQuery: {
         show: true // 是否显示
       },
-      tableHeight: 'calc(100vh - 244px)',
+      tableHeight: 'calc(100vh - 231px)',
       isBorder: true,
       columns: [
         {
@@ -200,25 +190,14 @@ export default {
               }, params.row.name
             )
           }
-          // formatter: (row, column, cellValue) => {
-          //   return `
-          //   <div style="overflow: hidden; text-overflow: ellipsis; color: rgba(24,145,237,1);
-          //       white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; width: 152px;
-          //       line-height: 20px; font-size: 14px; -webkit-box-orient: vertical;">${row.name}</div>
-          //   `
-          // },
-          // methods: (row) => {
-          //   this.picDetailBtn(row)
-          // }
         }, {
           label: '二维码',
           prop: 'activityUrl',
           isShowSet: true,
           formatter: (row) => {
-            return `<img src="https://img.ishanshan.com/gimg/n/20190326/bc5f6357fa2726cb764b85d533dadf46"/>`
+            return `<i class="iconfont icon_ym_ewm"/>`
           },
           methods: (row) => {
-            console.log(row)
             this.showDialog(row)
           }
         },
@@ -288,7 +267,6 @@ export default {
       ],
       // 搜索框设置
       formInline: {
-        // status: '1',
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
         },
@@ -336,26 +314,7 @@ export default {
     }
   },
   methods: {
-
-    findDetail() {
-      const params = {
-        'id': '',
-        'orgId': 3536
-      }
-      findDetail(params).then(res => {
-        // console.log('findDetail', res)
-        // this.list = res.data.results
-        if (res.data.errorCode === 0) {
-          console.log('findDetail', res)
-          // this.list = res.data.results
-        } else {
-          this.$message.error(res.errorMessage)
-        }
-        // loading.close()
-      })
-    },
     picDetailBtn(val) {
-      // console.log(val, 'val')
       this.obj = val
       this.picDetailShow = true
     },
@@ -372,11 +331,6 @@ export default {
         'id': '',
         type: 1,
         ...this.formValue
-        // 'name': this.formInline.activityName,
-        // 'title': this.formInline.activityStyle,
-        // 'status': this.formInline.statu
-        // 'tenantId': 27,
-        // 'orgId': 3636
       }
       this.$refs.tableCommon.getList(params)
     },
@@ -386,15 +340,12 @@ export default {
         'title': '',
         'status': 1,
         'type': 1
-        // 'tenantId': 27,
-        // 'orgId': 3636
       }
       this.$refs.tableCommon.getList(params)
       this.formValue = { status: '1' }
     },
     //  二维码弹框方法
     showDialog(row) {
-      // console.info("row value--->", row)
       this.dialogVisible = true
       let activityUrl = row.activityUrl
       if (!activityUrl) {
@@ -411,7 +362,6 @@ export default {
         message: '复制成功',
         type: 'success'
       })
-      // console.log(this.$refs.url)
       this.$refs.url.style.background = 'rgba(51,141,233,1)'
       this.$refs.url.style.color = '#fff'
     },
@@ -426,7 +376,6 @@ export default {
 <style lang="scss" scoped>
 .myActivity-container {
   .myActivity-top {
-    // width: calc(100% - 30px);
     min-width: 920px;
     .select {
       margin: 20px 0;
@@ -444,32 +393,27 @@ export default {
   .cell {
     height: 70px !important;
   }
-  td {
-    // border-bottom: 0.3px solid rgb(238, 238, 238);
-  }
-}
-.myActivity-container .el-table td {
-  // border-bottom: 0.3px solid rgb(238, 238, 238) !important;
 }
 .myActivity-cont {
   .erweimaBox {
-    width: 335px;
-    height: 435px;
-    .el-dialog__header {
-      border-bottom: 0;
+    .el-dialog__header .el-dialog__title {
+      height: 21px;
+      display: block;
     }
     .el-dialog__body {
-      padding: 10px 0 0 17px !important;
+      padding: 20px !important;
+      text-align: center;
       p {
         margin-top: 20px;
-        font-size: 15px;
+        margin-bottom: 10px;
+        font-size: 16px;
         text-align: center;
       }
       .erweima-footer {
         display: flex;
         justify-content: space-around;
         .ipt {
-          width: 220px;
+          width: 262px;
           border-radius: 4px;
           transition: all 0.3s;
           line-height: 28px;
@@ -500,6 +444,7 @@ export default {
     line-height: 20px;
     font-size: 14px;
     -webkit-box-orient: vertical;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }

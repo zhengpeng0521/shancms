@@ -60,6 +60,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       title: 'vue-element-admin',
       templateParameters: {
         BASE_URL: config.dev.assetsPublicPath + config.dev.assetsSubDirectory,
+        JK_KEY: '5ce66d23cbd733366a2c77fa'
       },
     }),
   ]

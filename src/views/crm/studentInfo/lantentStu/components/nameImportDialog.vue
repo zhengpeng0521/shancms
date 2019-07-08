@@ -176,7 +176,11 @@ export default {
 
     /** 上一步 */
     previous() {
-      this.active -= 1
+      if (this.active === 3 && this.flag) {
+        this.active -= 2
+      } else {
+        this.active -= 1
+      }
     },
 
     /** 下一步 */

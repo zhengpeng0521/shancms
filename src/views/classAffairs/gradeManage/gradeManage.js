@@ -199,7 +199,7 @@ export default {
         apiService: getGradeList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 234px)',
+      tableHeight: 'calc(100vh - 235px)',
       operates: {
         width: '250',
         fixed: 'right',
@@ -274,9 +274,6 @@ export default {
       }
       this.superValue = {}
       this.$refs.tableCommon.getList(params)
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     /* 新建班级 */
     addGrade() {

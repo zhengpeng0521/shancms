@@ -3,6 +3,33 @@ import request from '@/utils/request'
 const baseUrl = 'ss-crm-provider'
 const baseUrlSys = 'ss-sys-provider'
 
+// 根据课程查询学员账户列表
+export function batchStuList(data) {
+  return request({
+    url: baseUrl + '/crm/stucard/batchStuList',
+    method: 'post',
+    data
+  })
+}
+
+// 批量消课
+export function batchRepealCourse(data) {
+  return request({
+    url: baseUrl + '/crm/stucard/batchRepealCourse',
+    method: 'post',
+    data
+  })
+}
+
+// 查询批量消课结果
+export function batchRepealResult(data) {
+  return request({
+    url: baseUrl + '/crm/stucard/batchResult',
+    method: 'post',
+    data
+  })
+}
+
 // 查询学员账户列表
 export function stuCardListByCon(data) {
   return request({
@@ -25,6 +52,24 @@ export function getStuInfoList(data) {
 export function createRepealCourse(data) {
   return request({
     url: baseUrl + '/crm/student/createRepealCourse',
+    method: 'post',
+    data
+  })
+}
+
+// 学员账户---解冻---确定解冻学员账户
+export function thawStuCard(data) {
+  return request({
+    url: baseUrl + '/crm/stucard/thawStuCard',
+    method: 'post',
+    data
+  })
+}
+
+// 学员账户---冻结--确定冻结学员账户
+export function freezeStuCard(data) {
+  return request({
+    url: baseUrl + '/crm/stucard/freezeStuCard',
     method: 'post',
     data
   })
@@ -78,7 +123,7 @@ export function cardStuInfoById(data) {
 // 学员侧边弹框---添加适用学员获取学员下拉列表
 export function summaryQuery(data) {
   return request({
-    url: baseUrl + '/crm/stuInfo/stu/summaryQuery',
+    url: baseUrl + '/crm/stuInfo/stu/summaryQueryAll',
     method: 'post',
     data
   })

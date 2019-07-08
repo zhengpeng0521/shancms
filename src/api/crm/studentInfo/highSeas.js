@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+// 东书房二级来源
+export function subSecondChannelQuery(data) {
+  return request({
+    url: `${window.SYS_URL}/sysBase/dict/subSecondChannelQuery`,
+    method: 'post',
+    data
+  })
+}
+
 // 查询公海池学员记录
 export function queryClueStuList(data) {
   return request({

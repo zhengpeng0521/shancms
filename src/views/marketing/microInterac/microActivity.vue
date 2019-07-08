@@ -11,7 +11,6 @@
               @toParent="resetFieldHanle"
             />
           </div>
-          <!-- <div class="bottom-border" /> -->
           <div class="footer">
             <div
               v-for="(item,index) of navList"
@@ -39,15 +38,15 @@
               </div>
             </div>
             <div
-              v-show="moreFlag==true"
+              v-show="moreFlag==true && navList.length > 3"
               class="downBtn"
               @click="more"
-            ><img src="https://img.ishanshan.com/gimg/n/20190326/81df8f72b98b0d38717ed55b02e20ffa">更多</div>
+            ><i class="iconfont icon_nr_xx1" />更多</div>
             <div
-              v-show="upFlag===true"
+              v-show="upFlag===true && navList.length > 3"
               class="upBtn"
               @click="up"
-            ><img src="https://img.ishanshan.com/gimg/n/20190326/54f63d6deeb262cf5ce2ad142f2e7a6b"> 收起</div>
+            ><i class="iconfont icon_nr_xs" /> 收起</div>
           </div>
         </div>
         <div class="cont">
@@ -73,9 +72,6 @@ export default {
     Pic,
     CommonSearch,
     'pull-to': PullTo
-    // Search
-    // picDetail
-
   },
   data() {
     return {
@@ -94,7 +90,6 @@ export default {
           }
         ]
       },
-      // input: '',
       jieri: '',
       navList: [],
       listCont: '',
@@ -103,18 +98,14 @@ export default {
       upFlag: false,
       list: [],
       // loadmore组件参数
-      pageSize: 8,
+      pageSize: 50,
       pageIndex: 0,
       pageArr: [],
       pageCount: 0,
       textInfo: false,
       paramsArr: [],
       group: []
-      // clearflag:false
     }
-  },
-  created() {
-    // this.queryAllLabel()
   },
   mounted() {
     this.queryAllLabel()
@@ -130,13 +121,10 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microActivity-main')
       })
       queryAllLabel(params).then(res => {
-        // console.log('res', res)
         if (res.data.errorCode === 0) {
           this.navList = res.data.results
         } else {
@@ -147,24 +135,18 @@ export default {
     },
     getActivityList() {
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId,
         'labelIds': '',
         'defMsg': '',
         'pageIndex': 0,
-        'pageSize': 16
+        'pageSize': this.pageSize
       }
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microActivity-main')
       })
       getActivityList(params).then(res => {
-        // console.log('res', res)
-        // this.list = res.data.results
         if (res.data.errorCode === 0) {
           this.list = res.data.results
           this.pageCount = res.data.data.pageCount
@@ -178,9 +160,7 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microActivity-main')
       })
       this.navList[index].value.forEach(v => {
@@ -191,19 +171,14 @@ export default {
         this.group.splice(this.group.indexOf(item.group), 1)
       }
       const labelIds = this.paramsArr.join(',')
-      // console.log(this.group, this.paramsArr, labelIds)
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId,
         'labelIds': labelIds,
-        'defMsg': ''
+        'defMsg': '',
+        pageIndex: 0,
+        pageSize: this.pageSize
       }
-      // console.log(this.$refs.tableCommon)
-      // this.$refs.tableCommon.getList(params)
 
       getActivityList(params).then(res => {
-        console.log('res', res)
-        // this.list = res.data.results
         if (res.data.errorCode === 0) {
           this.list = res.data.results
         } else {
@@ -217,9 +192,7 @@ export default {
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microActivity-main')
       })
       item.switch = true // 当前块添加开关edit: 给当前块添加属性edit
@@ -236,17 +209,15 @@ export default {
       if (this.group.indexOf(item.group) === -1) {
         this.group.push(item.group)
         this.paramsArr.push(itm.id)
-        // console.log(this.group, this.paramsArr, '-1')
       } else {
         this.paramsArr.splice(this.group.indexOf(item.group), 1, itm.id)
-        // console.log(this.group, this.paramsArr, '1')
       }
       const labelIds = this.paramsArr.join(',')
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId,
         'labelIds': labelIds,
-        'defMsg': ''
+        'defMsg': '',
+        pageIndex: 0,
+        pageSize: this.pageSize
       }
 
       getActivityList(params).then(res => {
@@ -277,24 +248,18 @@ export default {
       this.formValue = formValue
       const labelIds = this.paramsArr.join(',')
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId,
         'labelIds': labelIds,
-        ...this.formValue
-        // 'defMsg': this.formInline.id
+        ...this.formValue,
+        pageIndex: 0,
+        pageSize: this.pageSize
       }
-      // console.log(this.$refs.tableCommon)
-      // this.$refs.tableCommon.getList(params)
       const loading = this.$loading({
         lock: true,
         text: '拼命加载中',
-        // spinner: 'el-icon-loading',
         fullscreen: false,
-        // background: 'rgba(0, 0, 0, 0.7)',
         target: document.querySelector('.microActivity-main')
       })
       getActivityList(params).then(res => {
-        console.log('res', res)
         this.list = res.data.results
         if (res.data.errorCode === 0) {
           this.list = res.data.results
@@ -306,68 +271,33 @@ export default {
     },
     /* 搜索重置 */
     resetFieldHanle(formName) {
+      this.pageIndex = 0
       this.queryAllLabel()
       this.getActivityList()
-      // 重置的入参
-      // const params = {
-      //   'orgId': this.GLOBAL.orgId,
-      //   'tenantId': this.GLOBAL.tenantId,
-      //   'labelIds': '',
-      //   'defMsg': ''
-      // }
-      // // console.log(this.$refs.tableCommon)
-      // // this.$refs.tableCommon.getList(params)
-      // const loading = this.$loading({
-      //   lock: true,
-      //   // text: 'Loading',
-      //   spinner: 'el-icon-loading',
-      //   fullscreen: false,
-      //   // background: 'rgba(0, 0, 0, 0.7)',
-      //   target: document.querySelector('.microActivity-main')
-      // })
-      // getActivityList(params).then(res => {
-      //   this.list = res.data.results
-      //   if (res.data.errorCode === 0) {
-      //     this.list = res.data.results
-      //   } else {
-      //     this.$message.error(res.errorMessage)
-      //   }
-      //   loading.close()
-      // })
     },
     loadMore() {
       this.pageArr = this.list
       this.pageIndex++
-      console.log('11111111', this.pageIndex)
-      // var num = this.pageSize * this.pageIndex
       const params = {
-        'orgId': this.GLOBAL.orgId,
-        'tenantId': this.GLOBAL.tenantId,
         'labelIds': this.paramsArr.join(','),
         'defMsg': '',
         'pageIndex': this.pageIndex,
-        'pageSize': 8
+        'pageSize': this.pageSize
       }
       if (this.pageIndex < this.pageCount) {
         const loading = this.$loading({
           lock: true,
           text: '拼命加载中',
-          // spinner: 'el-icon-loading',
           fullscreen: false,
-          // background: 'rgba(0, 0, 0, 0.7)',
           target: document.querySelector('.microActivity-main')
         })
         getActivityList(params).then(res => {
           if (res.data.errorCode === 0) {
             const arr = [...this.list]
             res.data.results.map((val, index) => {
-              // console.log(index)
-              // this.pageArr.push(val)
-              // this.list.push(val)
               arr.push(val)
             })
             this.list = arr
-            // console.log(this.list)
           } else {
             this.$message.error(res.errorMessage)
           }
@@ -381,53 +311,50 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.microActivity-box{
+.microActivity-box {
   height: calc(100vh - 150px);
 }
 
 .microActivity-main {
   width: 100%;
   min-width: 1060px;
-  height: calc(100vh - 150px); // border: 1px solid #f00;
+  height: calc(100vh - 150px);
   .top {
     width: 100%;
     background: rgba(255, 255, 255, 1);
     overflow: hidden;
     .serach {
       display: flex;
-      // margin-top: 20px;
       .serch-input {
         width: 220px;
         padding-left: 10px;
         padding-right: 10px;
       }
     }
-    // .bottom-border {
-    //   height: 4px;
-    //   clear: both;
-    //   background: #5d9cec;
-    //   margin-top: 10px;
-    // }
     .footer {
       width: 100%;
-      // background: pink;
       position: relative;
       .downBtn,
       .upBtn {
         display: flex;
         align-items: center;
         color: rgba(102, 102, 102, 1);
-        // position: absolute;
         width: 120px;
-        height: 26px;
-        // border: 1px solid #f00;
-        margin-left: 50%;
+        margin: 7px 0 14px 50%;
+        img:hover {
+          color: #46b6ee;
+        }
+        &:hover {
+          color: #46b6ee;
+          cursor: pointer;
+        }
       }
       .jieri {
-        // padding: 0 20px;
-        display: flex;
-        // border: 1px solid #00f;
         padding-top: 10px;
+        display: flex;
+        &:first-child {
+          padding: 0;
+        }
         button {
           background: #fff;
           cursor: pointer;
@@ -437,27 +364,22 @@ export default {
           border: 1px solid #fff;
           border-radius: 5px;
           padding: 2px 10px;
-          margin: 5px 3px 5px 3px;
+          margin: 0px 3px 5px 3px;
           outline: none;
           border-color: transparent;
           box-shadow: none;
         }
         button:hover {
-          // padding: 2px 10px;
-          // margin: 10px 3px;
-          background: rgba(255, 255, 255, 1);
-          border-radius: 5px;
-          border: 1px solid rgba(70, 182, 238, 1);
+          color: rgba(70, 182, 238, 1);
         }
         .tit {
-          // width: 42px;
           height: 20px;
           font-size: 14px;
           font-weight: 400;
           color: rgba(51, 51, 51, 1);
           line-height: 20px;
           min-width: 42px;
-          margin: 10px 5px 10px 20px;
+          margin: 0px 5px 10px 20px;
         }
         div {
           flex-wrap: wrap;
@@ -465,7 +387,6 @@ export default {
           .clickClass {
             background: #2ea8e6;
             color: #fff;
-            // border: 0;
           }
         }
       }
@@ -473,7 +394,6 @@ export default {
   }
   .cont {
     padding-top: 15px;
-    // height: calc(100vh - 430px);
     background: rgba(240, 242, 245, 0.8);
   }
   .leads-bottom-text {

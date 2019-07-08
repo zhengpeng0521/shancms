@@ -3,7 +3,6 @@ import CommonTable from '@/components/CommonTable/CommonTable'
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
 import {
   queryStuWork,
-  stuSummaryQuery,
   getWorkTagList,
   deleteStuWork
 } from '@/api/teachManage/homeSchoolConnect'
@@ -29,16 +28,24 @@ export default {
         },
         forms: [
           {
-            itemType: 'select',
-            placeholder: '请选择学员',
-            modelValue: 'stuId',
+            itemType: 'input',
+            placeholder: '学员姓名/电话号码',
+            modelValue: 'nameOrMobile',
             isFilterable: true,
-            isClearable: true,
-            itemStyle: 'width:140px',
-            valueKey: 'stuId',
-            labelKey: 'stuName',
-            apiService: stuSummaryQuery // 是否从接口中获取
+            isClearable: true
           },
+          // 学员较多时会造成卡顿,采用输入学员姓名和电话号码的方式过滤
+          // {
+          //   itemType: 'select',
+          //   placeholder: '请选择学员',
+          //   modelValue: 'stuId',
+          //   isFilterable: true,
+          //   isClearable: true,
+          //   itemStyle: 'width:140px',
+          //   valueKey: 'stuId',
+          //   labelKey: 'stuName',
+          //   apiService: stuSummaryQuery // 是否从接口中获取
+          // },
           {
             itemType: 'select',
             placeholder: '作品分类',
@@ -121,7 +128,7 @@ export default {
         apiService: queryStuWork, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 280px)',
+      tableHeight: 'calc(100vh - 269px)',
       operates: {
         width: '150',
         fixed: 'right',
@@ -154,9 +161,6 @@ export default {
     selectionChange(val) {
       this.checkNum = val.length
       this.checkList = val
-    },
-    getCheckCol(val) {
-      console.info('val--->', val)
     },
     /* 搜索 */
     searchHandle(formValue) {

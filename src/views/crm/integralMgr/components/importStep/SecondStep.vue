@@ -23,6 +23,7 @@
                 v-model="regex[field.key]"
                 placeholder="请选择要映射的选项"
                 clearable
+                filterable
                 @change="$emit('changeMatch', regex)"
               >
                 <el-option

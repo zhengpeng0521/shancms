@@ -15,6 +15,7 @@
                 v-model="mtids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"
@@ -29,6 +30,7 @@
                 v-model="atids"
                 multiple
                 disabled
+                filterable
               >
                 <el-option
                   v-for="item in teacherList"
@@ -134,8 +136,8 @@
               </div>
               <i
                 slot="reference"
-                class="el-icon-question"
-                style="color:#46b6ee;font-size:1.2rem"
+                class="iconfont icon_ym_ts"
+                style="color:#666"
               />
             </el-popover>
           </el-form-item>

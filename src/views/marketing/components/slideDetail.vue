@@ -28,7 +28,6 @@ export default {
     }
   },
   data() {
-    console.log('this.visible', this.visible)
     return {
       isVisible: this.visible
     }

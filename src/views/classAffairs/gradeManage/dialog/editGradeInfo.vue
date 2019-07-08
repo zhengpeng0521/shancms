@@ -20,6 +20,7 @@
           :disabled="isClsType"
           placeholder="请选择托班类型"
           style="width:100%"
+          filterable
           @change="setClsName('clsType')"
         >
           <el-option
@@ -120,6 +121,7 @@
           v-model="ruleForm.mTeachers"
           placeholder="请选择主教"
           multiple
+          filterable
           style="width:100%"
         >
           <el-option
@@ -135,6 +137,7 @@
           v-model="ruleForm.aTeachers"
           placeholder="请选择助教"
           multiple
+          filterable
           style="width:100%"
         >
           <el-option
@@ -150,6 +153,7 @@
           v-model="ruleForm.nurserys"
           placeholder="请选择保育员"
           multiple
+          filterable
           style="width:100%"
         >
           <el-option
@@ -168,6 +172,7 @@
           v-model="ruleForm.clsRoomId"
           placeholder="请选择教室"
           style="width:100%"
+          filterable
         >
           <el-option
             v-for="item in classroomList"

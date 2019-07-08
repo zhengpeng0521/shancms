@@ -23,6 +23,7 @@
               v-model="ruleForm.courseId"
               style="width:100%"
               placeholder="请选择所属课程"
+              filterable
               @change="courseChange"
             >
               <el-option
@@ -62,6 +63,7 @@
               :clearable="true"
               style="width:100%"
               multiple
+              filterable
               placeholder="请选择主教"
             >
               <el-option
@@ -80,6 +82,7 @@
               v-model="ruleForm.assistantTeacherIds"
               style="width:100%"
               multiple
+              filterable
               placeholder="请选择助教"
             >
               <el-option
@@ -98,6 +101,7 @@
               v-model="ruleForm.topTeacher"
               style="width:100%"
               placeholder="请选择班主任"
+              filterable
             >
               <el-option
                 v-for="item in teachList"

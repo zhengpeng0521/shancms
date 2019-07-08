@@ -52,6 +52,7 @@
               v-model="ruleForm.gradeId"
               placeholder="选择班级"
               style="width:100%"
+              filterable
             >
               <el-option
                 v-for="item in gradeList"
@@ -72,6 +73,7 @@
           @click="resetForm('ruleForm')"
         >取消</el-button>
         <el-button
+          :loading="submitLoading"
           type="primary"
           @click="submitForm('ruleForm')"
         >确定</el-button>
@@ -120,7 +122,8 @@ export default {
       gradeList: [], // 班级列表
       rowInfo: {},
       isShow: false,
-      detailList: {}
+      detailList: {},
+      submitLoading: false // 保存加载
     }
   },
   methods: {
@@ -143,7 +146,8 @@ export default {
     /* 班级列表 */
     getGradeList() {
       const params = {
-        courseId: this.detailList.courseId
+        courseId: this.detailList.courseId,
+        pageSize: 99999
       }
       classGradeSummary(params).then(res => {
         const data = res.data
@@ -156,7 +160,7 @@ export default {
     },
     /* 学员列表 */
     getStuList() {
-      stuSummaryQuery({ type: '2' }).then(res => {
+      stuSummaryQuery({ type: '2', pageSize: 99999 }).then(res => {
         const data = res.data
         if (data.errorCode === 0) {
           const stuList = data.results
@@ -182,6 +186,7 @@ export default {
           cpdIds: this.detailList.cpdId,
           stuId: stuIds
         }
+        this.submitLoading = true
         stuCreate(params).then(res => {
           const data = res.data
           if (data.errorCode === 0) {
@@ -195,6 +200,7 @@ export default {
           } else {
             this.$message.error(data.errorMessage || '单次约课失败')
           }
+          this.submitLoading = false
         })
       }
     },
@@ -205,6 +211,7 @@ export default {
     },
     /* 确定 */
     submitForm(formName) {
+      this.submitLoading = true
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.ruleForm.orderType == '1') { //eslint-disable-line
@@ -215,13 +222,16 @@ export default {
                 cpmId: this.detailList.cpmId,
                 stuId: stuIds
               }
+              this.submitLoading = true
               stuCheckBirthday(payload).then(res => {
                 const data = res.data
                 if (data.errorCode === 0) {
                   this.stuCreate()
                 } else if (data.errorCode > 0) {
+                  this.submitLoading = false
                   this.$refs.orderCourseContinue.show(data.errorMessage)
                 } else {
+                  this.submitLoading = false
                   this.$message.error(data.errorMessage || '学员年龄校验失败')
                 }
               })
@@ -234,6 +244,7 @@ export default {
               cpdId: this.detailList.cpdId,
               clsId: this.ruleForm.gradeId
             }
+            this.submitLoading = true
             gradeCreate(params).then(res => {
               const data = res.data
               if (data.errorCode === 0) {
@@ -247,9 +258,11 @@ export default {
               } else {
                 this.$message.error(data.errorMessage || '单次约课失败')
               }
+              this.submitLoading = false
             })
           }
         } else {
+          this.submitLoading = false
           return false
         }
       })

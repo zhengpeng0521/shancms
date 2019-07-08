@@ -18,6 +18,7 @@
         :key="'banner'+index"
       >
         <a
+          v-log="{compName:'首页Banner',eventName:`${item.image||''}`}"
           :style="{backgroundImage: `url(${item.image})`}"
           :href="item.link"
           target="_blank"
@@ -25,7 +26,10 @@
         />
       </el-carousel-item>
     </el-carousel>
-    <div class="banner-news">
+    <div
+      v-if="false"
+      class="banner-news"
+    >
       <div
         v-for="(text, index) in bannerNews"
         :key="'news'+index"

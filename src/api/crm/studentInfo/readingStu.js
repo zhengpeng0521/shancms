@@ -17,7 +17,14 @@ export function dictGetByKeyChannel(data) {
     data
   })
 }
-
+// 查询下属
+export async function querySubName(params) {
+  return request({
+    url: `${window.SYS_URL}/sysBase/tenantUser/summaryQueryByIds`,
+    method: 'post',
+    data: params
+  })
+}
 // 分配对象下拉数据
 export function summaryQueryUsers(data) {
   return request({
@@ -110,6 +117,15 @@ export function importThreadStuData(data) {
 export function importComplete(data) {
   return request({
     url: `${window.SS_CRM}/crm/stuInfo/stuInfoImport/isComplete`,
+    method: 'post',
+    data
+  })
+}
+
+// 分配客服接口
+export function allotWaiter2StuPort(data) {
+  return request({
+    url: `${window.SS_CRM}/crm/stuInfo/stu/allotWaiter2Stu`,
     method: 'post',
     data
   })

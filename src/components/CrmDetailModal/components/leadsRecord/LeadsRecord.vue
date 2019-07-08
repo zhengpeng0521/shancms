@@ -32,6 +32,7 @@
                   v-model="leadsForm.parentId"
                   placeholder="家长姓名(必填)"
                   class="form-width"
+                  filterable
                 >
                   <el-option
                     v-for="(item, index) in parentOpts"
@@ -51,6 +52,7 @@
                   v-model="leadsForm.type"
                   placeholder="跟进方式(必填)"
                   class="form-width"
+                  filterable
                 >
                   <el-option
                     v-for="(item, index) in followOpts"
@@ -69,6 +71,7 @@
                   :clearable="true"
                   placeholder="跟进状态(选填)"
                   class="form-width"
+                  filterable
                 >
                   <el-option
                     v-for="(item, index) in stutasOpts"
@@ -283,7 +286,7 @@ export default {
           }
           // 更新列表
           this.getLeadsRecord(payload, true)
-          this.$emit('toUpdateTable')
+          this.$emit('toUpdateTable', true)
           this.$message.success(data.errorMessage)
         } else {
           this.$message.error(data.errorMessage)

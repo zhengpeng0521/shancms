@@ -1,6 +1,7 @@
 import {
   getZjlCRMStuList, // 在读学员列表
-  getStuMsg // 学员详情
+  getStuMsg, // 学员详情
+  querySubName // 用户下拉树
 } from '@/api/crm/studentInfo/readingStu.js'
 import CommonTable from './../../../../components/CommonTable/CommonTable'
 import CommonSearch from './../../../../components/CommonSearch/CommonSearch'
@@ -8,6 +9,7 @@ import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
 import CommonDateSearch from '../../../../components/CommonDateSearch/CommonDateSearch'
 import DistributeDialog from './components/distributeDialog.vue'
 import TeachDistributeDialog from './components/teachDistributeDialog.vue'
+import serviceDistributeDialog from './components/serviceDistributeDialog.vue' // 分配给客服
 import VisitDialog from './../lantentStu/components/visitDialog.vue'
 import ListenDialog from './../../auditionMgr/components/addAuditionDialog.vue'
 import ApplyDialog from './../../contractMgr/components/contractOrderDialog.vue'
@@ -17,6 +19,8 @@ import TurnOtherDialog from './../lantentStu/components/turnOtherDialog.vue'
 import { exportFile } from '@/utils/exportFile'
 import ParentBindWX from './components/parentBindWX.vue'
 import NameImportDialog from './components/nameImportDialog.vue'
+import SubUserSelect from './../../../../components/SubUserSelect/SubUserSelect.vue'
+import bindingFace from './components/bindingFace.vue' // 绑定人脸的弹窗
 export default {
   components: {
     CommonTable,
@@ -27,12 +31,15 @@ export default {
     CrmDetailModal, // 侧边详情弹框
     DistributeDialog, // 分配转给他人弹框
     TeachDistributeDialog, // 教师分配在读学员
+    serviceDistributeDialog, // 分配给客服
     VisitDialog, // 到访弹框
     ListenDialog, // 试听弹框
     ApplyDialog, // 报名弹框
     AddLantentStuDialog, // 侧边新建潜在学员 报名 弹框
     TurnOtherDialog, // 转给他人弹框
-    NameImportDialog // 导入
+    NameImportDialog, // 导入
+    SubUserSelect, // 用户下拉树
+    bindingFace
   },
   data() {
     return {
@@ -47,7 +54,7 @@ export default {
           width: '120',
           render: (h, params) => {
             // eslint-disable-next-line
-            if (params.row.sex == '2') {
+            if (params.row.sex == "2") {
               return h(
                 'div',
                 {
@@ -75,7 +82,7 @@ export default {
                 ]
               )
               // eslint-disable-next-line
-            } else if (params.row.sex == '1') {
+            } else if (params.row.sex == "1") {
               return h(
                 'div',
                 {
@@ -143,7 +150,7 @@ export default {
               h(
                 'el-popover',
                 {
-                  props: { placement: 'top', trigger: 'click' }
+                  props: { placement: 'top', trigger: 'hover' }
                 },
                 [
                   h(
@@ -175,14 +182,94 @@ export default {
                 params.row.parents &&
                   params.row.parents.map((item, index) => {
                     // eslint-disable-next-line
-                    if (item.open_id == '' || item.open_id == null) {
+                    if (item.open_id == "" || item.open_id == null) {
                       return h('span', ' ')
                     } else {
-                      return h('span', item.open_id + ' ')
+                      return h('span', '已绑定' + ' ')
                     }
                   })
               )
             ])
+          }
+        },
+        {
+          label: '绑定人脸',
+          align: 'center',
+          prop: 'bindingFace',
+          isShowTooltip: true,
+          width: '120px;',
+          render: (h, params) => {
+            // eslint-disable-next-line
+            if (params.row.faceBindingNum >= '1') {
+              return h(
+                'div',
+                {
+                  on: {
+                    click: () => {
+                      this.bindingFace(params.row)
+                    }
+                  }
+                },
+                [
+                  h(
+                    'span',
+                    {
+                      style: 'display:inline-block;width:8px;height:8px;background-color: rgb(136, 199, 10);border-radius: 50px;margin-right: 5px;margin-top: 7px;float:left;'
+                    }
+                  ),
+                  h(
+                    'div',
+                    {
+                      style: 'float:left;',
+                      class: 'stuName'
+                    },
+                    '已绑定'
+                  ),
+                  h(
+                    'span',
+                    {
+                      style: 'display:inline-block;text-overflow:ellipsis;float:left;color:#409EFF;'
+                    },
+                    params.row.faceBindingNum + '/' + params.row.canFaceBindingNum
+                  )
+                ]
+              )
+            // eslint-disable-next-line
+            } else {
+              return h(
+                'div',
+                {
+                  on: {
+                    click: () => {
+                      this.bindingFace(params.row)
+                    }
+                  }
+                },
+                [
+                  h(
+                    'span',
+                    {
+                      style: 'display:inline-block;width:8px;height:8px;background-color: rgb(255, 127, 117);border-radius: 50px;margin-right: 5px;margin-top: 7px;float:left;'
+                    }
+                  ),
+                  h(
+                    'div',
+                    {
+                      style: 'float:left;',
+                      class: 'stuName'
+                    },
+                    '未绑定'
+                  ),
+                  h(
+                    'span',
+                    {
+                      style: 'display:inline-block;text-overflow:ellipsis;float:left;color:#409EFF;'
+                    },
+                    params.row.faceBindingNum + '/' + params.row.canFaceBindingNum
+                  )
+                ]
+              )
+            }
           }
         },
         {
@@ -245,6 +332,11 @@ export default {
           isShowTooltip: true
         },
         {
+          label: '负责客服',
+          prop: 'waiterName',
+          isShowTooltip: true
+        },
+        {
           label: '一级来源',
           prop: 'channel',
           isShowTooltip: true,
@@ -258,13 +350,14 @@ export default {
         }
       ],
       options: {
+        noMount: true,
         mutiSelect: true, // 是否多选
         apiService: getZjlCRMStuList, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 327px)',
+      tableHeight: 'calc(100vh - 313px)',
       operates: {
-        width: '160',
+        width: '162',
         fixed: 'right',
         list: [
           {
@@ -296,24 +389,6 @@ export default {
         },
         forms: [
           {
-            itemType: 'select',
-            placeholder: '全部潜在学员',
-            modelValue: 'region',
-            isFilterable: true,
-            isClearable: true,
-            itemStyle: 'width:140px',
-            selectOption: [
-              {
-                label: '已开通',
-                value: '1'
-              },
-              {
-                label: '已停用',
-                value: '0'
-              }
-            ]
-          },
-          {
             itemType: 'input',
             placeholder: '学员姓名/电话号码',
             modelValue: 'mobileOrStuName',
@@ -339,6 +414,7 @@ export default {
           }
         ]
       },
+      // 高级搜索
       superSearch: {
         onClear: () => {
           this.onClear()
@@ -347,6 +423,23 @@ export default {
           this.onSearch(superValue)
         },
         fields: [
+          {
+            type: 'select',
+            key: 'isBindFace',
+            label: '人脸绑定状态',
+            optionValue: 'id',
+            optionLabel: 'name',
+            options: [{ id: '0', name: '未绑定' }, { id: '1', name: '已绑定' }]
+          },
+          {
+            type: 'select',
+            key: 'waiterId',
+            label: '负责客服',
+            optionValue: 'id',
+            optionLabel: 'name',
+            isAsync: true,
+            url: `${window.SYS_URL}/sysBase/tenantUser/summaryQuery`
+          },
           {
             type: 'select',
             key: 'counselorName',
@@ -405,6 +498,11 @@ export default {
             key: 'birthday',
             label: '生日',
             dateType: 'daterange'
+          }, {
+            type: 'datePicker',
+            key: 'createTime',
+            label: '创建日期',
+            dateType: 'daterange'
           },
           {
             type: 'dateTimePicker',
@@ -435,6 +533,7 @@ export default {
           }
         ]
       },
+
       idObj: {},
       superValue: {}, // 高级搜索内容
       checkedData: '',
@@ -445,7 +544,7 @@ export default {
         markText: { today: '0', thisMonth: '0' },
         pickerDateArr: []
       },
-      // 详情
+      // 侧边内容详情
       detailProps: {
         btns: [
           {
@@ -466,6 +565,7 @@ export default {
           }
         ],
         headerInfo: [{ label: '负责销售', key: 'saler' }],
+        // 在读学员学员详情弹窗基础信息内容
         baseInfo: [
           { label: '姓名', key: 'name' },
           { label: '性别', key: 'sex' },
@@ -475,9 +575,13 @@ export default {
           { label: '年级', key: 'grade' },
           { label: '星座', key: 'constellation' },
           { label: '民族', key: 'nation' },
+
+          { label: '人脸', key: 'isFaceBiding' },
+
           { label: '特长', key: 'speciality' },
           { label: '爱好', key: 'hobby' },
           { label: '血型', key: 'bloodType' },
+          { label: '学校', key: 'schaddress' },
           { label: '社保号码', key: 'socialSecurityNum' },
           { label: '学员类型', key: 'stuReading' },
           { label: '联系地址', key: 'conaddress' },
@@ -501,18 +605,91 @@ export default {
       studentName: '',
       detail: {},
       checkedRowlist: [],
-      rowInfo: {}
+      rowInfo: {},
+      userBranchOptions: [],
+      userBranchSelected: '0',
+      operatorType: 0, // 操作类型, 0.全部,1.我的, 2.我的下属
+      operatorUser: '' // 查询用户
     }
   },
   mounted() {
+    // 根据路由默认查询
+    const route = this.$router.history.current.params
+    if (route.activeTab === 'readingStu') {
+      if (route.action === 'thisMonthBirthday') {
+        this.$refs.commonDatePicker.thisMonthClick()
+        this.$refs.commonDatePicker.checkedIndex = 'thisMonth'
+      }
+    }
+    const routerDateType = route && route.routerDateType
+    if (routerDateType === 'today') {
+      this.$refs.superSearch.ruleForm.createTime = [this.$moment().format('YYYY-MM-DD'), this.$moment().format('YYYY-MM-DD')]
+    } else if (routerDateType === 'thisWeek') {
+      const weekOfday = this.$moment().format('d') // 计算今天是这周第几天
+      const monday = this.$moment()
+        .subtract(weekOfday - 1, 'days')
+        .format('YYYY-MM-DD')
+      const sunday = this.$moment()
+        .add(7 - weekOfday, 'days')
+        .format('YYYY-MM-DD') // 周日日期
+      this.$refs.superSearch.ruleForm.createTime = [monday, sunday]
+    } else if (routerDateType === 'thisMonth') {
+      // 返回本月
+      const start = this.$moment()
+        .month(this.$moment().month())
+        .startOf('month')
+        .format('YYYY-MM-DD')
+      const end = this.$moment()
+        .month(this.$moment().month())
+        .endOf('month')
+        .format('YYYY-MM-DD')
+      this.$refs.superSearch.ruleForm.createTime = [start, end]
+    }
+    this.$refs.superSearch.submitForm()
+
+    this.querySubUser()
     this.getZjlCRMStuListFun()
   },
   methods: {
+    /** 查询下属 */
+    querySubUser() {
+      const userBranchOptions = [
+        { id: '0', type: 0, name: '全部', children: [] },
+        { id: '1', type: 1, name: '我的', children: [] }
+      ]
+      const children = []
+      const self = this
+      querySubName().then(res => {
+        if (res.data.errorCode === 0) {
+          const results = res.data.data
+          if (results && results.length > 0) {
+            results.map(item => {
+              children.push({
+                pid: '2',
+                id: item.id,
+                name: item.name,
+                type: 2
+              })
+            })
+            userBranchOptions.push({
+              id: '2',
+              type: 2,
+              name: '我的下属',
+              children: children
+            })
+            self.userBranchOptions = userBranchOptions
+          }
+        }
+      })
+      this.userBranchSelected = '0'
+      this.userBranchOptions = userBranchOptions
+    },
     /* 在读学员列表数据 */
     getZjlCRMStuListFun() {
+      const self = this
       getZjlCRMStuList().then(res => {
         if (res.data.errorCode === 0) {
-          this.commonDateOptions.markText = {
+          self.commonDateOptions.markText = {
             today: res.data.dayCount || 0,
             thisMonth: res.data.monthCount || 0
           }
@@ -545,12 +722,18 @@ export default {
             name: this.detail.name,
             sex:
               // eslint-disable-next-line
-              this.detail.sex == '1'
+              this.detail.sex == "1"
                 ? '男'
                 : this.detail.sex === '2'
                   ? '女'
-                : '', //eslint-disable-line
+                : "", // eslint-disable-line
             birthday: this.detail.birthday,
+            isFaceBiding:
+              // eslint-disable-line
+              this.detail.isFaceBiding === '0' || ''
+                ? '未绑定'
+                : this.detail.isFaceBiding === '1'
+                  ? '已绑定' : '未绑定',
             age: this.detail.age,
             month: this.detail.month,
             nation: this.detail.nation,
@@ -559,6 +742,7 @@ export default {
             constellation: this.detail.constellation,
             speciality: this.detail.speciality,
             bloodType: this.detail.bloodType,
+            schaddress: this.detail.schaddress,
             socialSecurityNum: this.detail.socialSecurityNum,
             stuReading: '在读',
             remark: this.detail.remark,
@@ -580,17 +764,17 @@ export default {
     clickOne(type) {
       // 学员报名弹框
       // eslint-disable-next-line
-      if (type == '1') {
+      if (type == "1") {
         this.$refs.applyDialog.showDialog('add', this.rowInfo)
       }
       // 编辑学员信息
       // eslint-disable-next-line
-      if (type == '2') {
+      if (type == "2") {
         this.$refs.addLantentStuDialog.showDialog('editRead', this.detail)
       }
       // 转给他人弹框
       // eslint-disable-next-line
-      if (type == '3') {
+      if (type == "3") {
         this.$refs.distributeDialog.showDialog('returnInfo', this.rowInfo)
       }
     },
@@ -603,9 +787,10 @@ export default {
     getReadingStuList() {
       this.$refs.crmDetailModal.visible = false
       const params = {
+        ...this.formValue,
         pageIndex: 0
       }
-      this.$refs.tableCommon.getList(params)
+      this.searchHandle(params)
     },
     /* 合同导出 */
     exportReadingStu() {
@@ -628,6 +813,11 @@ export default {
         this.$message.error('暂无数据导出')
       }
     },
+    // 绑定人脸弹窗
+    bindingFace(row) {
+      this.$refs.bindingFace.showDialog(row)
+    },
+
     /* 微信家长绑定弹框 */
     parentBindWX() {
       this.$refs.parentBindWX.showDialog()
@@ -640,6 +830,12 @@ export default {
     teachDistributeDialog() {
       this.$refs.teachDistribute.showDialog(this.checkedRowlist)
     },
+
+    // 分配客服
+    serviceDistributeDialog() {
+      this.$refs.serviceDistributeDialog.showDialog(this.checkedRowlist)
+    },
+
     /* 清除多选 */
     getClearData() {
       this.$refs.tableCommon.clearSelection()
@@ -657,10 +853,21 @@ export default {
     /* 更新表格数据 */
     getUpdateTable() {
       const params = {
+        ...this.formValue,
         pageIndex: 0
       }
-      this.$refs.tableCommon.getList(params)
+      this.searchHandle(params)
     },
+
+    /** 详情变动更新表格 */
+    detailUpdateTable() {
+      const params = {
+        ...this.formValue,
+        pageIndex: this.$refs.tableCommon.pageIndex - 1
+      }
+      this.searchHandle(params)
+    },
+
     /* 更新详情数据 */
     getUpdateDetailData(row) {
       this.openSideDetail(row)
@@ -706,6 +913,13 @@ export default {
         params.startLastFollowTime = this.superValue.finalFollowTime[0]
         params.endLastFollowTime = this.superValue.finalFollowTime[1]
       }
+      if (
+        this.superValue.createTime &&
+        this.superValue.createTime.length > 0
+      ) {
+        params.startCreateTime = this.superValue.createTime[0]
+        params.endCreateTime = this.superValue.createTime[1]
+      }
       delete params.birthday
       delete params.createTime
       delete params.nextFollowTime
@@ -713,11 +927,25 @@ export default {
     },
     /* 搜索 */
     searchHandle(formValue) {
+      // 用户权限选择
+      const userBranchParams = {}
+      if (this.userBranchSelected === '0' || this.userBranchSelected === '1') {
+        // 全部、我的
+        userBranchParams.operatorType = this.userBranchSelected
+      } else if (parseFloat(this.userBranchSelected) > 1) {
+        // 我的下属
+        userBranchParams.operatorType = '2'
+        if (this.userBranchSelected !== '2') {
+          // 选择的下属
+          userBranchParams.uids = this.userBranchSelected
+        }
+      }
       this.formValue = formValue
       // 搜索的入参
       const params = {
         ...this.formValue,
-        ...this.superValue
+        ...this.superValue,
+        ...userBranchParams
       }
       const dateArr = this.commonDateOptions.pickerDateArr || []
       if (dateArr && dateArr.length > 0) {
@@ -729,21 +957,38 @@ export default {
     },
     /* 搜索重置 */
     resetFieldHanle(formName) {
-      // 重置的入参
-      const params = {
-        pageIndex: 0,
-        ...this.superValue
-      }
-      this.commonDateReset()
-      this.formValue = {}
-      this.$refs.tableCommon.getList(params)
+      // // 重置的入参
+      // const params = {
+      //   pageIndex: 0,
+      //   ...this.superValue
+      // }
+      // this.commonDateReset()
+      // this.formValue = {}
+      // this.$refs.tableCommon.getList(params)
+      this.userBranchSelected = '0'
+      this.$refs.commonDatePicker.commonDateReset()
+      this.searchHandle({})
     },
     /** 高级搜索 */
     onSearch(superValue) {
+      // 用户权限选择
+      const userBranchParams = {}
+      if (this.userBranchSelected === '0' || this.userBranchSelected === '1') {
+        // 全部、我的
+        userBranchParams.operatorType = this.userBranchSelected
+      } else if (parseFloat(this.userBranchSelected) > 1) {
+        // 我的下属
+        userBranchParams.operatorType = '2'
+        if (this.userBranchSelected !== '2') {
+          // 选择的下属
+          userBranchParams.uids = this.userBranchSelected
+        }
+      }
       this.superValue = superValue
       const params = {
         ...this.superValue,
-        ...this.formValue
+        ...this.formValue,
+        ...userBranchParams
       }
       const dateArr = this.commonDateOptions.pickerDateArr || []
       if (dateArr && dateArr.length > 0) {
@@ -755,38 +1000,40 @@ export default {
     },
     /** 高级清除 */
     onClear() {
-      const params = {
-        pageIndex: 0,
-        ...this.formValue
-      }
-      const dateArr = this.commonDateOptions.pickerDateArr || []
-      if (dateArr && dateArr.length > 0) {
-        params.startBirthday = dateArr[0]
-        params.endBirthday = dateArr[1]
-      }
-      this.superValue = {}
-      this.$refs.tableCommon.getList(params)
+      // const params = {
+      //   pageIndex: 0,
+      //   ...this.formValue
+      // }
+      // const dateArr = this.commonDateOptions.pickerDateArr || []
+      // if (dateArr && dateArr.length > 0) {
+      //   params.startBirthday = dateArr[0]
+      //   params.endBirthday = dateArr[1]
+      // }
+      // this.superValue = {}
+      // this.$refs.tableCommon.getList(params)
+      this.onSearch({})
     },
     /** 导入后刷新列表 */
     refresh() {
-      const params = {
-        ...this.superValue,
-        ...this.formValue
-      }
-      if (
-        this.commonDateOptions.pickerDateArr &&
-        this.commonDateOptions.pickerDateArr.length > 0
-      ) {
-        params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
-        params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
-      }
-      for (const i in params) {
-        if (!params[i]) {
-          delete params[i]
-        }
-      }
-      this.getTimeSearch(params)
-      this.$refs.tableCommon.getList(params)
+      // const params = {
+      //   ...this.superValue,
+      //   ...this.formValue
+      // }
+      // if (
+      //   this.commonDateOptions.pickerDateArr &&
+      //   this.commonDateOptions.pickerDateArr.length > 0
+      // ) {
+      //   params.startNextFollowTime = this.commonDateOptions.pickerDateArr[0]
+      //   params.endNextFollowTime = this.commonDateOptions.pickerDateArr[1]
+      // }
+      // for (const i in params) {
+      //   if (!params[i]) {
+      //     delete params[i]
+      //   }
+      // }
+      // this.getTimeSearch(params)
+      // this.$refs.tableCommon.getList(params)
+      this.searchHandle(this.formValue)
     }
   }
 }

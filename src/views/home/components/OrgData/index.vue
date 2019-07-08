@@ -8,7 +8,7 @@
     element-loading-text="拼命加载中"
   >
     <div class="data-title">
-      <h3>机构数据<i
+      <h3>机构概况<i
         v-if="dataVisible"
         class="iconfont icon_sy_ck icon-common icon-eye"
         @click="toggle"
@@ -54,12 +54,12 @@
                   <p
                     v-for="(info, key) in item.numInfo"
                     :key="'info'+key"
-                  >{{ info }}</p>
+                  >{{ subIsShow(info) }}</p>
                 </div>
                 <span>{{ isShow(item.num) }}</span>
               </el-tooltip>
               <a v-else>{{ isShow(item.num) }}</a>
-              <img :src="upDown(item.num, item.preNum)">
+              <img v-show="dataVisible" :src="upDown(item.num, item.preNum)">
             </p>
             <p class="data-item-pre">{{ preDateRender(dateType) + isShow(item.preNum) }}</p>
           </div>
@@ -88,12 +88,12 @@
                   <p
                     v-for="(info, key) in item.numInfo"
                     :key="'info'+key"
-                  >{{ info }}</p>
+                  >{{ subIsShow(info) }}</p>
                 </div>
                 <span>{{ isShow(item.num) }}</span>
               </el-tooltip>
               <a v-else>{{ isShow(item.num) }}</a>
-              <img :src="upDown(item.num, item.preNum)">
+              <img v-show="dataVisible" :src="upDown(item.num, item.preNum)">
             </p>
             <p class="data-item-pre">{{ preDateRender(dateType) + isShow(item.preNum) }}</p>
           </div>
@@ -126,12 +126,12 @@
                 <p
                   v-for="(info, key) in item.numInfo"
                   :key="'info'+key"
-                >{{ info }}</p>
+                >{{ subIsShow(info) }}</p>
               </div>
               <span>{{ isShow(item.num) }}</span>
             </el-tooltip>
             <a v-else>{{ isShow(item.num) }}</a>
-            <img :src="upDown(item.num, item.preNum)">
+            <img v-show="dataVisible" :src="upDown(item.num, item.preNum)">
           </p>
           <p class="data-item-pre">{{ preDateRender(dateType) + isShow(item.preNum) }}</p>
         </div>
@@ -202,6 +202,16 @@ export default {
       }
     },
 
+    /** 弹窗数据显示 */
+    subIsShow(info) {
+      if (this.dataVisible) {
+        return info
+      } else {
+        const text = info.split('：')[0] + '：****'
+        return text
+      }
+    },
+
     /** 增加减少 */
     upDown(newNum, oldNum) {
       if (Number(newNum) > Number(oldNum)) {
@@ -230,11 +240,17 @@ export default {
 
     /** 跳转页面 */
     goPage(link) {
+      let routerDateType = 'today'
+      if (this.dateType === 2) {
+        routerDateType = 'thisWeek'
+      } else if (this.dateType === 3) {
+        routerDateType = 'thisMonth'
+      }
       const linkList = link.split('?')
       if (linkList.length === 2) {
-        this.$router.push({ name: linkList[0], params: { activeTab: linkList[1] }})
+        this.$router.push({ name: linkList[0], params: { activeTab: linkList[1], routerDateType }})
       } else if (linkList.length === 1) {
-        this.$router.push({ name: linkList[0] })
+        this.$router.push({ name: linkList[0], params: { routerDateType }})
       }
     }
   }
@@ -245,6 +261,7 @@ export default {
 @import "@/styles/mixin.scss";
 
 .data-title {
+  position: relative;
   @include flex;
   @include flexCenter(space-between);
 
@@ -275,6 +292,10 @@ export default {
 
   .date-type {
     cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
     border: 1px solid #bbb;
     border-radius: 12px;
     font-size: 14px;

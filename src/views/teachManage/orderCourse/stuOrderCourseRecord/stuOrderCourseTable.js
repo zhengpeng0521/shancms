@@ -157,8 +157,6 @@ export default {
               return `<div>请假</div>`
             } else if (row.signType === '5') {
               return `<div>旷课</div>`
-            } else if (row.signType === '6') {
-              return `<div>取消</div>`
             } else if (row.signType === '6' && row.reason === '1') {
               return `<div>取消</div>操作有误`
             } else if (row.signType === '6' && row.reason === '2') {
@@ -175,11 +173,13 @@ export default {
               return `<div>取消</div>删除排课`
             } else if (row.signType === '6' && row.reason === '8') {
               return `<div>取消</div>家长取消`
+            } else if (row.signType === '6') {
+              return `<div>取消</div>`
             }
           }
         }
       ],
-      tableHeight: 'calc(100vh - 294px)',
+      tableHeight: 'calc(100vh - 283px)',
       listQuery: {
         show: true,
         sizes: true,
@@ -467,12 +467,12 @@ export default {
     exportContent() {
       const params = {
         ...this.superValue,
-        stuName: this.formInline.stuName,
-        courseId: this.formInline.courseId
+        stuName: this.formValue.stuName,
+        courseId: this.formValue.courseId
       }
-      if (this.formInline.modifyTime) {
-        params.startDate = this.formInline.modifyTime[0]
-        params.endDate = this.formInline.modifyTime[1]
+      if (this.$refs.search.formValue.modifyTime) {
+        params.startDate = this.$refs.search.formValue.modifyTime[0]
+        params.endDate = this.$refs.search.formValue.modifyTime[1]
       }
       for (const key in params) {
         if (!params[key]) {
@@ -657,14 +657,16 @@ export default {
         this.end = this.$moment().format('YYYY-MM-DD')
         const params = {
           startDate: this.$refs.search.formValue.modifyTime[0],
-          endDate: this.$refs.search.formValue.modifyTime[1]
+          endDate: this.$refs.search.formValue.modifyTime[1],
+          pageIndex: 0
         }
         this.$refs.tableCommon.getList(params)
       } else if (val === '2') {
         this.$refs.search.formValue.modifyTime = [monday, sunday]
         const params = {
           startDate: monday,
-          endDate: sunday
+          endDate: sunday,
+          pageIndex: 0
         }
         this.start = monday
         this.end = sunday
@@ -679,7 +681,8 @@ export default {
         this.$refs.search.formValue.modifyTime = [startDate, endDate]
         const params = {
           startDate: startDate,
-          endDate: endDate
+          endDate: endDate,
+          pageIndex: 0
         }
         this.start = startDate
         this.end = endDate
@@ -688,6 +691,7 @@ export default {
       this.isBackWeek = false
       this.isBackDay = false
       this.isBackMonth = false
+      this.formValue.modifyTime = this.$refs.search.formValue.modifyTime
     },
     /* 修改考勤 */
     updateSignType(row) {
@@ -700,23 +704,9 @@ export default {
     },
     /* 修改考勤成功更新 */
     getUpdateSignType() {
-      let startDate = ''
-      let endDate = ''
-      if (this.flag) {
-        startDate = this.formValue.modifyTime[0]
-        endDate = this.formValue.modifyTime[1]
-      } else {
-        startDate = this.$refs.search.formValue.modifyTime[0]
-        endDate = this.$refs.search.formValue.modifyTime[1]
-      }
-      const params = {
-        startDate: startDate,
-        endDate: endDate
-      }
-      this.$refs.tableCommon.getList(params)
+      this.formValue.modifyTime = this.$refs.search.formValue.modifyTime
+      this.searchHandle(this.formValue)
     },
-    /* 获取表格列 */
-    getCheckCol() {},
     selectionChange(val) {
       if (val) {
         this.checkList = val

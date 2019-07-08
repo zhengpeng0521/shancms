@@ -17,14 +17,17 @@
               @click="onceOrderCourse"
             >单次约课</el-button>
             <el-button
+              :disabled="disabledIsShow()"
               type="primary"
               @click="batchOrderCourse"
             >批量约课</el-button>
             <el-button
+              :disabled="disabledIsShow()"
               type="primary"
               @click="orderMissCourse"
             >预约补课</el-button>
             <el-button
+              :disabled="disabledIsShow()"
               type="primary"
               @click="orderTryCourse"
             >预约试听</el-button>

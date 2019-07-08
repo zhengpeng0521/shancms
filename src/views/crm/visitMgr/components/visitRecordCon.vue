@@ -49,7 +49,7 @@
           v-else
           class="null_data"
         >
-          <img src="https://img.ishanshan.com/gimg/img/0f4b3e548fb0edce54c578866babc7af">
+          <img src="https://img.ishanshan.com/gimg/user/n///1550211410.png">
           <div>暂时没有数据</div>
         </div>
       </div>
@@ -88,7 +88,7 @@
             >
             <img
               v-else
-              src="https://img.ishanshan.com/gimg/img/e51c6060b326c9cf12ddb4f1c4e12443"
+              src="https://img.ishanshan.com/gimg/n/20190413/4f27b672aa2dde5186327f00a1f4a37b"
               alt
             >
           </div>
@@ -119,7 +119,7 @@
           <span>{{ selectItem.content }}
           </span>
           <div v-if="selectItem">
-            <Confirm
+            <!-- <Confirm
               :text="'确认到访'"
               :placement="'top'"
               :content="'确认到访么?'"
@@ -127,7 +127,14 @@
               :is-button="true"
               :btn-type="'primary'"
               :btn-disabled="selectItem.status == '1' || selectItem.status == '0' || listData.length == 0 ? true : false"
-            />
+            /> -->
+            <el-button
+              :disabled="selectItem.status == '1' || selectItem.status == '0' || listData.length == 0 ? true : false"
+              :loading="visitedLoading"
+              style="margin:0px 10px 0 0"
+              type="primary"
+              @click="openVisited(selectItem)"
+            >确认到访</el-button>
             <el-button
               :disabled="selectItem.status == '1' || selectItem.status == '0' || listData.length == 0 ? true : false"
               style="margin:0px 10px 0 5px"
@@ -162,12 +169,58 @@
       ref="addVisitDialog"
       @toUpdateTable="getUpdateTable"
     />
+
+    <!-- 确认到访 -->
+    <el-dialog
+      :visible.sync="visitedVisible"
+      :close-on-click-modal="false"
+      title="确认到访"
+      width="500px"
+    >
+      <el-form
+        ref="visitedForm"
+        :model="visitedForm"
+        label-width="80px"
+      >
+        <el-form-item
+          :rules="[
+            { required: true, message: '请选择销售'}
+          ]"
+          label="分配销售"
+        >
+          <el-select
+            v-model="visitedForm.sellerId"
+            :style="{width: '100%'}"
+            placeholder="请选择销售"
+          >
+            <el-option
+              v-for="(item, index) in sallerList"
+              :key="'saller'+index"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button
+          :loading="visitedLoading"
+          @click="visitedClose"
+        >取 消</el-button>
+        <el-button
+          :loading="visitedLoading"
+          type="primary"
+          @click="confirmVisited"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import CrmDetailModal from '@/components/CrmDetailModal'
 import { queryVisitRecord, updateVisitStatus, getSingleClueStu,getStuMsg,leadsSummary,stusOfUser } from '@/api/crm/visitMgr/visitMgr' //eslint-disable-line
+import { tenantUserSummaryQuery } from '@/api/crm/studentInfo/lantentStu'
 import Confirm from '@/components/MiniCommon/Confirm'
 import AddVisitDialog from '../components/addVisitRecord'
 
@@ -202,11 +255,21 @@ export default {
       baseData: {},
       studentName: '',
       stuList: [], // 学员总的列表
-      idObj: {}
+      idObj: {},
+      // 确认到访
+      visitedVisible: false,
+      visitedLoading: false,
+      currentRow: {}, // 当前选中
+      sallerList: [], // 负责销售下拉
+      visitedForm: {
+        sellerId: ''
+      }
     }
   },
   mounted() {
     this.queryVisitRecord()
+    // 获取负责销售
+    this.getSaller()
   },
   methods: {
     queryVisitRecord(val) {
@@ -214,7 +277,8 @@ export default {
       if (val) {
         params = {
           pageSize: this.pageSize,
-          pageIndex: 0
+          pageIndex: 0,
+          queryType: 'org'
         }
         Object.assign(params, val)
         this.pageIndex = 1
@@ -222,7 +286,8 @@ export default {
         params = {
           ...this.searchValue,
           pageSize: this.pageSize,
-          pageIndex: this.pageIndex - 1
+          pageIndex: this.pageIndex - 1,
+          queryType: 'org'
         }
       }
       queryVisitRecord(params).then(res => {
@@ -237,19 +302,73 @@ export default {
         }
       })
     },
-    /* 到访确认 */
-    confirmVisited(selectItem) {
-      const params = {
-        ids: selectItem.id,
-        status: '1'
-      }
-      updateVisitStatus(params).then(res => {
+
+    /** 获取负责销售 */
+    getSaller() {
+      tenantUserSummaryQuery().then(res => {
         const data = res.data
         if (data.errorCode === 0) {
-          this.$message.success(data.errorMessage)
-          this.queryVisitRecord()
+          this.sallerList = data.results || []
         } else {
           this.$message.error(data.errorMessage)
+        }
+      })
+    },
+
+    /** 打开到访确认 */
+    openVisited(row) {
+      if (row.sellerId) {
+        const params = {
+          ids: row.id,
+          status: '1',
+          sellerId: row.sellerId
+        }
+        this.visitedLoading = true
+        updateVisitStatus(params).then(res => {
+          const data = res.data
+          if (data.errorCode === 0) {
+            this.$message.success(data.errorMessage)
+            this.queryVisitRecord()
+          } else {
+            this.$message.error(data.errorMessage)
+          }
+          this.visitedLoading = false
+        })
+      } else {
+        this.currentRow = row
+        this.visitedVisible = true
+      }
+    },
+
+    /** 关闭到访确认 */
+    visitedClose() {
+      this.visitedForm.sellerId = ''
+      this.visitedVisible = false
+    },
+
+    /* 到访确认 */
+    confirmVisited() {
+      this.$refs.visitedForm.validate((valid) => {
+        if (valid) {
+          const params = {
+            ids: this.currentRow.id,
+            status: '1',
+            sellerId: this.visitedForm.sellerId
+          }
+          this.visitedLoading = true
+          updateVisitStatus(params).then(res => {
+            const data = res.data
+            if (data.errorCode === 0) {
+              this.$message.success(data.errorMessage)
+              this.visitedClose()
+              this.queryVisitRecord()
+            } else {
+              this.$message.error(data.errorMessage)
+            }
+            this.visitedLoading = false
+          })
+        } else {
+          return false
         }
       })
     },
@@ -295,6 +414,7 @@ export default {
               { label: '年级', key: 'grade' },
               { label: '特长', key: 'speciality' },
               { label: '血型', key: 'bloodType' },
+              { label: '学校', key: 'schaddress' },
               { label: '社保号码', key: 'socialSecurityNum' },
               { label: '备注', key: 'remark' },
               { label: '联系地址', key: 'conaddress' },
@@ -330,6 +450,7 @@ export default {
               grade: data.grade,
               speciality: data.speciality,
               bloodType: data.bloodType,
+              schaddress: data.schaddress,
               socialSecurityNum: data.socialSecurityNum,
               remark: data.remark,
               conaddress: data.conaddress,
@@ -361,6 +482,7 @@ export default {
           { label: '爱好', key: 'hobby' },
           { label: '特长', key: 'speciality' },
           { label: '血型', key: 'bloodType' },
+          { label: '学校', key: 'schaddress' },
           { label: '社保号码', key: 'socialSecurityNum' },
           { label: '手机号', key: 'mobile', popover: 'true' },
           { label: '学员类型', key: 'intentionName' },
@@ -392,6 +514,7 @@ export default {
               hobby: result.hobby,
               speciality: result.speciality,
               bloodType: result.bloodType,
+              schaddress: result.schaddress,
               socialSecurityNum: result.socialSecurityNum,
               mobile: result.mobile,
               intentionName: result.intentionName,
@@ -512,8 +635,7 @@ export default {
       align-items: center;
       min-height: 100px;
       img {
-        transform: scale(0.6);
-        margin-bottom: -10px;
+        margin-bottom: 10px;
       }
       div {
         color: #999;
@@ -522,7 +644,8 @@ export default {
     }
     .visitCon_left_wrap {
       padding: 20px;
-      overflow: hidden auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       height: calc(100% - 50px);
       max-height: calc(100% - 50px);
       background: rgba(240, 242, 245, 1);
@@ -626,6 +749,7 @@ export default {
         img {
           width: 100%;
           height: 100%;
+          border-radius: 50%;
         }
       }
       .con_right_item_text {

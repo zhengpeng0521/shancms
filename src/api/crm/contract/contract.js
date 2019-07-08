@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 
+// 查询续约
+export async function checkRenew(params) {
+  return request({
+    url: `${window.SS_CRM}/crm/contract/checkRenew`,
+    method: 'post',
+    data: params
+  })
+}
+
 // 查询下属
 export async function querySubName(params) {
   return request({

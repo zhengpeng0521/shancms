@@ -529,9 +529,12 @@ export default {
     },
     handleSizeChange(size) {
       this.pageSize = size
+      this.pageIndex = 1
+      this.getList()
     },
     handleIndexChange(current) {
       this.pageIndex = current
+      this.getList()
     },
     /* 备注 */
     toRemarkFunc(row) {

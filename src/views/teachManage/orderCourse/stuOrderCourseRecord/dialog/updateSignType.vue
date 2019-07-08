@@ -21,6 +21,7 @@
               v-model="ruleForm.signType"
               placeholder="请选择"
               style="width:220px"
+              filterable
             >
               <el-option
                 label="出勤"
@@ -97,7 +98,6 @@ export default {
             }
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

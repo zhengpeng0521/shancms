@@ -62,24 +62,18 @@ export default {
         show: true // 是否显示
       },
       findDialogShow: false, // 是否显示精确查找弹框
-      tableHeight: 'calc(100vh - 607px)',
+      tableHeight: 'calc(100vh - 407px)',
       columns: [
         {
           label: '姓名',
           prop: 'name',
           isShowSet: false,
-          isShowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            return `<div>${row.name}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '昵称',
           prop: 'nickName',
-          isShowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            return `<div>${row.nickName}</div>`
-          }
+          isShowTooltip: true
         },
         {
           label: '性别',
@@ -97,14 +91,14 @@ export default {
         {
           label: '生日',
           prop: 'birthday',
-          isShowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            if (row.birthday) {
-              return `<div>${row.birthday}</div>`
-            } else {
-              return `<div></div>`
-            }
-          }
+          isShowTooltip: true
+          // formatter: (row, column, cellValue) => {
+          //   if (row.birthday) {
+          //     return `<div>${row.birthday}</div>`
+          //   } else {
+          //     return `<div></div>`
+          //   }
+          // }
         },
         {
           label: '适用家长',
@@ -132,10 +126,10 @@ export default {
         {
           label: '销售',
           prop: 'seller',
-          isShowTooltip: true,
-          formatter: (row, column, cellValue) => {
-            return `<div>${row.seller}</div>`
-          }
+          isShowTooltip: true
+          // formatter: (row, column, cellValue) => {
+          //   return `<div>${row.seller}</div>`
+          // }
         }
       ],
       options: {
@@ -170,7 +164,8 @@ export default {
         ]
       },
       formValue: {},
-      selectName: '' // 被选学员姓名
+      selectName: '', // 被选学员姓名
+      selectId: '' // 选中的学员id
     }
   },
   methods: {
@@ -180,6 +175,7 @@ export default {
     /* 选中某个学员的数据 */
     selectStuName(row) {
       this.selectName = row.name
+      this.selectId = row.id
     },
     /* 显示弹框 */
     showDialog(nameRow) {
@@ -188,6 +184,7 @@ export default {
         this.findDialogShow = !this.findDialogShow
       } else {
         this.selectName = nameRow.name || ''
+        this.selectId = nameRow.stuId
         this.findDialogShow = !this.findDialogShow
       }
     },
@@ -197,7 +194,7 @@ export default {
     },
     /* 提交弹框 */
     submitDialog() {
-      this.$emit('toStudentName', this.selectName)
+      this.$emit('toStudentName', this.selectName, this.selectId)
       this.findDialogShow = false
     },
     /* 搜索 */

@@ -17,6 +17,7 @@
         <el-select
           v-model="ruleForm.clsId"
           :disabled="true"
+          filterable
           placeholder="请选择班级"
           style="width:449px"
         >

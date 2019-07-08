@@ -9,6 +9,14 @@
         @toParent="resetFieldHanle"
       />
       <!-- <advanced-search v-bind="superSearch" /> -->
+      <div>
+        <el-button
+          v-log="{compName:'学员账户',eventName:'web-【学员CRM】-学员账户-批量手动消课'}"
+          type="primary"
+          size="mini"
+          @click="batchHandCurDialog()"
+        >批量手动消课</el-button>
+      </div>
     </div>
     <!-- 表格 -->
     <CommonTable
@@ -28,6 +36,12 @@
     <AddGiveClassDialog ref="addGiveClassDialog" />
     <!-- 会员卡侧边滑弹框 -->
     <CardVipSideDialog ref="cardVipSideDialog" />
+
+    <!-- 批量手动消课弹窗 -->
+    <BatchHandCurDialog ref="batchHandCurDialog" />
+    <!-- 冻结/解冻弹窗 -->
+    <AddFreezeAccountDialog ref="addFreezeAccountDialog" @refreshTableList="refreshList"/>
+
   </div>
 </template>
 
@@ -38,8 +52,10 @@ import CommonSearch from '../../../components/CommonSearch/CommonSearch'
 import AdvancedSearch from '@/components/AdvancedSearch/AdvancedSearch'
 import StudentDetailSide from './components/studentDetailSide.vue'
 import AddCancelClassDialog from './components/addCancelClassDialog.vue'
+import AddFreezeAccountDialog from './components/addFreezeAccount.vue'
 import AddGiveClassDialog from './components/addGiveClassDialog.vue'
 import CardVipSideDialog from './components/cardVipSideDialog.vue'
+import BatchHandCurDialog from './components/batchHandCurDialog.vue'
 export default {
   components: {
     CommonTable,
@@ -48,7 +64,9 @@ export default {
     StudentDetailSide, // 学员详情侧边弹框组件
     AddCancelClassDialog, // 新增消课弹框组件
     AddGiveClassDialog, // 新增赠送课时弹框组件
-    CardVipSideDialog // 会员卡侧边滑弹框组件
+    CardVipSideDialog, // 会员卡侧边滑弹框组件
+    BatchHandCurDialog, // 批量手动消课弹窗
+    AddFreezeAccountDialog // 冻结 or 解冻弹窗组件
   },
   data() {
     return {
@@ -128,7 +146,7 @@ export default {
                   ? [
                     h('span', params.row.applicableParent[0].name + ' '),
                     h('el-popover', {
-                      props: { placement: 'top', trigger: 'click' }
+                      props: { placement: 'top', trigger: 'hover' }
                     },
                     [
                       h('div',
@@ -155,7 +173,7 @@ export default {
               h(
                 'el-popover',
                 {
-                  props: { placement: 'top', trigger: 'click' }
+                  props: { placement: 'top', trigger: 'hover' }
                 },
                 [
                   h('div',
@@ -225,7 +243,7 @@ export default {
         apiService: stuCardListByCon, // 表格的数据请求接口
         isSettingShow: true // 是否出现设置
       },
-      tableHeight: 'calc(100vh - 242px)',
+      tableHeight: 'calc(100vh - 227px)',
       formInline: {
         searchMethod: (formValue) => {
           this.searchHandle(formValue)
@@ -256,11 +274,11 @@ export default {
         ]
       },
       operates: {
-        width: '180',
+        width: '210',
         fixed: 'right',
         list: [
           {
-            label: '消课',
+            label: '手动消课',
             type: 'normal',
             btnId: '408000001',
             method: (row) => {
@@ -273,6 +291,24 @@ export default {
             btnId: '408000002',
             method: (row) => {
               this.addGiveClass(row)
+            }
+          },
+          {
+            label: '冻结',
+            type: 'general',
+            prop: 'status',
+            btnId: '408000006',
+            popoverCon: [
+              {
+                contentText: '冻结',
+                status: '1'
+              }, {
+                contentText: '解冻',
+                status: '2'
+              }
+            ],
+            method: (row) => {
+              this.addIfFreeze(row)
             }
           }
         ]
@@ -299,6 +335,15 @@ export default {
     cardVipSide(row) {
       this.$refs.cardVipSideDialog.showSideDialog(row)
     },
+    /* 新增预约试听弹框 */
+    batchHandCurDialog() {
+      this.$refs.batchHandCurDialog.showDialog()
+    },
+    /*  冻结或者解冻弹窗  */
+    addIfFreeze(row) {
+      this.$refs.addFreezeAccountDialog.showDialog(row)
+    },
+
     /* 搜索 */
     searchHandle(formValue) {
       // 搜索的入参
@@ -308,6 +353,10 @@ export default {
         ...this.superValue
       }
       this.$refs.tableCommon.getList(params)
+    },
+    // 刷新列表
+    refreshList() {
+      this.$refs.tableCommon.getList()
     },
     /* 搜索重置 */
     resetFieldHanle(formName) {
@@ -353,12 +402,15 @@ export default {
     color: #1d9df2;
     text-overflow: ellipsis;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       color: #56c0f5;
     }
   }
   .search {
     height: 48px;
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>
